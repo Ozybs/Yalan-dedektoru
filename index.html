@@ -2,73 +2,58 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ADLİ BİLİRKİŞİ PROTOKOLÜ (8 ADIMLI)</title>
+    <title>Bilirkişi Adli İnceleme Paneli</title>
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; }
-        .grid-main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .step { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #475569; }
-        input, textarea { width: 100%; margin-top: 5px; background: #0f172a; color: #fff; border: 1px solid #334155; padding: 5px; }
-        .final-btn { background: #10b981; color: white; padding: 15px; border: none; width: 100%; font-size: 1.2rem; cursor: pointer; border-radius: 8px; }
-        #reportOutput { background: white; color: black; padding: 20px; margin-top: 20px; white-space: pre-wrap; display: none; }
+        body { background: #0f172a; color: #e2e8f0; font-family: sans-serif; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+        .sidebar { background: #1e293b; padding: 15px; border-radius: 8px; }
+        .method-btn { display: block; width: 100%; text-align: left; background: #334155; color: white; padding: 10px; margin-bottom: 8px; border: none; cursor: pointer; border-radius: 4px; }
+        .method-btn:hover { background: #475569; }
+        .main-panel { background: #1e293b; padding: 20px; border-radius: 8px; }
+        .instruction-box { background: #000; padding: 15px; border-left: 4px solid #3b82f6; margin-bottom: 15px; font-size: 0.9rem; }
+        textarea { width: 100%; height: 80px; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 10px; }
     </style>
 </head>
 <body>
 
-<h1>BİLİRKİŞİ ADLİ İNCELEME PROTOKOLÜ</h1>
-
-<div class="grid-main">
-    <div id="stepsContainer">
-        <!-- 8 Adım burada JS ile yüklenecek -->
-    </div>
-    <div>
-        <button class="final-btn" onclick="buildFinalReport()">8 AŞAMALI RAPORU OLUŞTUR</button>
-        <div id="reportOutput"></div>
+<h2>BİLİRKİŞİ ADLİ İNCELEME PANELİ</h2>
+<div class="grid">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-panel">
+        <div id="instruction-display" class="instruction-box">Bir yöntem seçerek incelemeye başlayın.</div>
+        <label>Bu Yöntemle İlgili Rapor Notu:</label>
+        <textarea id="note-area" placeholder="Analiz sonucunu buraya girin..."></textarea>
+        <button onclick="saveNote()" style="margin-top:10px; background:#10b981; border:none; padding:10px; color:white; width:100%;">RAPORA EKLE</button>
     </div>
 </div>
 
 <script>
     const methods = [
-        "1. Maske Soyma (Clipping Mask)", "2. Gizli Katman Analizi", 
-        "3. Düğüm Noktası (Anchor) Analizi", "4. Renk Kodu (HEX) Karşılaştırması",
-        "5. Izgara (Grid) Hizalama Kontrolü", "6. Cetvel ve Kılavuz Hizalaması",
-        "7. Renk Kanalları (Separation Preview)", "8. Üst Üste Bindirme (Difference) Modu"
+        { name: "1. Maske Soyma (Clipping)", info: "Kısayol: PS: Alt+Ctrl+G / AI: Alt+Ctrl+7. Nesne -> Kırpma Maskesi -> Serbest Bırak." },
+        { name: "2. Kapalı Katmanları Açma", info: "Kısayol: F7 (Katmanlar paneli). Göz (👁️) simgelerine tıklayarak gizli katmanları görünür kıl." },
+        { name: "3. Düğüm Noktası (Path)", info: "Kısayol: 'A' (Direct Selection Tool). Vektörel düğüm noktalarını ve kavis açılarını incele." },
+        { name: "4. Renk Kodu Ölçme", info: "Kısayol: 'I' (Damlalık). Rengi seç, Color Picker'dan #HEX kodunu kopyala." },
+        { name: "5. Izgara (Grid) Açma", info: "Kısayol: Ctrl + ' (PS) / Ctrl + \" (AI). Tasarımın milimetrik hizasını kontrol et." },
+        { name: "6. Cetveller (Rulers)", info: "Kısayol: Ctrl + R. Cetvelden sürükleyip kılavuz çizgisi oluştur ve hizalama kontrolü yap." },
+        { name: "7. Ayrım Önizleme", info: "Yol: Pencere (Window) -> Ayrım Önizleme (Separations Preview). CMYK kanallarını kapatıp K (Siyah) baskısını izle." },
+        { name: "8. Fark Modu (Difference)", info: "Yol: Katmanlar -> Fark (Difference) moduna al. %50 saydamlık vererek örtüşme analizi yap." }
     ];
 
-    const container = document.getElementById('stepsContainer');
+    const sidebar = document.getElementById('sidebar');
     methods.forEach((m, i) => {
-        container.innerHTML += `
-            <div class="step">
-                <label><b>${m}</b></label>
-                <textarea id="val_${i}" placeholder="Bu yöntemle elde edilen bulgu/tespit..."></textarea>
-            </div>
-        `;
+        let btn = document.createElement('button');
+        btn.className = 'method-btn';
+        btn.innerText = m.name;
+        btn.onclick = () => {
+            document.getElementById('instruction-display').innerText = m.info;
+        };
+        sidebar.appendChild(btn);
     });
 
-    function buildFinalReport() {
-        let findings = "";
-        methods.forEach((m, i) => {
-            findings += `\n${m}:\n- Tespit: ${document.getElementById('val_'+i).value || "İnceleme yapılmadı."}\n`;
-        });
-
-        const report = `T.C. BİLİRKİŞİ İNCELEME RAPORU
---------------------------------------------------
-Tarih: ${new Date().toLocaleDateString()}
-Konu: Fikri ve Sınai Haklar (Tasarım/Telif İhlali)
-
-TEKNİK ANALİZ BULGULARI:
-${findings}
-
-GENEL DEĞERLENDİRME VE KANAAT:
-Yukarıda belirtilen 8 aşamalı teknik analiz neticesinde; 
-eserin teknik yapısı, vektörel dizilimi, renk paleti ve 
-katman hiyerarşisi incelenmiş olup, [İHLAL VAR/YOK] 
-yönünde kanaat oluşmuştur.
-
-Bilirkişi İmzası`;
-
-        const out = document.getElementById('reportOutput');
-        out.innerText = report;
-        out.style.display = 'block';
+    function saveNote() {
+        const note = document.getElementById('note-area').value;
+        console.log("Rapor notu eklendi:", note);
+        alert("Notunuz rapor hafızasına işlendi.");
     }
 </script>
 </body>
