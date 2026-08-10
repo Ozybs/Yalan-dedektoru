@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Biometric Lie Detector v6.0 - Dynamic</title>
+    <title>Quantum Biometric Lie Detector v7.0 - Expanded</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
         body { background-color: #020205; color: #00ffcc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; padding: 20px; position: relative; }
@@ -44,7 +44,7 @@
 
     <div class="container">
         <h1>BIOMETRIC LIE DETECTOR</h1>
-        <div class="subtitle">DYNAMIC AI SYSTEM // v6.0</div>
+        <div class="subtitle">EXPANDED AI SYSTEM // v7.0</div>
         
         <div class="camera-box">
             <div class="scanner-line"></div>
@@ -53,7 +53,7 @@
 
         <div class="ai-question-box">
             🤖 <span>Yapay Zeka Sorgusu:</span><br>
-            <strong id="aiPromptText">"Son 24 saat içinde gizli bir işler çevirdin mi?"</strong>
+            <strong id="aiPromptText">"Bugün kafanı kurcalayan ve kimseye söylemediğin bir şey var mı?"</strong>
         </div>
 
         <div class="metrics">
@@ -74,7 +74,6 @@
     </div>
 
     <script>
-        // Matrix Arka Plan Efekti
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight;
@@ -99,19 +98,24 @@
         }
         setInterval(drawMatrix, 35);
 
-        // Kamera
         navigator.mediaDevices.getUserMedia({ video: true, audio: false })
             .then(stream => { document.getElementById('webcam').srcObject = stream; })
             .catch(err => { console.log("Kamera izni yok"); });
 
-        // Zengin Soru Havuzu
+        // Genişletilmiş Dev Soru Havuzu
         const questions = [
             "Bugün kafanı kurcalayan ve kimseye söylemediğin bir şey var mı?",
             "Hayatında aldığın en büyük karardan pişmanlık duydun mu?",
             "En son ne zaman küçük de olsa beyaz bir yalan söyledin?",
             "Şu an etrafındakilere karşı tamamen dürüst mütsün?",
             "Gizli yeteneklerin veya kimseden sakladığın bir hobin var mı?",
-            "Gelecekten korkuyor musun yoksa heyecanlı mısın?"
+            "Gelecekten korkuyor musun yoksa heyecanlı mısın?",
+            "Sosyal medyada gördüğün hayatın ne kadarı sence gerçek?",
+            "Çocukken yaptığın ve hâlâ kimsenin bilmediği büyük bir delilik var mı?",
+            "Bugün tekrar şansın olsaydı hangi kararını tamamen değiştirirdin?",
+            "En son ne zaman birine karşı yapmacık bir gülümseme taktın?",
+            "Yapay zekanın insanlığı ele geçireceğine gerçekten inanıyor musun?",
+            "Şu an bu testi çözerken gergin hissediyor musun?"
         ];
 
         function nextQuestion() {
@@ -123,7 +127,6 @@
             document.getElementById('statusText').style.color = "#00ffcc";
         }
 
-        // Ses Tanıma (Speech Recognition)
         function startListening() {
             const micBtn = document.getElementById('micButton');
             const status = document.getElementById('statusText');
@@ -156,7 +159,6 @@
                 status.innerText = "SES ALINDI";
                 status.style.color = "#00ffcc";
                 
-                // Konuşma bittikten hemen sonra analizi çalıştır
                 setTimeout(analyzeLie, 600);
             };
 
@@ -172,7 +174,6 @@
             };
         }
 
-        // Göz Kırpma ve Nabız
         let blinks = 0;
         setInterval(() => {
             blinks += Math.floor(Math.random() * 2);
@@ -180,7 +181,6 @@
             document.getElementById('heartRate').innerText = 72 + Math.floor(Math.random() * 30);
         }, 3000);
 
-        // Sesli Okuma (TTS)
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -191,7 +191,6 @@
             }
         }
 
-        // Gelişmiş Sonuç Algoritması (Rastgele ve Adil Dağılım)
         function analyzeLie() {
             const status = document.getElementById('statusText');
             const result = document.getElementById('result');
@@ -207,7 +206,6 @@
             result.innerText = "";
 
             setTimeout(() => {
-                // Her seferinde farklı bir senaryo çıkması için olasılıklar çeşitlendirildi
                 const outcomes = [
                     { text: "SONUÇ: %99 DOĞRU (Biyometrik veriler tertemiz, yalan yok!)", color: "#00ffcc", speak: "Sonuç yüzde doksan dokuz doğru. Yalan tespit edilmedi." },
                     { text: "SONUÇ: %92 GÜVENLİR (Heyecanlanmış olabilirsin ama dürüstsün.)", color: "#00ffcc", speak: "Sonuç yüzde doksan iki güvenilir. Dürüst görünüyorsun." },
@@ -215,7 +213,6 @@
                     { text: "SONUÇ: %95 KESİN YALAN! Göz hareketleri ve nabız ele verdi!", color: "#ff0055", speak: "Sonuç yüzde doksan beş keskin yalan! Nabız ele verdi." }
                 ];
                 
-                // Tamamen rastgele bir sonuç seçtiriyoruz
                 const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
                 
                 status.innerText = "ANALİZ TAMAMLANDI";
