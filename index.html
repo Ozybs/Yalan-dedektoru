@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Biometric Lie Detector v5.0 - Voice Control</title>
+    <title>Quantum Biometric Lie Detector v6.0 - Dynamic</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
         body { background-color: #020205; color: #00ffcc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; padding: 20px; position: relative; }
@@ -44,7 +44,7 @@
 
     <div class="container">
         <h1>BIOMETRIC LIE DETECTOR</h1>
-        <div class="subtitle">VOICE CONTROL SYSTEM // v5.0</div>
+        <div class="subtitle">DYNAMIC AI SYSTEM // v6.0</div>
         
         <div class="camera-box">
             <div class="scanner-line"></div>
@@ -52,8 +52,8 @@
         </div>
 
         <div class="ai-question-box">
-            🤖 <span>Yapay Zeka Soru/Görevi:</span><br>
-            <strong id="aiPromptText">"Son 24 saat içinde gizli bir işler çevirdin mi? Butona bas ve konuşmaya başla."</strong>
+            🤖 <span>Yapay Zeka Sorgusu:</span><br>
+            <strong id="aiPromptText">"Son 24 saat içinde gizli bir işler çevirdin mi?"</strong>
         </div>
 
         <div class="metrics">
@@ -66,15 +66,15 @@
         <textarea id="questionInput" placeholder="Konuştuğunuz metin burada görünecek..."></textarea>
         
         <div class="button-group">
-            <button id="micButton" class="mic-btn" onclick="startListening()">🎤 KONUŞMAYI BAŞLAT</button>
-            <button onclick="analyzeLie()">MANUEL ANALİZ</button>
+            <button id="micButton" class="mic-btn" onclick="startListening()">🎤 KONUŞ</button>
+            <button onclick="nextQuestion()">YENİ SORU</button>
         </div>
 
         <div id="result"></div>
     </div>
 
     <script>
-        // Matrix Efekti
+        // Matrix Arka Plan Efekti
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight;
@@ -104,8 +104,26 @@
             .then(stream => { document.getElementById('webcam').srcObject = stream; })
             .catch(err => { console.log("Kamera izni yok"); });
 
-        // Ses Tanıma (Speech Recognition) - Sen konuşurken metne döker
-        let recognition;
+        // Zengin Soru Havuzu
+        const questions = [
+            "Bugün kafanı kurcalayan ve kimseye söylemediğin bir şey var mı?",
+            "Hayatında aldığın en büyük karardan pişmanlık duydun mu?",
+            "En son ne zaman küçük de olsa beyaz bir yalan söyledin?",
+            "Şu an etrafındakilere karşı tamamen dürüst mütsün?",
+            "Gizli yeteneklerin veya kimseden sakladığın bir hobin var mı?",
+            "Gelecekten korkuyor musun yoksa heyecanlı mısın?"
+        ];
+
+        function nextQuestion() {
+            const randomQ = questions[Math.floor(Math.random() * questions.length)];
+            document.getElementById('aiPromptText').innerText = `"${randomQ}"`;
+            document.getElementById('questionInput').value = "";
+            document.getElementById('result').innerText = "";
+            document.getElementById('statusText').innerText = "BEKLİYOR";
+            document.getElementById('statusText').style.color = "#00ffcc";
+        }
+
+        // Ses Tanıma (Speech Recognition)
         function startListening() {
             const micBtn = document.getElementById('micButton');
             const status = document.getElementById('statusText');
@@ -122,7 +140,7 @@
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
-            micBtn.innerText = "🔴 DİNLENİYOR... (Konuşun)";
+            micBtn.innerText = "🔴 DİNLENİYOR...";
             micBtn.classList.add('listening');
             status.innerText = "DİNLENİYOR";
             status.style.color = "#ffaa00";
@@ -133,23 +151,23 @@
             recognition.onresult = function(event) {
                 const speechResult = event.results[0][0].transcript;
                 input.value = speechResult;
-                micBtn.innerText = "🎤 KONUŞMAYI BAŞLAT";
+                micBtn.innerText = "🎤 KONUŞ";
                 micBtn.classList.remove('listening');
                 status.innerText = "SES ALINDI";
                 status.style.color = "#00ffcc";
                 
-                // Konuşma bittiğinde otomatik analizi tetikle
-                setTimeout(analyzeLie, 800);
+                // Konuşma bittikten hemen sonra analizi çalıştır
+                setTimeout(analyzeLie, 600);
             };
 
             recognition.onerror = function(event) {
-                micBtn.innerText = "🎤 KONUŞMAYI BAŞLAT";
+                micBtn.innerText = "🎤 KONUŞ";
                 micBtn.classList.remove('listening');
-                status.innerText = "HATA / TEKRAR DENE";
+                status.innerText = "TEKRAR DENE";
             };
 
             recognition.onend = function() {
-                micBtn.innerText = "🎤 KONUŞMAYI BAŞLAT";
+                micBtn.innerText = "🎤 KONUŞ";
                 micBtn.classList.remove('listening');
             };
         }
@@ -159,13 +177,13 @@
         setInterval(() => {
             blinks += Math.floor(Math.random() * 2);
             document.getElementById('blinkCount').innerText = blinks;
-            document.getElementById('heartRate').innerText = 74 + Math.floor(Math.random() * 26);
+            document.getElementById('heartRate').innerText = 72 + Math.floor(Math.random() * 30);
         }, 3000);
 
         // Sesli Okuma (TTS)
         function speakText(text) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Önceki sesleri sustur
+                window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'tr-TR';
                 utterance.rate = 1.0;
@@ -173,29 +191,33 @@
             }
         }
 
-        // Analiz Fonksiyonu
+        // Gelişmiş Sonuç Algoritması (Rastgele ve Adil Dağılım)
         function analyzeLie() {
             const status = document.getElementById('statusText');
             const result = document.getElementById('result');
             const input = document.getElementById('questionInput').value;
 
             if(!input.trim()) {
-                alert("Önce bir şeyler söylemelisiniz!");
+                alert("Önce konuşarak bir cevap vermelisin!");
                 return;
             }
 
-            status.innerText = "BİYOMETRİK ANALİZ YAPILIYOR...";
+            status.innerText = "ANALİZ EDİLİYOR...";
             status.style.color = "#ff0055";
             result.innerText = "";
 
             setTimeout(() => {
+                // Her seferinde farklı bir senaryo çıkması için olasılıklar çeşitlendirildi
                 const outcomes = [
-                    { text: "SONUÇ: %98 DOĞRU (Ses tonu ve yüz hatları stabil, yalan yok.)", color: "#00ffcc", speak: "Sonuç yüzde doksan sekiz doğru. Yalan tespit edilmedi." },
-                    { text: "SONUÇ: %85 RİSKLİ! Ses tonunda şüpheli dalgalanma saptandı!", color: "#ffaa00", speak: "Sonuç seksen beş riskli. Ses tonunda dalgalanma saptandı." },
-                    { text: "SONUÇ: %99 KESİN YALAN! Stres ve göz hareketleri tehlikeli seviyede!", color: "#ff0055", speak: "Sonuç yüzde doksan dokuz keskin yalan! Stres seviyesi tavan yaptı." }
+                    { text: "SONUÇ: %99 DOĞRU (Biyometrik veriler tertemiz, yalan yok!)", color: "#00ffcc", speak: "Sonuç yüzde doksan dokuz doğru. Yalan tespit edilmedi." },
+                    { text: "SONUÇ: %92 GÜVENLİR (Heyecanlanmış olabilirsin ama dürüstsün.)", color: "#00ffcc", speak: "Sonuç yüzde doksan iki güvenilir. Dürüst görünüyorsun." },
+                    { text: "SONUÇ: %74 ŞÜPHELİ! Ses tonunda küçük bir dalgalanma var.", color: "#ffaa00", speak: "Sonuç yetmiş dört şüpheli. Ses tonunda dalgalanma saptandı." },
+                    { text: "SONUÇ: %95 KESİN YALAN! Göz hareketleri ve nabız ele verdi!", color: "#ff0055", speak: "Sonuç yüzde doksan beş keskin yalan! Nabız ele verdi." }
                 ];
                 
+                // Tamamen rastgele bir sonuç seçtiriyoruz
                 const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+                
                 status.innerText = "ANALİZ TAMAMLANDI";
                 status.style.color = "#00ffcc";
                 result.innerText = randomOutcome.text;
