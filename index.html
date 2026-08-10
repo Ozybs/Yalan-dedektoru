@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yalan Dedektörü - AI Parti Oyunu</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1f4068, #162447);
+            color: #ffffff;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(8px);
+        }
+        h1 { font-size: 24px; margin-bottom: 20px; color: #e43f5a; }
+        .question-box {
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #e43f5a;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        button:hover { background-color: #ff477e; }
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🤖 Yapay Zeka Yalan Dedektörü</h1>
+        
+        <div class="question-box" id="question">
+            "Hayatında hiç başkasının suçunu üstlendin mi?"
+        </div>
+
+        <button id="recordBtn" onclick="startAnalysis()">🎤 Cevap Ver ve Analiz Et</button>
+
+        <div class="result" id="resultText"></div>
+    </div>
+
+    <script>
+        const questions = [
+            "Grupta arkasından en çok konuştuğun kişi şu an burada mı?",
+            "Geçmişte sosyal medyada stalk yaparken yanlışlıkla eski sevgilini beğendin mi?",
+            "Bugün dışarı çıkmamak için uydurduğun en büyük yalan neydi?",
+            "Hayatında hiç gizli bir sosyal medya hesabı açıp başkalarını izledin mi?"
+        ];
+
+        function startAnalysis() {
+            const btn = document.getElementById("recordBtn");
+            const resultDiv = document.getElementById("resultText");
+            
+            btn.innerText = "Dinleniyor ve Analiz Ediliyor...";
+            btn.style.backgroundColor = "#555";
+            resultDiv.innerHTML = "🔍 Ses dalgaları taranıyor...";
+
+            setTimeout(() => {
+                const randomLieRate = Math.floor(Math.random() * 60) + 40; 
+                let comment = "";
+
+                if (randomLieRate > 75) {
+                    comment = `🚨 YALAN! (Oran: %${randomLieRate})<br><span style="font-size:14px; color:#ff6b6b;">Yapay Zeka Notu: Ses tonunda titreme ve kelimeleri uzatma saptandı. Kesinlikle sakladığın bir şeyler var!</span>`;
+                } else {
+                    comment = `✅ DOĞRU OLABİLİR (Oran: %${randomLieRate})<br><span style="font-size:14px; color:#51cf66;">Yapay Zeka Notu: Rahat konuşuyorsun ama yine de tam güven vermedin.</span>`;
+                }
+
+                resultDiv.innerHTML = comment;
+                btn.innerText = "🎤 Yeni Soru İçin Tıkla";
+                btn.style.backgroundColor = "#e43f5a";
+
+                const nextQ = questions[Math.floor(Math.random() * questions.length)];
+                document.getElementById("question").innerText = `"${nextQ}"`;
+
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
