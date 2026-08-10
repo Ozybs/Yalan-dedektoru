@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Biometric Lie Detector v4.0 - Ultimate</title>
+    <title>Quantum Biometric Lie Detector v5.0 - Voice Control</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
         body { background-color: #020205; color: #00ffcc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; padding: 20px; position: relative; }
         
-        /* Matrix Arka Plan Efekti */
         canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.15; }
 
-        .container { width: 100%; max-width: 600px; background: rgba(5, 15, 15, 0.85); border: 2px solid #00ffcc; border-radius: 12px; padding: 20px; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3); text-align: center; backdrop-filter: blur(5px); z-index: 1; }
+        .container { width: 100%; max-width: 600px; background: rgba(5, 15, 15, 0.9); border: 2px solid #00ffcc; border-radius: 12px; padding: 20px; box-shadow: 0 0 30px rgba(0, 255, 204, 0.3); text-align: center; backdrop-filter: blur(5px); z-index: 1; }
         h1 { font-size: 1.4rem; margin-bottom: 5px; text-shadow: 0 0 10px #00ffcc; letter-spacing: 2px; }
         .subtitle { font-size: 0.75rem; color: #ff0055; margin-bottom: 15px; letter-spacing: 1px; }
         
-        .camera-box { position: relative; width: 100%; height: 200px; background: #000; border: 1px solid #00ffcc; border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
+        .camera-box { position: relative; width: 100%; height: 180px; background: #000; border: 1px solid #00ffcc; border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
         video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); opacity: 0.85; }
         .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #ff0055; box-shadow: 0 0 12px #ff0055; animation: scan 2s infinite linear; }
         @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
@@ -26,26 +25,26 @@
         .ai-question-box { background: rgba(0, 255, 204, 0.05); border: 1px dashed #00ffcc; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 0.85rem; color: #fff; }
         .ai-question-box span { color: #00ffcc; font-weight: bold; }
 
-        .audio-visualizer { width: 100%; height: 35px; background: #000; border: 1px solid #00ffcc; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; color: #00ffcc; font-size: 0.75rem; border-radius: 4px; }
-        
-        textarea { width: 100%; height: 70px; background: #001111; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; border-radius: 6px; resize: none; margin-bottom: 12px; font-size: 0.85rem; }
+        textarea { width: 100%; height: 60px; background: #001111; border: 1px solid #00ffcc; color: #00ffcc; padding: 8px; border-radius: 6px; resize: none; margin-bottom: 12px; font-size: 0.85rem; }
         
         .button-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        button { background: #00ffcc; color: #05050a; border: none; padding: 10px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; cursor: pointer; flex: 1; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0,255,204,0.4); }
+        button { background: #00ffcc; color: #05050a; border: none; padding: 12px; font-weight: bold; font-size: 0.9rem; border-radius: 6px; cursor: pointer; flex: 1; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(0,255,204,0.4); }
         button:hover { background: #ff0055; color: #fff; box-shadow: 0 0 15px rgba(255,0,85,0.8); }
-        button.secondary { background: #111; color: #00ffcc; border: 1px solid #00ffcc; }
+        button.mic-btn { background: #ff0055; color: #fff; }
+        button.mic-btn.listening { background: #ffaa00; animation: pulse 1s infinite; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         #result { margin-top: 10px; font-size: 1rem; font-weight: bold; padding: 10px; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-    <!-- Matrix Arka Plan Canvas -->
     <canvas id="matrix"></canvas>
 
     <div class="container">
         <h1>BIOMETRIC LIE DETECTOR</h1>
-        <div class="subtitle">SECURE_AI_SYSTEM // v4.0 ULTIMATE</div>
+        <div class="subtitle">VOICE CONTROL SYSTEM // v5.0</div>
         
         <div class="camera-box">
             <div class="scanner-line"></div>
@@ -53,31 +52,29 @@
         </div>
 
         <div class="ai-question-box">
-            🤖 <span>Yapay Zeka Sorgusu:</span><br>
-            <strong id="aiPromptText">"Son 24 saat içinde gizli bir işler çevirdin mi?"</strong>
+            🤖 <span>Yapay Zeka Soru/Görevi:</span><br>
+            <strong id="aiPromptText">"Son 24 saat içinde gizli bir işler çevirdin mi? Butona bas ve konuşmaya başla."</strong>
         </div>
 
         <div class="metrics">
             <div class="metric-item">Göz Kırpma: <span id="blinkCount">0</span> /dk</div>
-            <div class="metric-item">Ses Tonu (Pitch): <span id="voicePitch">Stabil</span></div>
-            <div class="metric-item">Nabız Simülasyonu: <span id="heartRate">78</span> BPM</div>
+            <div class="metric-item">Ses Tonu: <span id="voicePitch">Bekleniyor</span></div>
+            <div class="metric-item">Nabız: <span id="heartRate">78</span> BPM</div>
             <div class="metric-item">Durum: <span id="statusText" style="color:#00ffcc;">BEKLİYOR</span></div>
         </div>
 
-        <div id="audioVisualizer" class="audio-visualizer">🎤 Mikrofon: Aktif (Ses Dalgaları Dinleniyor)</div>
-
-        <textarea id="questionInput" placeholder="Cevabınızı buraya yazın veya ifade verin..."></textarea>
+        <textarea id="questionInput" placeholder="Konuştuğunuz metin burada görünecek..."></textarea>
         
         <div class="button-group">
-            <button onclick="changeQuestion()" class="secondary">YENİ SORU</button>
-            <button onclick="analyzeLie()">ANALİZİ BAŞLAT</button>
+            <button id="micButton" class="mic-btn" onclick="startListening()">🎤 KONUŞMAYI BAŞLAT</button>
+            <button onclick="analyzeLie()">MANUEL ANALİZ</button>
         </div>
 
         <div id="result"></div>
     </div>
 
     <script>
-        // 1. Matrix Arka Plan Efekti
+        // Matrix Efekti
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight;
@@ -102,53 +99,62 @@
         }
         setInterval(drawMatrix, 35);
 
-        // 2. Kamera ve Mikrofon Entegrasyonu
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(stream => {
-                document.getElementById('webcam').srcObject = stream;
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const analyser = audioCtx.createAnalyser();
-                const microphone = audioCtx.createMediaStreamSource(stream);
-                microphone.connect(analyser);
-                analyser.fftSize = 256;
-                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        // Kamera
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+            .then(stream => { document.getElementById('webcam').srcObject = stream; })
+            .catch(err => { console.log("Kamera izni yok"); });
 
-                function updateAudio() {
-                    analyser.getByteFrequencyData(dataArray);
-                    let sum = dataArray.reduce((a, b) => a + b, 0);
-                    let avg = sum / dataArray.length;
-                    
-                    if (avg > 15) {
-                        document.getElementById('voicePitch').innerText = "Yüksek Frekans (Gergin)";
-                        document.getElementById('voicePitch').style.color = "#ff0055";
-                    } else {
-                        document.getElementById('voicePitch').innerText = "Stabil (Normal)";
-                        document.getElementById('voicePitch').style.color = "#00ffcc";
-                    }
-                    requestAnimationFrame(updateAudio);
-                }
-                updateAudio();
-            })
-            .catch(err => {
-                console.log("Kamera/Mikrofon izni yok: ", err);
-                document.getElementById('audioVisualizer').innerText = "⚠️ Kamera/Mikrofon İzni Gerekli!";
-            });
+        // Ses Tanıma (Speech Recognition) - Sen konuşurken metne döker
+        let recognition;
+        function startListening() {
+            const micBtn = document.getElementById('micButton');
+            const status = document.getElementById('statusText');
+            const input = document.getElementById('questionInput');
 
-        // 3. Rastgele Soru Havuzu
-        const questions = [
-            "Son 24 saat içinde gizli bir işler çevirdin mi?",
-            "Bana karşı tamamen dürüst müştün?",
-            "Geçmişte büyük bir yalan söyleyip yakalanmadığın oldu mu?",
-            "Şu an kalbinin hızla çarptığını saklamaya mı çalışıyorsun?",
-            "En yakın arkadaşına bile söylediğin büyük bir sırrın var mı?"
-        ];
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("Tarayıcınız ses tanımayı desteklemiyor. Lütfen Google Chrome kullanın.");
+                return;
+            }
 
-        function changeQuestion() {
-            const randomQ = questions[Math.floor(Math.random() * questions.length)];
-            document.getElementById('aiPromptText').innerText = `"${randomQ}"`;
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'tr-TR';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            micBtn.innerText = "🔴 DİNLENİYOR... (Konuşun)";
+            micBtn.classList.add('listening');
+            status.innerText = "DİNLENİYOR";
+            status.style.color = "#ffaa00";
+            input.value = "";
+
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const speechResult = event.results[0][0].transcript;
+                input.value = speechResult;
+                micBtn.innerText = "🎤 KONUŞMAYI BAŞLAT";
+                micBtn.classList.remove('listening');
+                status.innerText = "SES ALINDI";
+                status.style.color = "#00ffcc";
+                
+                // Konuşma bittiğinde otomatik analizi tetikle
+                setTimeout(analyzeLie, 800);
+            };
+
+            recognition.onerror = function(event) {
+                micBtn.innerText = "🎤 KONUŞMAYI BAŞLAT";
+                micBtn.classList.remove('listening');
+                status.innerText = "HATA / TEKRAR DENE";
+            };
+
+            recognition.onend = function() {
+                micBtn.innerText = "🎤 KONUŞMAYI BAŞLAT";
+                micBtn.classList.remove('listening');
+            };
         }
 
-        // 4. Göz Kırpma ve Nabız Simülasyonu
+        // Göz Kırpma ve Nabız
         let blinks = 0;
         setInterval(() => {
             blinks += Math.floor(Math.random() * 2);
@@ -156,9 +162,10 @@
             document.getElementById('heartRate').innerText = 74 + Math.floor(Math.random() * 26);
         }, 3000);
 
-        // 5. Sesli Konuşma (Text-to-Speech) Fonksiyonu
+        // Sesli Okuma (TTS)
         function speakText(text) {
             if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Önceki sesleri sustur
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'tr-TR';
                 utterance.rate = 1.0;
@@ -166,21 +173,26 @@
             }
         }
 
-        // 6. Analiz ve Sonuç Algoritması
+        // Analiz Fonksiyonu
         function analyzeLie() {
             const status = document.getElementById('statusText');
             const result = document.getElementById('result');
             const input = document.getElementById('questionInput').value;
 
-            status.innerText = "BIOMETRİK TARAMA YAPILIYOR...";
+            if(!input.trim()) {
+                alert("Önce bir şeyler söylemelisiniz!");
+                return;
+            }
+
+            status.innerText = "BİYOMETRİK ANALİZ YAPILIYOR...";
             status.style.color = "#ff0055";
             result.innerText = "";
 
             setTimeout(() => {
                 const outcomes = [
-                    { text: "SONUÇ: %98 DOĞRU (Biyometrik veriler stabil, yalan tespit edilmedi.)", color: "#00ffcc", speak: "Sonuç yüzde doksan sekiz doğru. Yalan tespit edilmedi." },
-                    { text: "SONUÇ: %85 RİSKLİ! Ses tonunda ve nabızda ani dalgalanma!", color: "#ffaa00", speak: "Sonuç seksen beş riskli. Ses tonunda dalgalanma saptandı." },
-                    { text: "SONUÇ: %99 KESİN YALAN! Göz hareketleri ve stres seviyesi tavan yaptı!", color: "#ff0055", speak: "Sonuç yüzde doksan dokuz keskin yalan! Stres seviyesi tavan yaptı." }
+                    { text: "SONUÇ: %98 DOĞRU (Ses tonu ve yüz hatları stabil, yalan yok.)", color: "#00ffcc", speak: "Sonuç yüzde doksan sekiz doğru. Yalan tespit edilmedi." },
+                    { text: "SONUÇ: %85 RİSKLİ! Ses tonunda şüpheli dalgalanma saptandı!", color: "#ffaa00", speak: "Sonuç seksen beş riskli. Ses tonunda dalgalanma saptandı." },
+                    { text: "SONUÇ: %99 KESİN YALAN! Stres ve göz hareketleri tehlikeli seviyede!", color: "#ff0055", speak: "Sonuç yüzde doksan dokuz keskin yalan! Stres seviyesi tavan yaptı." }
                 ];
                 
                 const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
@@ -191,9 +203,8 @@
                 result.style.border = `1px solid ${randomOutcome.color}`;
                 result.style.background = "rgba(0,0,0,0.8)";
 
-                // Yapay zeka sonucu sesli olarak okusun
                 speakText(randomOutcome.speak);
-            }, 2500);
+            }, 2000);
         }
     </script>
 </body>
