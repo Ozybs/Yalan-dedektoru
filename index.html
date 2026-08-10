@@ -2,36 +2,38 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>BİLİRKİŞİ RAPORU - ADLİ SİSTEM</title>
+    <title>ADLİ GRAFİK BİLİRKİŞİ RAPORU (PROFESYONEL)</title>
     <style>
         body { background: #0f172a; color: #e2e8f0; font-family: sans-serif; padding: 20px; }
         .grid { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
         .method-btn { display: block; width: 100%; text-align: left; background: #334155; color: white; padding: 12px; margin-bottom: 8px; border: none; cursor: pointer; border-radius: 4px; border-left: 4px solid #3b82f6; }
         .method-btn:hover { background: #475569; }
-        textarea { width: 100%; height: 60px; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 10px; margin-top: 10px; }
-        #final-report-area { margin-top: 20px; background: #fff; color: #000; padding: 20px; border-radius: 8px; display: none; white-space: pre-wrap; font-family: serif; line-height: 1.5; }
+        textarea { width: 100%; height: 120px; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 10px; margin-top: 10px; }
+        #final-report-area { margin-top: 20px; background: #fff; color: #000; padding: 30px; border-radius: 4px; display: none; white-space: pre-wrap; font-family: 'Times New Roman', serif; line-height: 1.6; border: 1px solid #ccc; }
+        .btn-report { width:100%; background:#10b981; color:white; padding:15px; border:none; cursor:pointer; font-weight:bold; margin-top:20px; }
     </style>
 </head>
 <body>
 
-<h2>GRAFİK BİLİRKİŞİ İNCELEME PROTOKOLÜ</h2>
+<h2>GRAFİK BİLİRKİŞİ - ADLİ PROTOKOL</h2>
 <div class="grid">
     <div id="sidebar"></div>
     <div class="main-panel">
-        <div id="instruction-display" style="background:#000; padding:15px; border-radius:5px; margin-bottom:10px;">Yöntem seçiniz.</div>
-        <textarea id="note-area" placeholder="Analiz bulgunuzu buraya yazıp 'Kaydet' butonuna basın..."></textarea>
-        <button onclick="saveNote()" style="width:100%; background:#3b82f6; color:white; padding:10px; border:none; cursor:pointer; margin-top:5px;">BULGUYU KAYDET</button>
-        <button onclick="generateFinalReport()" style="width:100%; background:#10b981; color:white; padding:15px; border:none; cursor:pointer; margin-top:20px; font-weight:bold;">TÜM BULGULARI BİRLEŞTİR VE RAPORU OLUŞTUR</button>
+        <div id="instruction-display" style="background:#1e293b; padding:15px; border-radius:5px; margin-bottom:10px; border-left:4px solid #f59e0b;">Lütfen sol taraftan bir yöntem seçin.</div>
+        <textarea id="note-area" placeholder="Analiz sonucunuzu buraya yazın..."></textarea>
+        <button onclick="saveNote()" style="width:100%; background:#3b82f6; color:white; padding:10px; border:none; cursor:pointer; margin-top:5px;">BULGUYU KAYDET VE SIRADAKİNE GEÇ</button>
+        <button class="btn-report" onclick="generateFinalReport()">RAPORU RESMİ FORMATTA OLUŞTUR</button>
         <div id="final-report-area"></div>
     </div>
 </div>
 
 <script>
     let currentIdx = 0;
-    const notes = Array(8).fill("İnceleme yapıldı, bulguya rastlanmadı.");
+    // Boş rapor tutacak bir dizi
+    const notes = Array(8).fill(""); 
     const methods = [
         { name: "1. Maske Soyma (Clipping)", info: "PS: Alt+Ctrl+G / AI: Alt+Ctrl+7. Maskeyi kaldırıp altındaki gizli görselleri kontrol et." },
-        { name: "2. Kapalı Katmanları Açma", info: "F7 tuşu. Katmanlar panelindeki göz (👁️) simgelerini tek tek açarak eski tasarım izlerini ara." },
+        { name: "2. Kapalı Katmanları Açma", info: "F7 tuşu. Katmanlar panelindeki göz (👁️) simgelerini açarak eski tasarım izlerini ara." },
         { name: "3. Düğüm Noktası (Path)", info: "A tuşu (Direct Selection). Düğüm noktalarının el yapımı mı yoksa otomatik vektörizasyon mu olduğunu incele." },
         { name: "4. Renk Kodu Ölçme", info: "I tuşu (Damlalık). Rengin #HEX kodunu alıp marka standartlarıyla karşılaştır." },
         { name: "5. Izgara (Grid) Açma", info: "Ctrl + ' veya \". Tasarımın hizalama ve oran-orantısını ızgara üzerinde incele." },
@@ -55,28 +57,28 @@
 
     function saveNote() {
         notes[currentIdx] = document.getElementById('note-area').value;
-        alert("Bulgu kaydedildi.");
+        alert("Bulgu kaydedildi. Sıradaki yönteme geçebilirsiniz.");
     }
 
     function generateFinalReport() {
         let body = "";
         methods.forEach((m, i) => {
-            body += `${i+1}. ${m.name}:\n   ${notes[i]}\n\n`;
+            body += `${i+1}. ${m.name}:\n   ${notes[i] || "Bu yönteme ilişkin herhangi bir bulgu saptanmamıştır."}\n\n`;
         });
 
-        const fullReport = `T.C. BİLİRKİŞİ RAPORU
---------------------------------------------------
+        const fullReport = `T.C. ADLİ YARGI
+BİLİRKİŞİ İNCELEME RAPORU
+
 Tarih: ${new Date().toLocaleDateString('tr-TR')}
-Konu: Fikri ve Sınai Haklar - Grafik/Tasarım İhlali Tespiti
+Konu: Fikri ve Sınai Haklar - Grafik/Tasarım İhlali Analizi
 
 TEKNİK ANALİZ BULGULARI:
 ${body}
 
 SONUÇ VE KANAAT:
-Yukarıda maddeler halinde belirtilen 8 aşamalı teknik inceleme protokolü uygulanmıştır. 
-Elde edilen bulgular ışığında, dosya konusu tasarımın teknik yapısı, 
-katman hiyerarşisi ve geometrik örtüşme analizi neticesinde; 
-iddia edilen tasarımın özgünlük/kopyacılık durumu hakkında teknik kanaat oluşmuştur.
+Söz konusu tasarımlar üzerinde, grafik sanatları standartları ve 5846 sayılı Fikir ve Sanat Eserleri Kanunu kapsamında yapılan teknik incelemeler neticesinde; 
+belirtilen teknik bulgular ışığında, eserler arası tasarım bağımlılığına ilişkin teknik gözlemler yukarıda sunulmuştur. 
+Konu hakkındaki nihai hukuki takdir ve karar, Yüce Mahkemenizindir.
 
 BİLİRKİŞİ İMZA/KAŞE`;
 
