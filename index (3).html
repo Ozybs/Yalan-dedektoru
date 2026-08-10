@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Polygraph - Gelişmiş Yapay Zeka Yalan Dedektörü</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.7);
+            --border-color: rgba(48, 54, 61, 0.8);
+            --accent-color: #58a6ff;
+            --text-color: #c9d1d9;
+            --danger-color: #f85149;
+            --success-color: #3fb950;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .header-tag {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #ffffff;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .question-box {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            color: #ffffff;
+            margin-bottom: 25px;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
+
+        button {
+            background-color: #238636;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
+        }
+
+        button:hover {
+            background-color: #2ea043;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            background-color: #30363d;
+            cursor: not-allowed;
+            box-shadow: none;
+            color: #8b949e;
+        }
+
+        .analysis-steps {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--accent-color);
+            min-height: 24px;
+            font-style: italic;
+        }
+
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            text-align: left;
+            border: 1px solid transparent;
+        }
+
+        .result-box.yalan {
+            background: rgba(248, 81, 73, 0.1);
+            border-color: rgba(248, 81, 73, 0.4);
+        }
+
+        .result-box.dogru {
+            background: rgba(63, 185, 80, 0.1);
+            border-color: rgba(63, 185, 80, 0.4);
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-box.yalan .result-title { color: var(--danger-color); }
+        .result-box.dogru .result-title { color: var(--success-color); }
+
+        .result-desc {
+            font-size: 14px;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .footer-info {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #8b949e;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-tag">Neural Polygraph v4.2</div>
+        <h1>Yapay Zeka Davranışsal Analiz Sistemi</h1>
+        
+        <div class="question-box" id="soru-kutusu">
+            Analiz başlatmak için aşağıdaki butona tıklayın ve hedef kişiye soruyu yöneltin.
+        </div>
+
+        <button id="analiz-btn" onclick="analizBaslat()">Analizi Başlat</button>
+        
+        <div class="analysis-steps" id="adimlar"></div>
+
+        <div class="result-box" id="sonuc-kutusu">
+            <div class="result-title">
+                <span id="karar-baslik"></span>
+                <span id="oran-yuzde" style="font-size: 14px; font-weight: normal;"></span>
+            </div>
+            <div class="result-desc" id="karar-aciklama"></div>
+        </div>
+
+        <div class="footer-info">SECURE AI ENGINE • BIOMETRIC VOICE & MICRO-EXPRESSION TRACKER</div>
+    </div>
+
+    <script>
+        const sorular = [
+            "Duşta şarkı söylerken yakalandığın en saçma an hangisi?",
+            "Gizli gizli en çok izlediğin veya dinlediğin o suçlu zevk nedir?",
+            "Gece yarısı tek başına evde korku filmi izledikten sonra evdeki her sesten korktun mu?",
+            "Daha önce hiç toplum içinde osurup biri mi yaptı diye masum masum etrafa baktın mı?",
+            "Yemeğin tuzu az olunca garsona ellerinize sağlık çok güzel deyip içinden sövdün mü?",
+            "Asansörde tek başına kalınca aynada dans ettiğin oluyor mu?",
+            "Daha önce hiç internette kendi adını aratıp neler çıkmış diye baktın mı?",
+            "Sırf dışarı çıkmamak için evdeyim uyuyacağım diye yalan söyledin mi?",
+            "Birisi sana hediye verdiğinde hiç beğenmediğin halde harika bayıldım diye rol yaptın mı?",
+            "Toplu taşımada ayakta giderken insanlara istemeden çarpıp içinden aslında benim suçum değil dedin mi?",
+            "Daha önce hiç başkasının şifresini bilmeden tahmin ederek sosyal medya hesabına girmeyi denedin mi?",
+            "Gece yatakta telefonla oynarken yüzüne düşürdüğün oldu mu ve ağladın mı?",
+            "İzlediğin bir dizinin karakterine aşık olup hayali bir hayat kurdun mu?",
+            "Hiç aynaya bakıp ciddi ciddi ben aslında gizli bir ajanım diye hayal kurdun mu?",
+            "Otobüste veya trende yanındaki uyuyan kişinin omzuna kafanı koymayı düşündün mü?",
+            "Buzdolabını açıp içinde yiyecek bir şey yokken tekrar tekrar boş boş baktın mı?",
+            "Evde tek başına olduğunda kendinle yüksek sesle tartıştığın oldu mu?",
+            "Telefonunun şarjı yüzde 1 kaldığında o son saniyede mesajı göndereceğim diye ellerin titredi mi?",
+            "Daha önce hiç yabancı birinin fotoğrafını stalklarken yanlışlıkla beğenip dünyan karardı mı?",
+            "Sessiz bir ortamda aniden gülme krizine girip kendini tutamadığın oldu mu?",
+            "Arkadaş grubunun arkasından konuştuğu kişiye yüzüne gülüp tatlı tatlı konuştuğun oldu mu?",
+            "Bir arkadaşının sevgilisini hiç içten içe bu buna hiç olmamış diye eleştirdin mi?",
+            "Sana anlatılan bir sırrı sadece bir kişiye anlatıp bütün dünyaya yaydın mı?",
+            "Ortamda hiç anlamadığın bir konu hakkında sanki profesörüymüş gibi salladın mı?",
+            "Arkadaşının yeni saç kesimini hiç beğenmediğin halde çok yakışmış ya dedin mi?",
+            "Birinden borç alıp o para aklından tamamen çıkmış gibi davranarak ödemezlik yaptın mı?",
+            "Kalabalık bir ortamda esprine kimse gülmeyince kendi kendine gülüp durumu kurtarmaya çalıştın mı?",
+            "Tanımadığın biri sana sokakta merhabalaşmak için el salladığında sen de başkasına sallıyorsun gibi yapıp kaçtın mı?",
+            "Bir arkadaşının evine gittiğinde tuvaleti tıkatıp ortadan kaybolduğun oldu mu?",
+            "Arkadaş grubunda en tembel kişinin aslında kendin olduğunu biliyor musun?",
+            "Sosyal medyada eski sevgilinin yeni sevgilisini profilden profile geçerek stalkladın mı?",
+            "Bir doğum gününde hediye almayı unutup evdeki kullanılmamış başka bir hediyeyi paketleyip verdin mi?",
+            "Arkadaşının yaptığı iğrenç bir yemeği ellerine sağlık harika olmuş diyerek bitirdin mi?",
+            "Toplu fotoğraf çekilirken her zaman en iyi çıktığın açıyı yakalamak için milleti ezdiğin oldu mu?",
+            "Sana yazan birinden kaçmak için telefonu sessize almışım görmemişim yalanını söyledin mi?",
+            "Bir arkadaşının arkasından hiç çekilmiyor deyip yanına gelince sarıldığın oldu mu?",
+            "Yanlışlıkla birine çok uzun bir mesaj atıp okumasın diye kalbinin deli gibi attığı oldu mu?",
+            "Arkadaşlarınla iddiaya girip aslında kaybettiğin halde ben kazanmıştım ya diye ısrar ettin mi?",
+            "Birinin doğum gününü Facebook hatırlatmasa kesinlikle unutacak mıydın?",
+            "İnsanların yanında havalı görünmek için bilmediğin bir müzik grubunu çok severim ya diye övdün mü?",
+            "Sınavda arkandakine kopya verirken suçüstü yakalanıp sıfır aldın mı?",
+            "İş veya okul toplantısında kameran kapalıyken yatakta uzandığın veya yemek yediğin oldu mu?",
+            "Ödevimi evde unuttum yalanını okul hayatında en az 5 kez söyledin mi?",
+            "Patronun veya hocan saçma bir şey söylediğinde içinden gözlerini devirip dışarıdan onayladın mı?",
+            "Özgeçmişine aslında çok az bildiğin bir programı veya dili biliyormuş gibi yazdın mı?",
+            "Sunum yaparken ellerin titrediği için ellerini cebine saklayıp heyecanını gizlemeye çalıştın mı?",
+            "Toplantı veya ders sırasında hocanın patronun sorduğu soruyu duymayıp pardon internetim kesildi dedin mi?",
+            "Çalışırken arka planda çalan şarkıya kaptırıp işi gücü tamamen bıraktığın oldu mu?",
+            "Sabah uyanamayıp hastalandım diyerek işi veya okulu ektiğin oldu mu?",
+            "Bilgisayar ekranında açık kalan sekmeleri kapatacağım derken yanlışlıkla en utanç verici olanı millete gösterdin mi?",
+            "Kahve makinesinin önünde boş boş durup çalışıyor gibi göründüğün oldu mu?",
+            "Bir projeyi son geceye bırakıp sabaha kadar hallerim diyerek hayatının stresini yaşadın mı?",
+            "Sınavdan çıktıktan sonra çok zormuş ya deyip yüksek not aldığın oldu mu?",
+            "Patronuna veya hocana göndereceğin e-postayı yanlışlıkla arkadaşına attığın oldu mu?",
+            "Toplantıda uykun gelip kafanı masaya vurmamak için kendini çimdiklediğin oldu mu?",
+            "Bilgisayar kilitlendiğinde ekranı parmaklayıp düzeleceğini sandığın anlar oldu mu?",
+            "Zoom veya Teams görüşmesinde alt kısımda pijama giydiğin halde üstü gömlekli katıldın mı?",
+            "Fotokopi makinesiyle veya yazıcıyla kavga edip tekme attığın oldu mu?",
+            "Asansörde yalnız kalınca tuhaf sesler çıkarıp kendi kendine konuştuğun oldu mu?",
+            "İş yerinde en çok sevdiğin şeyin aslında yemek molası olduğunu itiraf eder misin?",
+            "Çocukken süper kahraman olduğuna ve bir gün uçacağına gerçekten inandın mı?",
+            "Marketten çaktırmadan bir şeker veya sakız aşırdığın oldu mu?",
+            "Evdeki süpürgeyi mikrofon yapıp odada konser verdiğin günler oldu mu?",
+            "Çocukken yatağın etrafındaki halının bir canavar olduğuna inanıp oraya basmadan zıpladın mı?",
+            "Gizli gizli ayna karşısında ödül alıyormuş gibi konuşma yaptın mı?",
+            "Büyüyünce zengin olup adımı sokaklara vereceğim hayali kurdun mu?",
+            "Gizli bir günlüğün olduysa ve birinin okumasından korkup onu deliler gibi sakladın mı?",
+            "Kardeşinin veya abinin eşyalarını ondan habersiz izinsiz giyip yakalandığın oldu mu?",
+            "Yerde para bulduğunda kesin sahibi aramıyordur deyip direkt cebe attın mı?",
+            "Saklambaç oynarken eve gidip yemek yiyip geri döndüğün oldu mu?",
+            "Evdeki süs eşyasını kırıp kendi kendine düştü valla dedin mi?",
+            "Karıncanın üstüne yanlışlıkla basıp 3 gün yas tuttuğun oldu mu?",
+            "Çizgi filmlerdeki karakterlerin gerçek hayatta bir yerde yaşadığına inandın mı?",
+            "Gece yatmadan önce dolabın kapağını açık bırakırsan canavar çıkacağından korktun mu?",
+            "Çocukken sebze yerken onları gizlice peçeteye sarıp çöpe attığın oldu mu?",
+            "Bir ağaca çıkıp oradan inemeyip ağlayarak yardım istedin mi?",
+            "Sakız yuttuğunda midende bir ağaç çıkacağına inandın mı?",
+            "Evdeki bütün parfümleri karıştırıp zehirli bir iksir yaptığın oldu mu?",
+            "Arabaların öptüğü yanaklarını hemen gizlice sildiğin oldu mu?",
+            "Görünmezlik gücün olsaydı ilk yapacağın şey banka soygunu mu olurdu?",
+            "Yanlışlıkla telefonunu suya düşürüp pirinçe koyarım kesin düzelir dedin mi?",
+            "Gözlerini kapatıp hızlıca dönsen 3 saniye sonra nereye düşeceğini tahmin edebilir misin?",
+            "Bir gün uzaylılar dünyayı ele geçirse onlara rehberlik edebilir misin?",
+            "Hayatın boyunca sadece tek bir yemek yiyecek olsan o kesinlikle mantı olur muydu?",
+            "Sabaha kadar uyumayıp telefonla bakındıktan sonra sabah niye uykum var diye şikayet ettin mi?",
+            "Aynadaki yansımanın seninle dalga geçtiğini düşündüğün anlar oldu mu?",
+            "İnternet kesildiğinde modemle göz teması kurup lütfen çalış diye yalvardın mı?",
+            "Bir süper gücün olsaydı bu kesinlikle yemek yiyince kilo almamak olur muydu?",
+            "Yastığın her iki tarafının da sıcak olması seni hayattan soğutuyor mu?",
+            "Çorabın tekini evde kaybetip ucuza aldığın için bulamamaya kahroldun mu?",
+            "Süpermarket arabalarının tekerleğinin hep tek bir tarafa çekmesi seni sinir ediyor mu?",
+            "Otobüste cam kenarına oturup dramatik müzik açarak dışarıyı izleyip klip çektiğin oldu mu?",
+            "Sürekli şanslı olduğunu söyleyip hep en kötü kurada sona kalan sen mi oluyorsun?",
+            "Evden tam çıkacakken ütü açık mı kaldı ocak açık mı paniğiyle geri döndüğün oldu mu?",
+            "Gece merdivenlerden çıkarken arkadan bir şey koşarak gelecek korkusuyla koştuğun oldu mu?",
+            "Bir yabancının arkasından gidip onunla aynı yöne sapınca yanlış anlamasın diye hızla yön değiştirdin mi?",
+            "Evde tek başına korku filmi izlerken kapı çalınca altını ıslatacak gibi oldun mu?",
+            "Kulaklığı takıp dışarı çıktığında çalan şarkıyla yürüyüşünün havalılaştığını sandın mı?",
+            "Hayatının bir film olduğunu ve birilerinin seni izlediğini düşündüğün anlar oldu mu?",
+            "Bu yalan dedektörü testi sence tamamen doğru sonuçlar veriyor mu?"
+        ];
+
+        const yalanGerekceleri = [
+            "Ses frekanslarında ani mikro-titreşimler saptandı.",
+            "Bilişsel yük artışı, hafızadan kurgusal bilgi çağrıldığını gösteriyor.",
+            "Pupilometrik (göz bebeği) reaksiyon eşik değerin üzerine çıktı.",
+            "Cevap verme süresindeki gecikme, ifadenin taslak olduğunu kanıtlıyor.",
+            "Nöral ağlar, bu ifadenin istatistiksel olarak %89 oranında manipülasyon içerdiğini doğruluyor."
+        ];
+
+        const dogruGerekceleri = [
+            "Biyometrik veriler tamamen stabil ve tutarlı seyrediyor.",
+            "Stres hormonu salınımı gözlemlenmedi, ifade tamamen samimi.",
+            "Ses dalgası spektrumu gerçek hatıralarla birebir eşleşiyor.",
+            "Prefrontal korteks aktivitesi, kişinin gerçekten bu anı yaşadığını onaylıyor.",
+            "Algoritmik analiz, ifadenin doğruluk katsayısını yüksek buldu."
+        ];
+
+        function analizBaslat() {
+            const btn = document.getElementById("analiz-btn");
+            const soruKutusu = document.getElementById("soru-kutusu");
+            const adimlar = document.getElementById("adimlar");
+            const sonucKutusu = document.getElementById("sonuc-kutusu");
+
+            btn.disabled = true;
+            sonucKutusu.style.display = "none";
+
+            // Rastgele soru seç
+            const rastgeleSoru = sorular[Math.floor(Math.random() * sorular.length)];
+            soruKutusu.innerText = rastgeleSoru;
+
+            // Yapay zeka simülasyon adımları
+            const adimlarListesi = [
+                "Ses tonu ve mikro-frekanslar taranıyor...",
+                "Bilişsel stres katsayısı hesaplanıyor...",
+                "Yapay zeka sinir ağları verileri işliyor...",
+                "Nihai davranışsal analiz raporu oluşturuluyor..."
+            ];
+
+            let index = 0;
+            adimlar.innerText = adimlarListesi[index];
+
+            const interval = setInterval(() => {
+                index++;
+                if (index < adimlarListesi.length) {
+                    adimlar.innerText = adimlarListesi[index];
+                } else {
+                    clearInterval(interval);
+                    adimlar.innerText = "";
+                    sonucuGoster();
+                    btn.disabled = false;
+                }
+            }, 800);
+        }
+
+        function sonucuGoster() {
+            const sonucKutusu = document.getElementById("sonuc-kutusu");
+            const kararBaslik = document.getElementById("karar-baslik");
+            const oranYuzde = document.getElementById("oran-yuzde");
+            const kararAciklama = document.getElementById("karar-aciklama");
+
+            const isYalan = Math.random() > 0.5;
+            const yuzde = Math.floor(Math.random() * 30) + 70; // %70 ile %99 arası profesyonel oran
+
+            sonucKutusu.style.display = "block";
+
+            if (isYalan) {
+                sonucKutusu.className = "result-box yalan";
+                kararBaslik.innerHTML = "🔴 TESPİT EDİLDİ: YALAN";
+                oranYuzde.innerHTML = `Güvenilirlik Oranı: %${yuzde}`;
+                const rastgeleGerekce = yalanGerekceleri[Math.floor(Math.random() * yalanGerekceleri.length)];
+                kararAciklama.innerHTML = `<strong>Yapay Zeka Notu:</strong> ${rastgeleGerekce}`;
+            } else {
+                sonucKutusu.className = "result-box dogru";
+                kararBaslik.innerHTML = "🟢 TESPİT EDİLDİ: DOĞRU";
+                oranYuzde.innerHTML = `Güvenilirlik Oranı: %${yuzde}`;
+                const rastgeleGerekce = dogruGerekceleri[Math.floor(Math.random() * dogruGerekceleri.length)];
+                kararAciklama.innerHTML = `<strong>Yapay Zeka Notu:</strong> ${rastgeleGerekce}`;
+            }
+        }
+    </script>
+</body>
+</html>
