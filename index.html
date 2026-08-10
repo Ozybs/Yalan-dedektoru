@@ -2,18 +2,19 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ADLİ BİLİRKİŞİ İNCELEME VE MÜTALAA MOTORU (v4.0)</title>
+    <title>ADLİ BİLİRKİŞİ İNCELEME VE MÜTALAA MOTORU (v5.0 - NİHAİ)</title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
-        .container { max-width: 950px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; font-size: 1.4rem; }
-        .section-title { background: #2c3e50; color: white; padding: 8px 12px; margin-top: 30px; font-family: sans-serif; font-size: 0.95rem; }
-        .step { margin-bottom: 20px; border-bottom: 1px dashed #ccc; padding-bottom: 15px; }
-        textarea { width: 100%; height: 65px; margin-top: 5px; font-family: sans-serif; padding: 8px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; font-size: 1.4rem; font-family: sans-serif; }
+        .section-title { background: #2c3e50; color: white; padding: 10px 15px; margin-top: 30px; font-family: sans-serif; font-size: 1rem; font-weight: bold; }
+        .step { margin-bottom: 25px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 6px; background: #f8fafc; }
+        .guide-box { background: #e2e8f0; padding: 8px 12px; font-size: 0.85rem; font-family: sans-serif; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; }
+        textarea { width: 100%; height: 60px; margin-top: 5px; font-family: sans-serif; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; }
         .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .upload-box { border: 2px dashed #94a3b8; padding: 15px; text-align: center; background: #f8fafc; border-radius: 6px; }
+        .upload-box { border: 2px dashed #94a3b8; padding: 15px; text-align: center; background: #f8fafc; border-radius: 6px; font-family: sans-serif; }
         canvas { max-width: 100%; height: auto; margin-top: 10px; border: 1px solid #cbd5e1; display: none; }
-        button { background: #2c3e50; color: white; border: none; padding: 15px 30px; cursor: pointer; width: 100%; font-size: 1.1rem; font-family: sans-serif; font-weight: bold; margin-top: 20px; }
+        button { background: #2c3e50; color: white; border: none; padding: 15px 30px; cursor: pointer; width: 100%; font-size: 1.1rem; font-family: sans-serif; font-weight: bold; margin-top: 20px; border-radius: 4px; }
         button:hover { background: #1a252f; }
         #output { margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; padding: 25px; border: 1px solid #ddd; font-size: 1rem; }
     </style>
@@ -24,16 +25,16 @@
     <h1>ADLİ BİLİRKİŞİ TEKNİK MÜTALAA VE KIYASLAMA SİSTEMİ</h1>
     
     <div class="section-title">1. OTOMATİK PİKSEL ÇAKIŞTIRMA VE FARK (DIFFERENCE) ANALİZİ</div>
-    <p style="font-size: 0.85rem; font-style: italic; color: #555;">İncelemeye konu iki görseli (A ve B) yükleyin. Sistem otomatik olarak piksel matrislerini üst üste bindirip benzerlik oranını hesaplayacaktır.</p>
+    <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">İncelemeye konu iki görseli (A ve B) yükleyin. Sistem otomatik olarak piksel matrislerini üst üste bindirip benzerlik oranını hesaplayacaktır.</p>
     
     <div class="upload-grid">
         <div class="upload-box">
-            <label><b>Orijinal / Dava Konusu Eser (A)</b></label><br>
+            <label><b>Orijinal / Dava Konusu Eser (A)</b></label><br><br>
             <input type="file" id="img1Input" accept="image/*" onchange="loadImages()">
             <canvas id="canvas1"></canvas>
         </div>
         <div class="upload-box">
-            <label><b>İhlal Eden / Şüpheli Eser (B)</b></label><br>
+            <label><b>İhlal Eden / Şüpheli Eser (B)</b></label><br><br>
             <input type="file" id="img2Input" accept="image/*" onchange="loadImages()">
             <canvas id="canvas2"></canvas>
         </div>
@@ -44,10 +45,10 @@
         <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif;"></div>
     </div>
 
-    <div class="section-title" style="margin-top: 40px;">2. TEKNİK VE PROGRAM İÇİ UZMAN İNCELEME KRİTERLERİ</div>
-    <p style="font-size: 0.85rem; color: #555;">Tasarım programında (PS/AI) yaptığınız kontrolleri veya harici analiz verilerini (Font, CMYK/RGB) ilgili alanlara girin. Boş bırakılan alanlar rapora yansıtılmaz.</p>
+    <div class="section-title" style="margin-top: 40px;">2. PROGRAM İÇİ UZMAN İNCELEME VE REHBERLİ KONTROL KRİTERLERİ</div>
+    <p style="font-size: 0.85rem; color: #555; font-family: sans-serif;">Her bir adımın altında kısayollar ve uygulama rehberi yer almaktadır. İncelediğiniz adımlara bulgunuzu yazın, boş bırakılanlar rapora yansıtılmaz.</p>
     
-    <div id="form-area"></div>
+    <div id="form-area" style="margin-top: 20px;"></div>
     
     <button onclick="generateReport()">RESMİ BİLİRKİŞİ RAPORUNU OLUŞTUR VE KOPYALA</button>
     <div id="output"></div>
@@ -58,20 +59,58 @@
     let computedDifferenceRate = "";
 
     const steps = [
-        { title: "Tipografi ve Font Analizi (Harici/Program Verisi)", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
-        { title: "Renk Uzayı ve CMYK/RGB Değerleri", template: "renk profilleri ve dijital/baskı renk kodları (CMYK/RGB/HEX) karşılaştırılmış olup, {input} saptanmıştır." },
-        { title: "Maske (Clipping) Hiyerarşisi", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
-        { title: "Katman Yapısı ve Gizli İzler", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
-        { title: "Vektörel Düğüm (Path / Anchor Point) Analizi", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiş olup, {input} kanaatine varılmıştır." },
-        { title: "Opaklık ve Harmanlama (Blending Modes) Kontrolü", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiş, {input} görülmüştür." },
-        { title: "Izgara (Grid) ve Geometrik Hizalama", template: "geometrik hizalama kılavuzları üzerinde yapılan karşılaştırmalı incelemede {input} tespit edilmiştir." },
-        { title: "Örtüşme (Difference) Modu ve Piksel Matrisi", template: "iki görselin piksel matrisleri çakıştırıldığında {input} matematiksel olarak doğrulanmıştır." }
+        { 
+            title: "1. Tipografi ve Font Analizi (Harici/Program Verisi)", 
+            guide: "Ne İş Yapar: Metinlerin font ailesini ve tipografik uyumunu inceler. | Yol: Harici font tarama siteleri veya program içi karakter paneli.",
+            template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." 
+        },
+        { 
+            title: "2. Renk Uzayı ve CMYK/RGB Değerleri", 
+            guide: "Ne İş Yapar: Renk kodlarının doğruluğunu ve baskı profillerini inceler. | Yol: Damlalık aracı (I) ve Color Picker renk kimliği kontrolü.",
+            template: "renk profilleri ve dijital/baskı renk kodları (CMYK/RGB/HEX) karşılaştırılmış olup, {input} saptanmıştır." 
+        },
+        { 
+            title: "3. Maske (Clipping) Hiyerarşisi", 
+            guide: "Ne İş Yapar: Maskenin arkasına gizlenmiş orijinal katmanları/logoları açığa çıkarır. | Kısayol: PS: Alt+Ctrl+G | AI: Alt+Ctrl+7 (Nesne -> Kırpma Maskesi -> Serbest Bırak)",
+            template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." 
+        },
+        { 
+            title: "4. Katman Yapısı ve Gizli İzler", 
+            guide: "Ne İş Yapar: Tasarımcının silmeyip gözünü kapattığı eski katmanları görünür yapar. | Kısayol: F7 (Katmanlar paneli) -> Göz (👁️) simgelerine tıklayarak aç.",
+            template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." 
+        },
+        { 
+            title: "5. Vektörel Düğüm (Path / Anchor Point) Analizi", 
+            guide: "Ne İş Yapar: Vektörel çizimi oluşturan bağlantı noktalarını ve kavis açılarını açığa çıkararak otomatik vektör (Image Trace) hilesini yakalar. | Kısayol: A tuşu (Direct Selection Tool)",
+            template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiş olup, {input} kanaatine varılmıştır." 
+        },
+        { 
+            title: "6. Opaklık ve Harmanlama (Blending Modes) Kontrolü", 
+            guide: "Ne İş Yapar: Katmanların saydamlık ve karışım modlarını inceler. | Yol: Katmanlar panelinden harmanlama modunu değiştirme veya şeffaflık kısayolları.",
+            template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiş, {input} görülmüştür." 
+        },
+        { 
+            title: "7. Izgara (Grid) ve Geometrik Hizalama", 
+            guide: "Ne İş Yapar: Sayfanın arkasına milimetrik kareli kılavuz sererek oran-orantı ve hizalama hatalarını gösterir. | Kısayol: Ctrl + ' (PS) veya Ctrl + \" (AI)",
+            template: "geometrik hizalama kılavuzları üzerinde yapılan karşılaştırmalı incelemede {input} tespit edilmiştir." 
+        },
+        { 
+            title: "8. Örtüşme (Difference) Modu ve Piksel Matrisi", 
+            guide: "Ne İş Yapar: İki görseli üst üste koyduğunda birebir aynı olan yerleri siyah yapar, kopyalamayı kanıtlar. | Kısayol / Yol: Katmanlar -> Fark (Difference) moduna alma veya yukarıdaki otomatik tarayıcı analizi.",
+            template: "iki görselin piksel matrisleri çakıştırıldığında {input} matematiksel olarak doğrulanmıştır." 
+        }
     ];
 
     const formArea = document.getElementById('form-area');
     steps.forEach((s, i) => {
-        let extraPlaceholder = (i === 7) ? "Otomatik fark analizi yukarıdan eklenecektir..." : "Bu adımı incelediyseniz bulgunuzu yazın, incelemediyseniz boş bırakın...";
-        formArea.innerHTML += `<div class="step"><b>${i+1}. ${s.title}</b><br><textarea id="input_${i}" placeholder="${extraPlaceholder}"></textarea></div>`;
+        let extraPlaceholder = (i === 7) ? "Otomatik fark analizi yukarıdan eklenecektir veya buraya ek not yazabilirsiniz..." : "Bu adımı incelediyseniz bulgunuzu yazın, incelemediyseniz boş bırakın...";
+        formArea.innerHTML += `
+            <div class="step">
+                <b>${s.title}</b>
+                <div class="guide-box">${s.guide}</div>
+                <textarea id="input_${i}" placeholder="${extraPlaceholder}"></textarea>
+            </div>
+        `;
     });
 
     function loadImages() {
@@ -143,7 +182,7 @@
         computedDifferenceRate = `piksel matrisleri çakıştırıldığında görseller arasında %${similarity} oranında geometrik ve sayısal örtüşme/benzerlik olduğu`;
         
         document.getElementById('input_7').value = computedDifferenceRate;
-        document.getElementById('diffResult',).innerText = `Analiz Tamamlandı: %${similarity} Benzerlik / Örtüşme Saptandı. (8. Adıma işlendi)`;
+        document.getElementById('diffResult').innerText = `Analiz Tamamlandı: %${similarity} Benzerlik / Örtüşme Saptandı. (8. Adıma işlendi)`;
     }
 
     function generateReport() {
@@ -155,7 +194,9 @@
             let val = document.getElementById('input_' + i).value.trim();
             if (val !== "") {
                 activeStepCount++;
-                report += `${activeStepCount}. ${s.title.toUpperCase()}:\n${s.template.replace("{input}", val)}\n\n`;
+                // Temiz başlık adı için numara ve tireyi ayıkla
+                let cleanTitle = s.title.replace(/^[0-9]+\.\s*/, '');
+                report += `${activeStepCount}. ${cleanTitle.toUpperCase()}:\n${s.template.replace("{input}", val)}\n\n`;
             }
         });
 
