@@ -1,1 +1,0 @@
-# Yalan-dedektoru
