@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Biometric Lie Detector v7.0 - Expanded</title>
+    <title>Quantum Biometric Lie Detector v8.0 - 100+ Questions</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; }
         body { background-color: #020205; color: #00ffcc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; padding: 20px; position: relative; }
@@ -44,7 +44,7 @@
 
     <div class="container">
         <h1>BIOMETRIC LIE DETECTOR</h1>
-        <div class="subtitle">EXPANDED AI SYSTEM // v7.0</div>
+        <div class="subtitle">MEGA AI SYSTEM // v8.0 (100+ QUESTIONS)</div>
         
         <div class="camera-box">
             <div class="scanner-line"></div>
@@ -102,12 +102,12 @@
             .then(stream => { document.getElementById('webcam').srcObject = stream; })
             .catch(err => { console.log("Kamera izni yok"); });
 
-        // Genişletilmiş Dev Soru Havuzu
+        // 100+ Adet Özenle Hazırlanmış Dev Soru Havuzu
         const questions = [
             "Bugün kafanı kurcalayan ve kimseye söylemediğin bir şey var mı?",
             "Hayatında aldığın en büyük karardan pişmanlık duydun mu?",
             "En son ne zaman küçük de olsa beyaz bir yalan söyledin?",
-            "Şu an etrafındakilere karşı tamamen dürüst mütsün?",
+            "Şu an etrafındakilere karşı tamamen dürüst müsün?",
             "Gizli yeteneklerin veya kimseden sakladığın bir hobin var mı?",
             "Gelecekten korkuyor musun yoksa heyecanlı mısın?",
             "Sosyal medyada gördüğün hayatın ne kadarı sence gerçek?",
@@ -115,7 +115,95 @@
             "Bugün tekrar şansın olsaydı hangi kararını tamamen değiştirirdin?",
             "En son ne zaman birine karşı yapmacık bir gülümseme taktın?",
             "Yapay zekanın insanlığı ele geçireceğine gerçekten inanıyor musun?",
-            "Şu an bu testi çözerken gergin hissediyor musun?"
+            "Şu an bu testi çözerken gergin hissediyor musun?",
+            "Hayatının bir film olmasını ister miydin, yoksa çok mütevazı mı?",
+            "Bugün birine haksızlık yaptığını düşündün mü?",
+            "En son ne zaman ayna karşısına geçip kendi kendine konuştuğunu fark ettin?",
+            "Şu an odanda yalnız olmasaydın yine aynı rahatlıkta konuşur muydun?",
+            "Gizli bir süper gücün olsaydı görünmezlik mi yoksa zihin okumak mı isterdin?",
+            "İnsanların arkasından konuştuğun için pişmanlık duyduğun oldu mu?",
+            "Geçmişe gidip hayatındaki tek bir hatayı silme şansın olsa neyi silerdin?",
+            "Şu an hayatta en çok neyi başarmak istiyorsun?",
+            "En yakın arkadaşından bile sakladığın büyük bir sırrın var mı?",
+            "Bugün yediğin en saçma şey neydi?",
+            "Telefonuna şifre koyduracak kadar gizli bir şey saklıyor musun?",
+            "Hayatında hiç başkasının suçunu üstlendin mi?",
+            "Geceleri yatmadan önce en çok neyi düşünürsün?",
+            "Bir yalanı sürdürmek için hiç büyük bir senaryo uydurdun mu?",
+            "Şu anki mesleğin veya eğitimin hayallerindeki şey mi?",
+            "Hayatında seni en çok korkutan şey nedir?",
+            "Birisiyle kavga ederken içinden kurduğun cümleleri sesli söyler misin?",
+            "En son ne zaman, neden ağladın?",
+            "Şu anki ruh halini tek kelimeyle özetler misin?",
+            "Kendinde en sevmediğin fiziksel veya karakter özellikleri neler?",
+            "Hayatında yediğin en büyük kazık neydi?",
+            "Birine karşı büyük bir haksızlık yapıp özür dileyemediğin oldu mu?",
+            "İnsanların seni yanlış anlamasından korkar mısın?",
+            "Yalnız kalmayı sever misin yoksa sürekli kalabalık mı ararsın?",
+            "Hayatında hiç 'ben asla yapmam' dediğin bir şeyi yaptın mı?",
+            "Şu an aklından geçen ilk sayı nedir?",
+            "Birine aşık olduğunda aptallaştığını düşünür müsün?",
+            "En son ne zaman utancından yerin dibine girdin?",
+            "Paranın satın alamayacağı en değerli şey nedir?",
+            "Şu anki hayatından %100 memnun musun?",
+            "Bir adaya düşsen yanına alacağın 3 şey ne olurdu?",
+            "İnsanlarda ilk dikkat ettiğin şey nedir?",
+            "Gelecekteki kendine bir cümle yazacak olsan ne yazardın?",
+            "Bugün içinde tuttuğun ve patlamak üzere olduğun bir öfke var mı?",
+            "Hayatın boyunca yaptığın en utanç verici şaka neydi?",
+            "Birinin kalbini kasten kırdığın oldu mu?",
+            "Şu an tamamen dürüst olsaydın, ilk itirafın ne olurdu?",
+            "Yalan söylemekte başarılı olduğunu düşünüyor musun?",
+            "Gözlerini kapatınca hayalini kurduğun o dünya nasıl bir yer?",
+            "Rüyalarında en çok neyi görürsün?",
+            "Bir sırrı 24 saatten fazla tutabildiğin hiç oldu mu?",
+            "Hayatındaki en büyük ilham kaynağın kim?",
+            "Kendi kararlarını mı alırsın yoksa başkalarından etkilenir misin?",
+            "Bugün kendini mutlu hissetmek için ne yaptın?",
+            "En son ne zaman çok korktun?",
+            "Hakkında bilinen en büyük yanlış anlaşılma nedir?",
+            "Birine duyduğun öfkeyi hala kalbinde taşıyor musun?",
+            "Hayatında hiç 'iyi ki yapmışım' dediğin ama yasak olan bir şey oldu mu?",
+            "Kendi kendine yalan söylediğin anlar olur mu?",
+            "Gelecekteki seni nerede hayal ediyorsun?",
+            "Şu an oturduğun yerden kalkıp gitmek istediğin bir an oldu mu?",
+            "Yalnızlığın en güzel yanı sence nedir?",
+            "İnsanlara güvenmekte zorlanır mısın?",
+            "Hayatında hiç büyük bir riske atıldın mı?",
+            "En son ne zaman katıla katıla güldün?",
+            "Bugün yapmayı unuttuğun önemli bir şey var mı?",
+            "Şu an etrafında seni eleştiren sesler duyuyor musun?",
+            "Hayatın bir senaryo olsaydı, şu an kaçıncı bölümde olurdun?",
+            "Birine karşı duyduğun sevgiyi göstermekte zorlanır mısın?",
+            "En son ne zaman çok öfkelendin?",
+            "Kendini yalnız hissediyor musun?",
+            "Hayatında hiç büyük bir fırsatı kaçırdığın için üzüldün mü?",
+            "Şu anki odan senin ruh halini yansıtıyor mu?",
+            "İçindeki çocuk hala yaşıyor mu?",
+            "Birine karşı büyük bir hayal kırıklığı yaşadın mı?",
+            "Yarın her şeyi bırakıp başka bir ülkeye gitme şansın olsa gider misin?",
+            "Hayatındaki en huzurlu anı hatırlıyor musun?",
+            "Kendi kararlarından dolayı hiç pişman oldun mu?",
+            "Bugün aynaya baktığında ne düşündün?",
+            "En son ne zaman birinin hayatını kolaylaştırdın?",
+            "Şu anki stres seviyen 1 üzerinden kaç?",
+            "Gelecekten umutlu musun?",
+            "İçindeki karanlık yönü kabul ediyor musun?",
+            "Hayatında hiç büyük bir sırrı ifşa ettin mi?",
+            "Birine verdiğin sözü tutamadığın oldu mu?",
+            "Şu an arkanda biri varmış gibi hissediyor musun?",
+            "Yalan söyleyen insanları hemen anlar mısın?",
+            "Hayatındaki en büyük şansın nedir?",
+            "Kendini olduğun gibi kabul ediyor musun?",
+            "Bugün seni en çok ne mutlu etti?",
+            "En son ne zaman çok yorulduğunu hissettin?",
+            "Şu an tamamen özgür olsaydın ilk ne yapardın?",
+            "İnsanların seni nasıl tanımasını istersin?",
+            "Hayatındaki en büyük dersi hangi olaydan aldın?",
+            "Birine duyduğun hayranlık zamanla nefrete dönüştü mü?",
+            "Şu an kalbinin atışını hissedebiliyor musun?",
+            "Yalan dedektörlerinin doğruluk payına inanır mısın?",
+            "Bu test bittikten sonra ne yapmayı planlıyorsun?"
         ];
 
         function nextQuestion() {
