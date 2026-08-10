@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ADLİ BİLİRKİŞİ İNCELEME VE MÜTALAA MOTORU (v6.0 - NİHAİ)</title>
+    <title>ADLİ BİLİRKİŞİ İNCELEME VE MÜTALAA MOTORU (v7.0)</title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
@@ -25,7 +25,7 @@
     <h1>ADLİ BİLİRKİŞİ TEKNİK MÜTALAA VE KIYASLAMA SİSTEMİ</h1>
     
     <div class="section-title">1. OTOMATİK PİKSEL ÇAKIŞTIRMA VE İNTERNET/LENS EMSAL ARAŞTIRMASI</div>
-    <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">Görselleri yükleyip piksel analizi yapın. Ayrıca Google Lens / Safari / TinEye üzerinden internet taraması yaparak daha önceki benzer işleri ve font eşleşmelerini kontrol edin.</p>
+    <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">Görselleri yükleyip piksel fark analizini çalıştırın. Ayrıca internette öncül araştırma için Google Lens / TinEye kısayollarını kullanın.</p>
     
     <div class="upload-grid">
         <div class="upload-box">
@@ -40,18 +40,14 @@
         </div>
     </div>
     
-    <div style="margin-top: 15px; text-align: center;">
-        <button onclick="runDifferenceAnalysis()" style="background: #2563eb; width: auto; padding: 10px 25px; font-size: 0.95rem;">DİFFERENCE (FARK) ANALİZİNİ ÇALIŞTIR</button>
-        <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif;"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+        <button onclick="runDifferenceAnalysis()" style="background: #2563eb; margin-top:0; padding: 10px; font-size: 0.9rem;">PİKSEL FARK (DIFFERENCE) ANALİZİNİ ÇALIŞTIR</button>
+        <button onclick="openWebSearchTools()" style="background: #0d9488; margin-top:0; padding: 10px; font-size: 0.9rem;">GOOGLE LENS / TINEYE İLE İNTERNETTE ARA</button>
     </div>
-
-    <div style="margin-top: 15px;">
-        <label style="font-family: sans-serif; font-size: 0.9rem; font-weight: bold;">Google Lens / İnternet Emsal ve Font Eşleşme Notları:</label>
-        <textarea id="internetCheckInput" placeholder="Örn: Google Lens ile yapılan taramada eserin daha önce X tarihinde internette yayınlandığı ve font eşleşmesinin aynı olduğu tespit edilmiştir..." style="height: 50px;"></textarea>
-    </div>
+    <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif; text-align: center;"></div>
 
     <div class="section-title" style="margin-top: 40px;">2. PROGRAM İÇİ UZMAN İNCELEME VE REHBERLİ KONTROL KRİTERLERİ</div>
-    <p style="font-size: 0.85rem; color: #555; font-family: sans-serif;">İncelediğiniz adımlara bulgunuzu yazın. Boş bırakılan adımlar rapora kesinlikle yansıtılmaz.</p>
+    <p style="font-size: 0.85rem; color: #555; font-family: sans-serif;">İncelediğiniz adımlara bulgunuzu yazın. Boş bırakılan adımlar resmî rapora kesinlikle yansıtılmaz.</p>
     
     <div id="form-area" style="margin-top: 20px;"></div>
     
@@ -66,7 +62,7 @@
     const steps = [
         { 
             title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", 
-            guide: "Ne İş Yapar: Görselin internet üzerindeki öncül örneklerini ve benzerlerini tarar. | Yol: Google Lens, Safari görsel arama veya TinEye üzerinden tarama.",
+            guide: "Ne İş Yapar: Eserin internet üzerindeki öncül örneklerini, benzerlerini ve font eşleşmelerini tarar. | Yol: Google Lens veya TinEye ile web tabanlı tarama.",
             template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." 
         },
         { 
@@ -114,7 +110,7 @@
     const formArea = document.getElementById('form-area');
     steps.forEach((s, i) => {
         let extraPlaceholder = "Bu adımı incelediyseniz bulgunuzu yazın, incelemediyseniz boş bırakın...";
-        if (i === 0) extraPlaceholder = "Google Lens / internet araması bulgularınızı buraya yazabilirsiniz...";
+        if (i === 0) extraPlaceholder = "Örn: Google Lens taramasında eserin daha önce X platformunda yer aldığı ve fontların birebir örtüştüğü görüldü...";
         if (i === 8) extraPlaceholder = "Otomatik fark analizi yukarıdan eklenecektir...";
         
         formArea.innerHTML += `
@@ -195,19 +191,19 @@
         computedDifferenceRate = `görseller arasında %${similarity} oranında sayısal ve geometrik örtüşme/benzerlik olduğu`;
         
         document.getElementById('input_8').value = computedDifferenceRate;
-        document.getElementById('diffResult').innerText = `Analiz Tamamlandı: %${similarity} Benzerlik Saptandı. (9. Adıma işlendi)`;
+        document.getElementById('diffResult').innerText = `Piksel Analizi Tamamlandı: %${similarity} Benzerlik Saptandı (9. Adıma işlendi).`;
+    }
+
+    function openWebSearchTools() {
+        window.open("https://lens.google.com", "_blank");
+        window.open("https://tineye.com", "_blank");
+        alert("Google Lens ve TinEye sekmeleri açıldı. Görsellerinizi bu sitelere sürükleyerek internet emsallerini ve font eşleşmelerini kontrol edebilir, bulgularınızı 1. adımdaki kutuya yazabilirsiniz.");
     }
 
     function generateReport() {
-        let internetExtra = document.getElementById('internetCheckInput').value.trim();
-        if(internetExtra !== "" && document.getElementById('input_0').value.trim() === "") {
-            document.getElementById('input_0').value = internetExtra;
-        }
-
         let report = `T.C. ANKARA NÖBETÇİ MAHKEMESİNE\n\nKONU: Fikri ve Sınai Haklar - Grafik Tasarım İhlali Mütalaası\n\nTEKNİK İNCELEME BULGULARI:\n\n`;
         
         let activeStepCount = 0;
-        let findingsSummary = [];
 
         steps.forEach((s, i) => {
             let val = document.getElementById('input_' + i).value.trim();
@@ -215,7 +211,6 @@
                 activeStepCount++;
                 let cleanTitle = s.title.replace(/^[0-9]+\.\s*/, '');
                 report += `${activeStepCount}. ${cleanTitle.toUpperCase()}:\n${s.template.replace("{input}", val)}\n\n`;
-                findingsSummary.push(cleanTitle);
             }
         });
 
@@ -224,11 +219,11 @@
             return;
         }
 
-        // Dinamik Sonuç ve Kanaat Paragrafı (Hakime yönelik durum açıklaması)
+        // Kusursuz ve Hakime Yönelik Durum Açıklaması İçeren Sonuç Paragrafı
         report += `SONUÇ VE KANAAT:\n` +
                   `Söz konusu eserler üzerinde 5846 sayılı Fikir ve Sanat Eserleri Kanunu ve uluslararası grafik standartları çerçevesinde toplam ${activeStepCount} farklı teknik ve adli parametre üzerinden inceleme gerçekleştirilmiştir. ` +
                   `Yukarıda detaylıca arz edilen bulgular doğrultusunda; incelenen unsurlar arasında tespit edilen benzerliklerin mahiyeti, dijital örtüşme oranları ve tipografik yapılar yargılamanın seyrine ışık tutacak niteliktedir. ` +
-                  `Raporda sunulan tüm bu teknik ve sayısal veriler, tasarımların özgünlük durumu ile olası bir iktibas/ihlal durumunu ortaya koymak amacıyla açıklanmış olup; eserler arasındaki benzerliğin hukuki anlamda bir hak ihlali (intihal) teşkil edip etmediği hususunda nihai hukuki takdir ve karar, Yüce Mahkemenize aittir.\n\n` +
+                  `Raporda sunulan tüm bu teknik ve sayısal veriler, tasarımların özgünlük durumu ile olası bir iktibas/ihlal durumunu ortaya koymak amacıyla açıklanmış olup; eserler arasındaki benzerliğin hukuki anlamda bir hak ihlali (intihal) teşkil edip etmediği hususunda nihai takdir ve karar, Yüce Mahkemenize aittir.\n\n` +
                   `Saygılarımla,\nGrafik Bilirkişisi`;
         
         document.getElementById('output').innerText = report;
