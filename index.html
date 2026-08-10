@@ -2,66 +2,72 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>GRAFİK BİLİRKİŞİ - ADLİ İNCELEME PANELİ</title>
+    <title>ADLİ BİLİRKİŞİ RAPOR GENERATOR</title>
     <style>
-        body { background: #0b0e14; color: #d1d5db; font-family: 'Segoe UI', Tahoma, sans-serif; padding: 20px; }
-        .dashboard { max-width: 1000px; margin: auto; display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
-        .panel { background: #1a1f29; padding: 20px; border-radius: 8px; border: 1px solid #374151; }
-        h2 { color: #3b82f6; font-size: 1.1rem; border-bottom: 1px solid #374151; padding-bottom: 10px; }
-        .btn-list button { display: block; width: 100%; text-align: left; margin-bottom: 8px; padding: 10px; background: #2d3748; border: none; color: white; cursor: pointer; border-radius: 4px; }
-        .btn-list button:hover { background: #4a5568; }
-        #logArea { width: 100%; height: 300px; background: #000; color: #00ff00; padding: 15px; font-family: monospace; overflow-y: scroll; border: 1px solid #3b82f6; }
-        .info-box { line-height: 1.6; font-size: 0.95rem; }
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; }
+        .panel { max-width: 900px; margin: auto; background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #94a3b8; font-size: 0.8rem; }
+        input, select, textarea { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 4px; }
+        button { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+        #finalReport { margin-top: 20px; padding: 20px; background: #fff; color: #000; border-radius: 4px; white-space: pre-wrap; font-family: 'Times New Roman', serif; }
     </style>
 </head>
 <body>
 
-<div class="dashboard">
-    <div class="panel">
-        <h2>ADLİ İNCELEME YÖNTEMLERİ</h2>
-        <div class="btn-list" id="methods">
-            <!-- Yöntem butonları buraya gelecek -->
-        </div>
+<div class="panel">
+    <h1>Adli Bilirkişi Rapor Oluşturucu</h1>
+    
+    <div class="input-group">
+        <label>Dosya / İddia Sahibi:</label>
+        <input type="text" id="owner" placeholder="Örn: X Tasarım Ajansı">
+    </div>
+    <div class="input-group">
+        <label>Teknik Tespit:</label>
+        <select id="method">
+            <option value="Difference Modu Analizi">Fark (Difference) Modu ile Örtüşme Analizi</option>
+            <option value="Vektörel Düğüm Analizi">Vektörel Düğüm (Path/Anchor) İncelemesi</option>
+            <option value="Katman Yapısı Analizi">Katman Yapısı ve Gizli İz İncelemesi</option>
+            <option value="Renk Kodu/Palet Analizi">Renk Kimliği (HEX/RGB) Çakışması</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label>Bilirkişi Gözlemi (Bulgularınızı Yazın):</label>
+        <textarea id="observation" placeholder="Örn: İki görsel üst üste bindiğinde %95 oranında piksel seviyesinde örtüşme gözlenmiştir."></textarea>
     </div>
     
-    <div class="panel">
-        <h2>BULGU VE RAPORLAMA</h2>
-        <div id="instruction" class="info-box">Yöntem seçiniz.</div>
-        <textarea id="reportField" style="width:100%; height:150px; margin-top:20px; background:#111; color:#fff; padding:10px;" placeholder="İnceleme notlarınızı buraya düşerek resmi rapora hazırlayınız..."></textarea>
-        <button onclick="saveReport()" style="margin-top:10px; width:100%; padding:10px; background:#3b82f6; color:white; border:none;">RAPORU KOPYALA</button>
-    </div>
+    <button onclick="generateReport()">RAPOR TASLAĞINI OLUŞTUR</button>
+
+    <div id="finalReport" style="display:none;"></div>
 </div>
 
 <script>
-    const protocol = {
-        1: { name: "1. Maske Soyma (Clipping)", desc: "İçerik gizleme/maskeleme kontrolü.", shortcut: "PS: Alt+Ctrl+G / AI: Alt+Ctrl+7" },
-        2: { name: "2. Gizli Katman Analizi", desc: "Silinmemiş/gizlenmiş katmanların, 'göz' ikonları ile tek tek incelenmesi.", shortcut: "F7" },
-        3: { name: "3. Düğüm Noktası (Vektör) Analizi", desc: "Direct Selection (A) ile çizimin özgünlüğü ve 'Auto-trace' kullanımı kontrolü.", shortcut: "A" },
-        4: { name: "4. Renk/HEX Analizi", desc: "Damlalık (I) ile renk kimliği tespiti, marka standartlarıyla uyum kontrolü.", shortcut: "I" },
-        5: { name: "5. Izgara (Grid) Hizalama", desc: "Gridler (Ctrl+') ile tasarımın geometrik iskeletinin karşılaştırılması.", shortcut: "Ctrl + ' / \"" },
-        6: { name: "6. Cetvel/Kılavuz Kontrolü", desc: "Cetveller (Ctrl+R) ile hizalama eksenlerinin örtüşme analizi.", shortcut: "Ctrl + R" },
-        7: { name: "7. Ayrım Önizleme (Separation)", desc: "CMYK/Siyah (K) kanalları üzerinden baskı kalıbı ve hile analizi.", shortcut: "Window -> Separations Preview" },
-        8: { name: "8. Fark Modu (Difference)", desc: "İki eseri üst üste koyup fark moduna alarak %100 örtüşme (kopya) kontrolü.", shortcut: "Blending Mode: Difference" }
-    };
+    function generateReport() {
+        const owner = document.getElementById('owner').value;
+        const method = document.getElementById('method').value;
+        const obs = document.getElementById('observation').value;
+        const date = new Date().toLocaleDateString('tr-TR');
 
-    function init() {
-        const list = document.getElementById('methods');
-        for (let i in protocol) {
-            let btn = document.createElement('button');
-            btn.innerText = protocol[i].name;
-            btn.onclick = () => {
-                document.getElementById('instruction').innerHTML = `<b>YÖNTEM:</b> ${protocol[i].name}<br><b>ADLİ PROTOKOL:</b> ${protocol[i].desc}<br><b>TEKNİK KISAYOL:</b> <span style="color:#ffcc00">${protocol[i].shortcut}</span>`;
-            };
-            list.appendChild(btn);
-        }
-    }
+        const report = `T.C. BİLİRKİŞİ RAPORU
+Tarih: ${date}
 
-    function saveReport() {
-        const text = document.getElementById('reportField').value;
-        navigator.clipboard.writeText(text);
-        alert("Rapor notları panoya kopyalandı.");
+KONU: Tasarım ihlali ve telif hakları incelemesi.
+
+1. İNCELEME YÖNTEMİ:
+Yapılan teknik incelemede "${method}" yöntemi kullanılmıştır.
+
+2. TEKNİK BULGULAR:
+Söz konusu ${owner} tarafından sunulan eser üzerinde yapılan dijital analizlerde; ${obs} tespit edilmiştir. 
+
+3. SONUÇ VE KANAAT:
+Yapılan ${method} sonucunda, söz konusu tasarımın özgünlük kriterlerini karşılamadığı/karşıladığı ve teknik olarak ${owner} ait eserle doğrudan bağımlılık/benzerlik gösterdiği kanaatine varılmıştır.
+
+Bilirkişi İmza/Kaşe`;
+
+        const display = document.getElementById('finalReport');
+        display.innerText = report;
+        display.style.display = 'block';
     }
-    init();
 </script>
 </body>
 </html>
