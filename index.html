@@ -2,71 +2,73 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ADLİ BİLİRKİŞİ RAPOR GENERATOR</title>
+    <title>ADLİ BİLİRKİŞİ PROTOKOLÜ (8 ADIMLI)</title>
     <style>
         body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; }
-        .panel { max-width: 900px; margin: auto; background: #1e293b; padding: 25px; border-radius: 12px; border: 1px solid #334155; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #94a3b8; font-size: 0.8rem; }
-        input, select, textarea { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 4px; }
-        button { background: #2563eb; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
-        #finalReport { margin-top: 20px; padding: 20px; background: #fff; color: #000; border-radius: 4px; white-space: pre-wrap; font-family: 'Times New Roman', serif; }
+        .grid-main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .step { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #475569; }
+        input, textarea { width: 100%; margin-top: 5px; background: #0f172a; color: #fff; border: 1px solid #334155; padding: 5px; }
+        .final-btn { background: #10b981; color: white; padding: 15px; border: none; width: 100%; font-size: 1.2rem; cursor: pointer; border-radius: 8px; }
+        #reportOutput { background: white; color: black; padding: 20px; margin-top: 20px; white-space: pre-wrap; display: none; }
     </style>
 </head>
 <body>
 
-<div class="panel">
-    <h1>Adli Bilirkişi Rapor Oluşturucu</h1>
-    
-    <div class="input-group">
-        <label>Dosya / İddia Sahibi:</label>
-        <input type="text" id="owner" placeholder="Örn: X Tasarım Ajansı">
-    </div>
-    <div class="input-group">
-        <label>Teknik Tespit:</label>
-        <select id="method">
-            <option value="Difference Modu Analizi">Fark (Difference) Modu ile Örtüşme Analizi</option>
-            <option value="Vektörel Düğüm Analizi">Vektörel Düğüm (Path/Anchor) İncelemesi</option>
-            <option value="Katman Yapısı Analizi">Katman Yapısı ve Gizli İz İncelemesi</option>
-            <option value="Renk Kodu/Palet Analizi">Renk Kimliği (HEX/RGB) Çakışması</option>
-        </select>
-    </div>
-    <div class="input-group">
-        <label>Bilirkişi Gözlemi (Bulgularınızı Yazın):</label>
-        <textarea id="observation" placeholder="Örn: İki görsel üst üste bindiğinde %95 oranında piksel seviyesinde örtüşme gözlenmiştir."></textarea>
-    </div>
-    
-    <button onclick="generateReport()">RAPOR TASLAĞINI OLUŞTUR</button>
+<h1>BİLİRKİŞİ ADLİ İNCELEME PROTOKOLÜ</h1>
 
-    <div id="finalReport" style="display:none;"></div>
+<div class="grid-main">
+    <div id="stepsContainer">
+        <!-- 8 Adım burada JS ile yüklenecek -->
+    </div>
+    <div>
+        <button class="final-btn" onclick="buildFinalReport()">8 AŞAMALI RAPORU OLUŞTUR</button>
+        <div id="reportOutput"></div>
+    </div>
 </div>
 
 <script>
-    function generateReport() {
-        const owner = document.getElementById('owner').value;
-        const method = document.getElementById('method').value;
-        const obs = document.getElementById('observation').value;
-        const date = new Date().toLocaleDateString('tr-TR');
+    const methods = [
+        "1. Maske Soyma (Clipping Mask)", "2. Gizli Katman Analizi", 
+        "3. Düğüm Noktası (Anchor) Analizi", "4. Renk Kodu (HEX) Karşılaştırması",
+        "5. Izgara (Grid) Hizalama Kontrolü", "6. Cetvel ve Kılavuz Hizalaması",
+        "7. Renk Kanalları (Separation Preview)", "8. Üst Üste Bindirme (Difference) Modu"
+    ];
 
-        const report = `T.C. BİLİRKİŞİ RAPORU
-Tarih: ${date}
+    const container = document.getElementById('stepsContainer');
+    methods.forEach((m, i) => {
+        container.innerHTML += `
+            <div class="step">
+                <label><b>${m}</b></label>
+                <textarea id="val_${i}" placeholder="Bu yöntemle elde edilen bulgu/tespit..."></textarea>
+            </div>
+        `;
+    });
 
-KONU: Tasarım ihlali ve telif hakları incelemesi.
+    function buildFinalReport() {
+        let findings = "";
+        methods.forEach((m, i) => {
+            findings += `\n${m}:\n- Tespit: ${document.getElementById('val_'+i).value || "İnceleme yapılmadı."}\n`;
+        });
 
-1. İNCELEME YÖNTEMİ:
-Yapılan teknik incelemede "${method}" yöntemi kullanılmıştır.
+        const report = `T.C. BİLİRKİŞİ İNCELEME RAPORU
+--------------------------------------------------
+Tarih: ${new Date().toLocaleDateString()}
+Konu: Fikri ve Sınai Haklar (Tasarım/Telif İhlali)
 
-2. TEKNİK BULGULAR:
-Söz konusu ${owner} tarafından sunulan eser üzerinde yapılan dijital analizlerde; ${obs} tespit edilmiştir. 
+TEKNİK ANALİZ BULGULARI:
+${findings}
 
-3. SONUÇ VE KANAAT:
-Yapılan ${method} sonucunda, söz konusu tasarımın özgünlük kriterlerini karşılamadığı/karşıladığı ve teknik olarak ${owner} ait eserle doğrudan bağımlılık/benzerlik gösterdiği kanaatine varılmıştır.
+GENEL DEĞERLENDİRME VE KANAAT:
+Yukarıda belirtilen 8 aşamalı teknik analiz neticesinde; 
+eserin teknik yapısı, vektörel dizilimi, renk paleti ve 
+katman hiyerarşisi incelenmiş olup, [İHLAL VAR/YOK] 
+yönünde kanaat oluşmuştur.
 
-Bilirkişi İmza/Kaşe`;
+Bilirkişi İmzası`;
 
-        const display = document.getElementById('finalReport');
-        display.innerText = report;
-        display.style.display = 'block';
+        const out = document.getElementById('reportOutput');
+        out.innerText = report;
+        out.style.display = 'block';
     }
 </script>
 </body>
