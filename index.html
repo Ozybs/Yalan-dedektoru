@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v12.2)</title>
+    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v12.3)</title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
@@ -13,8 +13,8 @@
         select, input, textarea { width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-family: sans-serif; box-sizing: border-box; }
         textarea { height: 75px; }
         .step { margin-bottom: 20px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 6px; background: #f8fafc; font-family: sans-serif; }
-        .guide-box { background: #e2e8f0; padding: 10px 12px; font-size: 0.85rem; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; line-height: 1.4; }
-        .tech-tag { font-family: monospace; background: #cbd5e1; padding: 2px 5px; border-radius: 3px; font-weight: bold; color: #0f172a; }
+        .guide-box { background: #e2e8f0; padding: 10px 12px; font-size: 0.85rem; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; line-height: 1.5; }
+        .tech-tag { font-family: monospace; background: #cbd5e1; padding: 2px 6px; border-radius: 3px; font-weight: bold; color: #0f172a; }
         .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .upload-box { border: 2px dashed #94a3b8; padding: 15px; text-align: center; background: #f8fafc; border-radius: 6px; font-family: sans-serif; }
         canvas { max-width: 100%; height: auto; margin-top: 10px; border: 1px solid #cbd5e1; display: none; }
@@ -29,7 +29,7 @@
 <body>
 
 <div class="container">
-    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v12.2)</h1>
+    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v12.3)</h1>
     
     <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
     <div class="form-group">
@@ -124,47 +124,47 @@
             adimlar: [
                 { 
                     title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", 
-                    guide: "<strong>Kapsam:</strong> Eserin internet üzerindeki öncül örneklerini, benzerlerini ve yayınlandığı ilk tarihleri tarar. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>Google Lens</span> veya <span class='tech-tag'>TinEye</span> ile hash/görsel eşleşme kontrolü.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Dava konusu eserin internet üzerinde daha önce yayınlanıp yayınlanmadığını, benzerlerinin olup olmadığını ve öncül tarihleri tespit eder.<br><strong>Program Kısayolları / Yöntem:</strong> <span class='tech-tag'>Google Lens</span> veya <span class='tech-tag'>TinEye</span> tarayıcı eklentileri; Photoshop içi arama için <span class='tech-tag'>Ctrl + Alt + C</span> (Canvas Size/Görsel Boyutu kontrolü) veya tarayıcıda görseli doğrudan aratma.", 
                     template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." 
                 },
                 { 
                     title: "2. Tipografi ve Font Analizi", 
-                    guide: "<strong>Kapsam:</strong> Kullanılan yazı tiplerinin lisans durumunu ve karakter dizilimlerini inceler. <br><strong>Kısayol / Yöntem:</strong> Illustrator'da <span class='tech-tag'>Shift + Ctrl + O</span> (Create Outlines) ile vektör düğüm çözünürlüğü analizi.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Tasarımda kullanılan yazı tiplerinin (font ailelerinin) lisanslı olup olmadığını, karakter dizilimlerini ve orijinal eserle font uyuşmazlıklarını inceler.<br><strong>Program Kısayolları / Yöntem:</strong> Illustrator'da metinleri yasal inceleme için vektöre dönüştürme kısayolu: <span class='tech-tag'>Shift + Ctrl + O</span> (Create Outlines). Karakter panelini açma: <span class='tech-tag'>Ctrl + T</span>.", 
                     template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." 
                 },
                 { 
                     title: "3. Renk Uzayı ve CMYK/RGB Değerleri", 
-                    guide: "<strong>Kapsam:</strong> Tasarımın ekran (RGB) ve baskı (CMYK) renk profillerini kıyaslar. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>F8</span> (Info Paneli) ve <span class='tech-tag'>Eyedropper Tool (I)</span> ile renk kodları tespiti.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Tasarımın dijital ekranlar için RGB, matbaa baskıları için CMYK renk profillerinde olup olmadığını ve renk tonu kopyalamalarını saptar.<br><strong>Program Kısayolları / Yöntem:</strong> Renk örnekleme aracı (Eyedropper) için <span class='tech-tag'>I</span> tuşu. Bilgi panelini (Info) açarak sayısal CMYK/RGB değerlerini görmek için: <span class='tech-tag'>F8</span> tuşu.", 
                     template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." 
                 },
                 { 
                     title: "4. Maske (Clipping) Hiyerarşisi", 
-                    guide: "<strong>Kapsam:</strong> Vektör/piksel maskeleme katmanlarının arkasına gizlenmiş unsurları ortaya çıkarır. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>Alt + Ctrl + 7</span> (Release Clipping Mask) komutu.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Vektör veya piksel tabanlı maskeleme katmanlarının arkasına gizlenmiş, kırpılmış veya telifli orijinal unsurları ve logoları açığa çıkarır.<br><strong>Program Kısayolları / Yöntem:</strong> Maskeden çıkarma (Release Mask) kısayolu: <span class='tech-tag'>Alt + Ctrl + 7</span>. Maskeleme uygulama kısayolu: <span class='tech-tag'>Ctrl + 7</span>.", 
                     template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." 
                 },
                 { 
                     title: "5. Katman Yapısı ve Gizli İzler", 
-                    guide: "<strong>Kapsam:</strong> Dosyanın katman geçmişini inceleyerek gizlenmiş eski grafikleri tespit eder. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>F7</span> (Layers Paneli) + <span class='tech-tag'>Alt + Göz İkonuna Tıklama</span> ile izole katman denetimi.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Tasarım dosyasının geçmişini inceleyerek, üzerine tasarım yapılarak gizlenmiş veya görünürlüğü kapatılmış eski grafikleri/imzaları ortaya çıkarır.<br><strong>Program Kısayolları / Yöntem:</strong> Katmanlar panelini açma: <span class='tech-tag'>F7</span>. Bir katman dışındaki tüm katmanları gizlemek/izole etmek için: <span class='tech-tag'>Alt + Göz İkonuna Tıklama</span>.", 
                     template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." 
                 },
                 { 
                     title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", 
-                    guide: "<strong>Kapsam:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını ve kavis açılarını kıyaslar. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>A Tuşu</span> (Direct Selection Tool) ile node/düğüm noktası incelemesi.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını, eğrilerini ve kavis açılarını kıyaslayarak otomatik vektör kopyalamalarını yakalar.<br><strong>Program Kısayolları / Yöntem:</strong> Doğrudan Seçim Aracı (Direct Selection Tool - Düğüm noktası seçimi): <span class='tech-tag'>A</span> tuşu. Kalem aracı (Pen Tool): <span class='tech-tag'>P</span> tuşu.", 
                     template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir: {input}" 
                 },
                 { 
                     title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", 
-                    guide: "<strong>Kapsam:</strong> Katmanların saydamlık değerleri ile harmanlama modlarının manipülasyon izlerini inceler. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>Shift + F10</span> (Transparency / Blending Paneli).", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Katmanların saydamlık değerleri ile harmanlama modlarının orijinal eser üzerinde bırakmış olduğu manipülasyon izlerini inceler.<br><strong>Program Kısayolları / Yöntem:</strong> Opaklık değerini hızlı değiştirmek için sayı tuşları (<span class='tech-tag'>1-0</span>). Harmanlama modları arasında geçiş yapmak için: <span class='tech-tag'>Shift + '+' veya '-'</span> tuşları.", 
                     template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir: {input}" 
                 },
                 { 
                     title: "8. Izgara (Grid) ve Geometrik Hizalama", 
-                    guide: "<strong>Kapsam:</strong> Unsurların kılavuz hatlarına (grid) göre konumlandırılmasını oran-orantı yönünden test eder. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>Ctrl + " + "'" + "</span> (Show Grid) ve <span class='tech-tag'>Ctrl + R</span> (Rulers).", 
+                    guide: "<strong>Ne İşe Yarar:</strong> Tasarım unsurlarının milimetrik kılavuz hatlarına (grid) göre konumlandırılmasını, oran-orantı ve yerleşim simetrisi yönünden test eder.<br><strong>Program Kısayolları / Yöntem:</strong> Kılavuz çizgilerini (Grid) göster/gizle: <span class='tech-tag'>Ctrl + '</span> (Tırnak işareti). Cetvelleri açma: <span class='tech-tag'>Ctrl + R</span>.", 
                     template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." 
                 },
                 { 
                     title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", 
-                    guide: "<strong>Kapsam:</strong> İki görseli üst üste bindirerek piksel bazında örtüşme oranını kanıtlar. <br><strong>Kısayol / Yöntem:</strong> <span class='tech-tag'>Blending Mode: Difference</span> matematiksel çakıştırma testi.", 
+                    guide: "<strong>Ne İşe Yarar:</strong> İki görseli matematiksel olarak üst üste bindirerek piksel bazında örtüşme oranını (çakışma yüzdesini) sayısal ve görsel olarak kanıtlar.<br><strong>Program Kısayolları / Yöntem:</strong> Photoshop'ta katman harmanlama modunu 'Difference' (Fark) moduna getirme kısayolu: Katman seçiliyken klavyeden sırasıyla <span class='tech-tag'>V</span> (Taşıma) ardından <span class='tech-tag'>Shift + E</span> tuş kombinasyonu.", 
                     template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." 
                 }
             ]
