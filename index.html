@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v13.0)</title>
+    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ </title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
@@ -37,12 +37,19 @@
 .ai-apply{background:#15803d!important;width:auto!important;margin-top:8px!important}
 .ai-regenerate{background:#2563eb!important;width:auto!important;margin-top:8px!important}
 
+
+.ek-file-list{display:flex;flex-direction:column;gap:7px;margin-top:8px}
+.ek-file-item{display:flex;align-items:center;gap:9px;padding:8px 10px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;font-size:.84rem}
+.ek-file-item img{width:58px;height:48px;object-fit:cover;border-radius:4px;border:1px solid #cbd5e1}
+.ek-file-name{flex:1}
+.ek-remove{width:auto!important;margin:0!important;padding:5px 9px!important;background:#64748b!important}
+
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v13.0)</h1>
+    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU </h1>
     
     <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
     <div class="form-group">
@@ -59,6 +66,18 @@
     <div class="form-group">
         <label>Esas Numarası:</label>
         <input type="text" id="esasNo" placeholder="Örn: 2026/123 Esas">
+    </div>
+    <div class="form-group">
+        <label>Taraflar (Davacı / Davalı):</label>
+        <input type="text" id="taraflar" placeholder="Örn: Davacı: ... / Davalı: ...">
+    </div>
+    <div class="form-group">
+        <label>Görevlendirme Tarihi / Süresi:</label>
+        <input type="text" id="gorevlendirme" placeholder="Örn: 15.07.2026 tarihli müzekkere ile 30 gün">
+    </div>
+    <div class="form-group">
+        <label>Rapor Tarihi:</label>
+        <input type="text" id="raporTarihi" placeholder="Örn: 11.08.2026">
     </div>
 
     <div class="section-title">2. İNCELEMEYE KONU MATERYAL KÜNYESİ (EMANET / DELİL BİLGİLERİ)</div>
@@ -135,11 +154,25 @@
     <div id="branch-special-area"></div>
 <div class="section-title">4. İNCELEME VE BULGULAR ALANI (İHTİYACA GÖRE)</div>
     <div id="graphic-tools-area"></div>
+    <div style="font-size:.83rem;color:#475569;margin:8px 0 4px;"><b>Not:</b> Aşağıdaki 8 teknik inceleme korunmuştur; fotoğraf karşılaştırması bunlara ek bir alt araçtır.</div>
     <div id="dynamic-steps-area">
         <p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>
     </div>
 
     
+
+
+    <div class="section-title">6. EKLER (VARSA)</div>
+    <div class="form-group">
+        <label><b>Ekler / Tablo / Fotoğraf / Hesap Cetveli / Kroki / Belge:</b></label>
+        <div style="font-size:.82rem;color:#64748b;margin:5px 0 9px;">
+            Fotoğraf ve belge dosyalarını buradan yükleyebilirsiniz. Yüklenen dosyalar rapor oluşturma ekranında listelenir.
+            Görsel karşılaştırma için ise ilgili branştaki “Görsel / Fotoğraf Karşılaştırma” alanını kullanınız.
+        </div>
+        <input type="file" id="eklerDosya" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" onchange="handleEkFiles(this)">
+        <div id="eklerPreview" style="margin-top:10px;"></div>
+        <textarea id="ekler" placeholder="Eklerle ilgili açıklama, belge adı, fotoğraf açıklaması, tablo/kroki bilgisi vb."></textarea>
+    </div>
 
     <div class="section-title">5. TEKNİK SONUÇ VE KANAAT</div>
     <div class="form-group">
@@ -157,10 +190,28 @@
         </div>
     </div>
 
-<div class="section-title">8. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
+<div class="section-title">7. BİLİRKİŞİ BİLGİLERİ</div>
+    <div class="form-group">
+        <label>Adı Soyadı:</label>
+        <input type="text" id="bilirkişiAd" placeholder="Örn: Ahmet Yılmaz">
+    </div>
+    <div class="form-group">
+        <label>Unvanı:</label>
+        <input type="text" id="bilirkişiUnvan" placeholder="Örn: İnşaat Mühendisi / Bilirkişi">
+    </div>
+    <div class="form-group">
+        <label>Bilirkişilik Sicil Numarası:</label>
+        <input type="text" id="bilirkişiSicil" placeholder="Örn: 12345">
+    </div>
+
+    <div class="section-title">8. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
     <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
         <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="talepEkSure" style="width: auto; margin-right: 8px;"><b>Ek Süre Talebi:</b> İncelemenin tamamlanabilmesi için yasal ek süre verilmesi arz olunur.</label>
         <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="talepKesif" style="width: auto; margin-right: 8px;"><b>Keşif / Kurul Teşkili Talebi:</b> Mahalinde keşif icrası ve/veya heyet teşkili gereklidir.</label>
+    </div>
+
+    <div style="font-size:0.84rem; color:#9a3412; margin:18px 0 10px; padding:11px 14px; background:#fff7ed; border:1px solid #fdba74; border-left:5px solid #ea580c; border-radius:5px; line-height:1.5;">
+        <strong>Uyarı:</strong> Bu araçla oluşturulan metinler taslaktır. Nihai raporun hukuki ve teknik sorumluluğu tamamen kullanıcı bilirkişiye aittir.
     </div>
 
     <div class="btn-group">
@@ -179,6 +230,7 @@
         grafik: {
             adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
             kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
+            isGraphic: true,
             adimlar: [
                 { title: "1. İnternet ve Tersine Görsel Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını test eder." },
                 { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini ve karakter dizilimlerini inceler." },
@@ -187,7 +239,7 @@
                 { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder." },
                 { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını inceler." },
                 { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Saydamlık ve harmanlama modlarını denetler." },
-                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder." }
+                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder. Fotoğraf karşılaştırma sonucu gerekiyorsa bu bulgu bu başlık altında ayrıca belirtilebilir." }
             ]
         },
         bilisim: {
@@ -809,25 +861,62 @@
 
         if (branchData.isGraphic) {
             toolsArea.innerHTML = `
-                <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">Görselleri yükleyip piksel fark analizini çalıştırın.</p>
+                <div class="section-title" style="background:#475569;">ALT BAŞLIK: GÖRSEL / FOTOĞRAF KARŞILAŞTIRMA</div>
+                <div style="font-size:.85rem;color:#475569;margin-bottom:10px;">
+                    Grafik tasarım, logo, afiş, ilan, ambalaj, görsel eser vb. iki materyali karşılaştırmak için kullanılır.
+                    Bu bölüm <b>8 teknik incelemeden bağımsızdır</b>; 8 inceleme aşağıda aynen yer alır.
+                </div>
+
                 <div class="upload-grid">
                     <div class="upload-box">
-                        <label><b>Orijinal / Dava Konusu Eser (A)</b></label><br>
+                        <label><b>GÖRSEL A / İNCELEME KONUSU ESER</b></label><br>
                         <input type="file" id="img1Input" accept="image/*" onchange="loadImages()">
-                        <canvas id="canvas1"></canvas>
+                        <canvas id="canvas1" style="max-width:100%;height:auto;"></canvas>
                     </div>
                     <div class="upload-box">
-                        <label><b>İhlal Eden / Şüpheli Eser (B)</b></label><br>
+                        <label><b>GÖRSEL B / KARŞILAŞTIRMA ESERİ</b></label><br>
                         <input type="file" id="img2Input" accept="image/*" onchange="loadImages()">
-                        <canvas id="canvas2"></canvas>
+                        <canvas id="canvas2" style="max-width:100%;height:auto;"></canvas>
                     </div>
                 </div>
-                <div style="margin-top: 15px;">
-                    <button onclick="runDifferenceAnalysis()" style="background: #2563eb; padding: 12px; font-size: 0.95rem; margin-top:0; width:100%;">PİKSEL FARK ANALİZİNİ ÇALIŞTIR</button>
+
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                    <button type="button" onclick="compareImagesSideBySide()" style="background:#2563eb;">YAN YANA KARŞILAŞTIR</button>
+                    <button type="button" onclick="compareImagesOverlay()" style="background:#475569;">ÜST ÜSTE / ŞEFFAFLIK</button>
+                    <button type="button" onclick="compareImageDifference()" style="background:#7c3aed;">FARK GÖRÜNTÜSÜ</button>
+                    <button type="button" onclick="resetVisualComparison()" style="background:#64748b;">TEMİZLE</button>
                 </div>
-                <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif; text-align: center;"></div>
+
+                <div id="visualCompareWorkspace" style="display:none;margin-top:12px;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:12px;">
+                    <b>GÖRSEL KARŞILAŞTIRMA ALANI</b>
+                    <div id="visualCompareStage" style="margin-top:10px;text-align:center;background:#f1f5f9;padding:10px;border-radius:6px;overflow:auto;"></div>
+                    <div id="overlayControl" style="display:none;margin-top:8px;">
+                        <label>Şeffaflık: <span id="overlayValue">50</span>%</label>
+                        <input id="overlayRange" type="range" min="0" max="100" value="50" oninput="setOverlayOpacity(this.value)" style="width:100%;">
+                    </div>
+                </div>
+
+                <div id="visualCompareFindings" style="display:none;margin-top:12px;padding:12px;background:#fff;border:1px solid #cbd5e1;border-radius:8px;">
+                    <b>GÖRSEL KARŞILAŞTIRMA TESPİTLERİ</b>
+                    <div style="font-size:.82rem;color:#64748b;margin:6px 0 10px;">
+                        Aşağıdaki alanlar özellikle logo, afiş, grafik tasarım ve görsel eser karşılaştırması için hazırlanmıştır.
+                        Sistem hukuki sonuç üretmez; teknik tespiti siz doğrularsınız.
+                    </div>
+                    <table class="visual-table">
+                        <thead><tr><th>İnceleme Unsuru</th><th>Görsel A</th><th>Görsel B</th><th>Karşılaştırma / Tespit</th></tr></thead>
+                        <tbody id="visualFindingsBody"></tbody>
+                    </table>
+                    <button type="button" onclick="generateGraphicComparisonText()" style="background:#2563eb;margin-top:10px;width:100%;">
+                        ✦ GÖRSEL KARŞILAŞTIRMA TEKNİK METNİ OLUŞTUR
+                    </button>
+                    <div id="graphicComparisonTextBox" style="display:none;margin-top:10px;">
+                        <textarea id="graphicComparisonText" style="min-height:180px;"></textarea>
+                        <button type="button" class="ai-apply" onclick="applyGraphicComparisonToConclusion()">✓ Teknik Sonuca Aktar</button>
+                    </div>
+                </div>
             `;
         }
+
 
         const specialLabels = {
             trafik: "Araç / Yol / Kaza Verileri (plaka, tarih-saat, yol, kamera, hız vb.)",
@@ -863,7 +952,7 @@
         let stepsHTML = "";
         branchData.adimlar.forEach((s, i) => {
             let placeholderText = "Bu adımdaki tespitlerinizi yazınız...";
-            if (branchData.isGraphic && i === 7) placeholderText = "Otomatik fark analizi veya teknik tespit buraya işlenecektir...";
+            if (branchData.isGraphic && i === 7) placeholderText = "Bu 8. teknik incelemeye ilişkin tespitinizi yazınız...";
             stepsHTML += `
                 <div class="step">
                     <b>${s.title}</b>
@@ -873,7 +962,7 @@
                     <div class="ai-assistant-box">
                         <b>✦ YAPAY ZEKA BİLİRKİŞİ ASİSTANI</b>
                         <div class="ai-buttons">
-                            <button type="button" class="ai-btn primary" onclick="aiRewriteStep(${i},'official')">✦ Resmî Dile Dönüştür</button>
+                            <button type="button" class="ai-btn primary" onclick="aiRewriteStep(${i},'official')">✦ Rapor Diline Dönüştür</button>
                             <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'technical')">Teknikleştir</button>
                             <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'detailed')">Detaylandır</button>
                             <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'objective')">Objektifleştir</button>
@@ -894,6 +983,7 @@
         if (file1) {
             let reader = new FileReader();
             reader.onload = function(e) {
+                visualADataURL = e.target.result;
                 img1 = new Image();
                 img1.onload = () => { drawToCanvas(img1, 'canvas1'); }
                 img1.src = e.target.result;
@@ -903,6 +993,7 @@
         if (file2) {
             let reader = new FileReader();
             reader.onload = function(e) {
+                visualBDataURL = e.target.result;
                 img2 = new Image();
                 img2.onload = () => { drawToCanvas(img2, 'canvas2'); }
                 img2.src = e.target.result;
@@ -914,39 +1005,174 @@
     function drawToCanvas(img, canvasId) {
         let canvas = document.getElementById(canvasId);
         let ctx = canvas.getContext('2d');
-        canvas.width = 130;
-        canvas.height = 130;
+        canvas.width = Math.min(img.naturalWidth || img.width, 700);
+        canvas.height = Math.round(canvas.width * ((img.naturalHeight || img.height) / (img.naturalWidth || img.width)));
         ctx.drawImage(img, 0, 0, 130, 130);
         canvas.style.display = 'block';
     }
 
-    function runDifferenceAnalysis() {
-        if (!img1 || !img2) {
-            alert("Lütfen önce iki görseli de yükleyin!");
+
+    let visualADataURL = null;
+    let visualBDataURL = null;
+
+    function compareFeatureList() {
+        const k = document.getElementById('bransSecim')?.value;
+        if (k === 'marka') return [
+            "Genel görünüm ve kompozisyon","Logo / işaret formu","Şekil ve konturlar",
+            "Renk ve renk dağılımı","Tipografi / yazı karakteri","Oran ve ölçü ilişkileri",
+            "Ayırt edici / karakteristik unsurlar","Genel benzerlik ve farklılıklar"
+        ];
+        if (k === 'grafik') return [
+            "Genel kompozisyon ve yerleşim","Görsel form / şekiller","Renk ve tonlar",
+            "Tipografi ve yazılar","Fotoğraf / illüstrasyon unsurları","Oran ve ölçüler",
+            "Karakteristik tasarım unsurları","Genel benzerlik ve farklılıklar"
+        ];
+        return [
+            "Genel görünüm","Biçim ve yerleşim","Renk / ton","Tipografi / yazı",
+            "Oran ve ölçü","Karakteristik unsurlar","Ortak unsurlar","Farklı unsurlar"
+        ];
+    }
+
+    function populateVisualFindings() {
+        const body = document.getElementById('visualFindingsBody');
+        if (!body) return;
+        body.innerHTML = '';
+        compareFeatureList().forEach((f) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><b>${f}</b></td>
+                <td><textarea class="visual-cell" data-side="A" placeholder="A görselindeki tespit..."></textarea></td>
+                <td><textarea class="visual-cell" data-side="B" placeholder="B görselindeki tespit..."></textarea></td>
+                <td><textarea class="visual-cell" data-side="C" placeholder="Benzerlik / farklılık / teknik tespit..."></textarea></td>`;
+            body.appendChild(tr);
+        });
+        document.getElementById('visualCompareFindings').style.display = 'block';
+    }
+
+    function compareImagesSideBySide() {
+        if (!visualADataURL || !visualBDataURL) {
+            alert("Önce iki görseli yükleyiniz.");
             return;
         }
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
-        canvas.width = 100; canvas.height = 100;
-        ctx.drawImage(img1, 0, 0, 100, 100);
-        let data1 = ctx.getImageData(0, 0, 100, 100).data;
-        ctx.clearRect(0, 0, 100, 100);
-        ctx.drawImage(img2, 0, 0, 100, 100);
-        let data2 = ctx.getImageData(0, 0, 100, 100).data;
-
-        let totalPixels = 100 * 100;
-        let diffPixels = 0;
-        for (let i = 0; i < data1.length; i += 4) {
-            let rDiff = Math.abs(data1[i] - data2[i]);
-            let gDiff = Math.abs(data1[i+1] - data2[i+1]);
-            let bDiff = Math.abs(data1[i+2] - data2[i+2]);
-            if ((rDiff + gDiff + bDiff) / 3 > 25) { diffPixels++; }
-        }
-        let similarity = ((1 - (diffPixels / totalPixels)) * 100).toFixed(2);
-        let computedDifferenceRate = `görseller arasında %${similarity} oranında sayısal ve geometrik örtüşme/benzerlik olduğu`;
-        document.getElementById('step_input_8').value = computedDifferenceRate;
-        document.getElementById('diffResult').innerText = `Piksel Analizi Tamamlandı: %${similarity} Benzerlik Saptandı (9. Adıma işlendi).`;
+        const stage = document.getElementById('visualCompareStage');
+        stage.innerHTML = `
+            <div style="display:flex;gap:12px;justify-content:center;align-items:flex-start;flex-wrap:wrap;">
+                <div><b>GÖRSEL A</b><br><img src="${visualADataURL}" style="max-width:48%;max-height:520px;object-fit:contain;border:1px solid #94a3b8;"></div>
+                <div><b>GÖRSEL B</b><br><img src="${visualBDataURL}" style="max-width:48%;max-height:520px;object-fit:contain;border:1px solid #94a3b8;"></div>
+            </div>`;
+        document.getElementById('visualCompareWorkspace').style.display = 'block';
+        document.getElementById('overlayControl').style.display = 'none';
+        populateVisualFindings();
     }
+
+    function compareImagesOverlay() {
+        if (!visualADataURL || !visualBDataURL) {
+            alert("Önce iki görseli yükleyiniz.");
+            return;
+        }
+        const stage = document.getElementById('visualCompareStage');
+        stage.innerHTML = `
+            <div style="position:relative;display:inline-block;max-width:100%;">
+                <img src="${visualADataURL}" style="display:block;max-width:100%;max-height:520px;object-fit:contain;">
+                <img id="overlayImgB" src="${visualBDataURL}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.5;">
+            </div>`;
+        document.getElementById('visualCompareWorkspace').style.display = 'block';
+        document.getElementById('overlayControl').style.display = 'block';
+        populateVisualFindings();
+    }
+
+    function setOverlayOpacity(value) {
+        const img = document.getElementById('overlayImgB');
+        if (img) img.style.opacity = Number(value) / 100;
+        const label = document.getElementById('overlayValue');
+        if (label) label.textContent = value;
+    }
+
+    function compareImageDifference() {
+        if (!visualADataURL || !visualBDataURL) {
+            alert("Önce iki görseli yükleyiniz.");
+            return;
+        }
+
+        const a = new Image(), b = new Image();
+        a.onload = () => b.onload = () => {
+            const w = Math.min(a.naturalWidth, b.naturalWidth, 1000);
+            const h = Math.min(a.naturalHeight, b.naturalHeight, 1000);
+            const ca = document.createElement('canvas'), cb = document.createElement('canvas'), cd = document.createElement('canvas');
+            [ca,cb,cd].forEach(c => { c.width=w; c.height=h; });
+            ca.getContext('2d').drawImage(a,0,0,w,h);
+            cb.getContext('2d').drawImage(b,0,0,w,h);
+            const da = ca.getContext('2d').getImageData(0,0,w,h);
+            const db = cb.getContext('2d').getImageData(0,0,w,h);
+            const out = cd.getContext('2d').createImageData(w,h);
+
+            for(let i=0;i<da.data.length;i+=4){
+                const d = Math.abs(da.data[i]-db.data[i]) +
+                          Math.abs(da.data[i+1]-db.data[i+1]) +
+                          Math.abs(da.data[i+2]-db.data[i+2]);
+                const v = Math.min(255, d);
+                out.data[i]=v; out.data[i+1]=v; out.data[i+2]=v; out.data[i+3]=255;
+            }
+            cd.getContext('2d').putImageData(out,0,0);
+            document.getElementById('visualCompareStage').innerHTML =
+                `<div><b>FARK GÖRÜNTÜSÜ</b><br><img src="${cd.toDataURL('image/png')}" style="max-width:100%;max-height:650px;"></div>`;
+            document.getElementById('visualCompareWorkspace').style.display='block';
+            document.getElementById('overlayControl').style.display='none';
+            populateVisualFindings();
+        };
+        a.src=visualADataURL; b.src=visualBDataURL;
+    }
+
+    function generateGraphicComparisonText() {
+        const rows = [...document.querySelectorAll('#visualFindingsBody tr')];
+        const p = currentBranchProfile();
+        const parts = rows.map(row => {
+            const feature = row.cells[0].innerText.trim();
+            const a = row.querySelector('[data-side="A"]')?.value.trim();
+            const b = row.querySelector('[data-side="B"]')?.value.trim();
+            const c = row.querySelector('[data-side="C"]')?.value.trim();
+            if (!a && !b && !c) return '';
+            return `${feature}: Görsel A'da ${a || 'belirtilen bir tespit bulunmamaktadır'}; Görsel B'de ${b || 'belirtilen bir tespit bulunmamaktadır'}. Karşılaştırma kapsamında ${c || 'ayrıca teknik değerlendirme yapılmalıdır'}.`;
+        }).filter(Boolean);
+
+        if (!parts.length) {
+            alert("Önce karşılaştırma tablosundaki en az bir teknik tespiti doldurunuz.");
+            return;
+        }
+
+        const text = `Görsel karşılaştırma incelemesi ${p.name} branşı kapsamında yapılmıştır. ` +
+            parts.join(' ') +
+            ` Mevcut görsel bulgular, yalnızca teknik karşılaştırma kapsamında değerlendirilmiş olup, desteklenmeyen hukuki veya nihai kanaat oluşturulmamıştır.`;
+
+        document.getElementById('graphicComparisonText').value = text;
+        document.getElementById('graphicComparisonTextBox').style.display='block';
+    }
+
+    function applyGraphicComparisonToConclusion() {
+        const text = document.getElementById('graphicComparisonText')?.value.trim();
+        const target = document.getElementById('technicalConclusion');
+        if (!text) return;
+        if (target) target.value = target.value ? target.value + "\n\n" + text : text;
+    }
+
+    function runDifferenceAnalysis() {
+        compareImageDifference();
+    }
+
+
+    function applyPhotoCompareToStep() {
+        const text = document.getElementById("photoCompareText")?.value.trim();
+        const step8 = document.getElementById("step_input_7");
+        if (!text) {
+            alert("Önce fotoğraf karşılaştırma tespitini oluşturunuz.");
+            return;
+        }
+        if (step8) {
+            step8.value = text;
+            step8.scrollIntoView({behavior:"smooth", block:"center"});
+        }
+    }
+
 
 
     /*
@@ -966,21 +1192,233 @@ Hukuki değerlendirme yapma; teknik tespitle sınırlı kal.
 Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler kullan.
 `;
 
-    const BRANCH_TERMS = {
-        trafik:"araç, yol, hız, fren, çarpışma, kamera, görüş, kusur",
-        gayrimenkul:"taşınmaz, ada/parsel, yüzölçümü, imar, emsal, değer",
-        bilisim:"dijital delil, cihaz, imaj, hash, log, metadata, dosya bütünlüğü",
-        insaat:"yapı, proje, mahal, metraj, ölçüm, imalat, malzeme",
-        hesap:"hesap dönemi, kalem, belge, tutar, mahsup, faiz",
-        muhasebe:"muhasebe kaydı, belge, hesap, dönem, tutar",
-        kimya:"numune, ürün, analiz, laboratuvar, kimyasal özellik",
-        biyomedikal:"cihaz, seri no, kalibrasyon, bakım, arıza",
-        enerji:"tesis, kapasite, üretim, tüketim, ölçüm",
-        gemiinsaa:"gemi, IMO no, makine, sefer, teknik ölçüm",
-        havacilik:"hava aracı, uçuş, tescil, kayıt, olay zamanı",
-        petrol:"kuyu, saha, boru hattı, basınç, debi, üretim",
-        metalurji:"malzeme, numune, test, kaynak, mekanik özellik"
-    };
+    const AI_BRANCH_PROFILES = {
+    "trafik": {
+        "name": "Trafik ve Araç",
+        "terms": "araç, yol, kaza oluşumu, hız, fren, görüş, kamera, çarpışma, kusur",
+        "focus": "kaza oluşumu, araç hasarı, yol ve trafik koşulları, kusur değerlendirmesi"
+    },
+    "gayrimenkul": {
+        "name": "Gayrimenkul Değerleme",
+        "terms": "taşınmaz, ada/parsel, yüzölçümü, imar, emsal, konum, yapı, değer",
+        "focus": "taşınmazın fiziksel ve hukuki durumu, emsal karşılaştırması ve değerleme"
+    },
+    "hesap": {
+        "name": "Hesap ve Finans",
+        "terms": "hesap dönemi, ana para, faiz, mahsup, ödeme, belge, tutar, bakiye",
+        "focus": "hesap kalemleri, dönemler, ödeme/mahsup kayıtları ve matematiksel sonuçlar"
+    },
+    "bilisim": {
+        "name": "Bilişim ve Dijital Delil",
+        "terms": "dijital delil, cihaz, imaj, hash, log, metadata, zaman damgası, dosya bütünlüğü",
+        "focus": "dijital delilin elde edilmesi, bütünlüğü, kayıtlar ve teknik bulgular"
+    },
+    "insaat": {
+        "name": "İnşaat ve Yapı",
+        "terms": "yapı, proje, mahal, imalat, metraj, ölçüm, malzeme, keşif, ayıp",
+        "focus": "proje ve mevcut imalatın karşılaştırılması, fiziksel tespitler, metraj ve teknik uygunluk"
+    },
+    "muhasebe": {
+        "name": "Muhasebe",
+        "terms": "muhasebe kaydı, hesap planı, defter, fatura, belge, dönem, tutar, kayıt",
+        "focus": "muhasebe kayıtları ile dayanak belgelerin karşılaştırılması ve mali kayıtların teknik değerlendirmesi"
+    },
+    "sgk": {
+        "name": "SGK ve Hizmet",
+        "terms": "sigortalılık, hizmet süresi, prim günü, prime esas kazanç, kayıt, dönem",
+        "focus": "hizmet kayıtları, dönemler, prim günleri ve dosyadaki resmi kayıtların karşılaştırılması"
+    },
+    "maden": {
+        "name": "Maden",
+        "terms": "ruhsat, saha, rezerv, tenör, üretim, ocak, koordinat, miktar",
+        "focus": "ruhsat/saha bilgileri, üretim verileri, rezerv ve teknik ölçümlerin değerlendirilmesi"
+    },
+    "kimya": {
+        "name": "Kimya",
+        "terms": "numune, ürün, analiz, laboratuvar, bileşim, konsantrasyon, sonuç",
+        "focus": "numune bilgileri, analiz sonuçları, yöntem ve ürün/numune özelliklerinin teknik değerlendirmesi"
+    },
+    "biyomedikal": {
+        "name": "Biyomedikal",
+        "terms": "cihaz, seri no, kalibrasyon, bakım, arıza, ölçüm, teknik servis",
+        "focus": "cihazın teknik durumu, bakım/kalibrasyon kayıtları, arıza ve ölçüm sonuçları"
+    },
+    "enerji": {
+        "name": "Enerji",
+        "terms": "tesis, kapasite, üretim, tüketim, sayaç, ölçüm, verim, sistem",
+        "focus": "enerji tesisinin teknik durumu, ölçüm kayıtları, kapasite ve üretim/tüketim verileri"
+    },
+    "gemiinsaa": {
+        "name": "Gemi İnşa",
+        "terms": "gemi, IMO no, gövde, makine, klas, sefer, ölçüm, bakım",
+        "focus": "gemiye ait teknik kayıtlar, yapı/makine unsurları, ölçüm ve bakım bilgileri"
+    },
+    "havacilik": {
+        "name": "Havacılık",
+        "terms": "hava aracı, uçuş, tescil, bakım, uçuş kaydı, olay zamanı, teknik kayıt",
+        "focus": "hava aracı, uçuş ve bakım kayıtları ile olayın teknik yönleri"
+    },
+    "petrol": {
+        "name": "Petrol ve Doğalgaz",
+        "terms": "kuyu, saha, üretim, basınç, debi, boru hattı, rezerv, ekipman",
+        "focus": "kuyu/saha verileri, üretim kayıtları, basınç-debi ölçümleri ve ekipman durumu"
+    },
+    "metalurji": {
+        "name": "Metalurji",
+        "terms": "malzeme, numune, alaşım, test, sertlik, çekme, kaynak, mikroyapı",
+        "focus": "malzeme özellikleri, numune ve test sonuçları ile üretim/kaynak kusurlarının teknik değerlendirmesi"
+    },
+    "elektrik": {
+        "name": "Elektrik",
+        "terms": "tesisat, kablo, pano, sigorta, kaçak akım, topraklama, ölçüm, kısa devre",
+        "focus": "elektrik tesisatının durumu, koruma elemanları, ölçüm sonuçları ve teknik uygunluk"
+    },
+    "makine": {
+        "name": "Makine",
+        "terms": "makine, ekipman, parça, arıza, bakım, aşınma, ölçüm, çalışma koşulu",
+        "focus": "makine/ekipmanın fiziksel ve işlevsel durumu, arıza ve bakım kayıtları"
+    },
+    "otomotiv": {
+        "name": "Otomotiv",
+        "terms": "araç, motor, şanzıman, parça, kilometre, bakım, hasar, onarım",
+        "focus": "araç teknik durumu, mekanik parçalar, bakım/onarım geçmişi ve hasar ilişkisi"
+    },
+    "tekstil": {
+        "name": "Tekstil",
+        "terms": "kumaş, iplik, lif, gramaj, renk, desen, kalite, numune",
+        "focus": "tekstil ürününün fiziksel özellikleri, numune karşılaştırması ve kalite/uygunluk bulguları"
+    },
+    "gida": {
+        "name": "Gıda",
+        "terms": "ürün, numune, parti, son tüketim, etiket, analiz, hijyen, bileşim",
+        "focus": "gıda numunesi/ürünü, etiket ve analiz sonuçlarının teknik değerlendirmesi"
+    },
+    "ziraat": {
+        "name": "Ziraat",
+        "terms": "arazi, ürün, verim, ekim, hasat, bitki, sulama, toprak",
+        "focus": "arazi ve ürün durumu, üretim koşulları, verim ve tarımsal kayıtlar"
+    },
+    "orman": {
+        "name": "Orman",
+        "terms": "orman alanı, ağaç, meşcere, saha, ölçüm, kesim, amenajman",
+        "focus": "orman alanının durumu, ağaç/meşcere tespitleri ve saha ölçümleri"
+    },
+    "harita": {
+        "name": "Harita ve Kadastro",
+        "terms": "ada, parsel, koordinat, sınır, yüzölçümü, aplikasyon, ölçüm, kroki",
+        "focus": "parsel sınırları, koordinatlar, ölçümler ve kadastro/harita verileri"
+    },
+    "jeoloji": {
+        "name": "Jeoloji",
+        "terms": "zemin, kaya, formasyon, fay, sondaj, numune, jeolojik yapı",
+        "focus": "sahanın jeolojik özellikleri, sondaj/numune verileri ve teknik değerlendirme"
+    },
+    "jeofizik": {
+        "name": "Jeofizik",
+        "terms": "ölçüm, sismik, elektrik özdirenç, profil, veri, anomali",
+        "focus": "jeofizik ölçümler, veri profilleri ve teknik anomalilerin değerlendirilmesi"
+    },
+    "mimarlik": {
+        "name": "Mimarlık",
+        "terms": "proje, plan, kesit, cephe, mahal, alan, ruhsat, mimari uygunluk",
+        "focus": "mimari proje ile mevcut durumun karşılaştırılması ve alan/mahal tespitleri"
+    },
+    "sehircilik": {
+        "name": "Şehircilik",
+        "terms": "imar planı, plan notu, kullanım kararı, yapılaşma, emsal, çekme mesafesi",
+        "focus": "imar planı, plan notları ve yapılaşma koşullarının teknik değerlendirmesi"
+    },
+    "tapu": {
+        "name": "Tapu",
+        "terms": "tapu kaydı, ada/parsel, bağımsız bölüm, malik, şerh, ipotek, yüzölçümü",
+        "focus": "tapu kayıtları, taşınmaz kimliği ve kayıt üzerindeki takyidatların teknik incelenmesi"
+    },
+    "sigorta": {
+        "name": "Sigorta",
+        "terms": "poliçe, teminat, hasar, eksper, riziko, ödeme, tazminat",
+        "focus": "poliçe ve hasar kayıtlarının karşılaştırılması ile hasarın teknik kapsamı"
+    },
+    "aktüerya": {
+        "name": "Aktüerya",
+        "terms": "yaş, gelir, dönem, yaşam tablosu, iskonto, tazminat, aktüeryal hesap",
+        "focus": "hesap parametreleri, dönemsel veriler, aktüeryal varsayımlar ve hesap sonucu"
+    },
+    "isg": {
+        "name": "İş Sağlığı ve Güvenliği",
+        "terms": "işyeri, ekipman, risk, tedbir, iş kazası, eğitim, talimat, denetim",
+        "focus": "işyerindeki çalışma koşulları, riskler, tedbirler ve kaza ile ilgili teknik unsurlar"
+    },
+    "makinehasar": {
+        "name": "Makine Hasar",
+        "terms": "hasar, parça, arıza, aşınma, onarım, yedek parça, çalışma koşulu",
+        "focus": "hasarlı makine/ekipmanın durumu, arıza ve onarımın teknik kapsamı"
+    },
+    "denizcilik": {
+        "name": "Denizcilik",
+        "terms": "gemi, sefer, mevki, yük, makine, seyir, bakım, deniz durumu",
+        "focus": "gemi/sefer kayıtları, yük ve makine bilgileri ile olayın denizcilik yönü"
+    },
+    "lojistik": {
+        "name": "Lojistik",
+        "terms": "taşıma, sevkiyat, teslim, yük, koli, sıcaklık, irsaliye, teslim tutanağı",
+        "focus": "taşıma/sevkiyat süreci, yük durumu, kayıtlar ve teslim koşulları"
+    },
+    "turizm": {
+        "name": "Turizm",
+        "terms": "tesis, konaklama, rezervasyon, oda, hizmet, dönem, kapasite",
+        "focus": "tesis ve hizmetin fiili durumu, rezervasyon/kayıtlar ve hizmet kapsamı"
+    },
+    "spor": {
+        "name": "Spor",
+        "terms": "müsabaka, sporcu, tesis, ekipman, organizasyon, kayıt, oyun alanı",
+        "focus": "müsabaka/tesis koşulları, ekipman ve organizasyon kayıtlarının teknik değerlendirmesi"
+    },
+    "grafik": {
+        "name": "Grafik ve Tasarım",
+        "terms": "eser, tasarım, görsel, dosya, piksel, renk, kompozisyon, kaynak",
+        "focus": "eserlerin görsel/teknik özellikleri, karşılaştırma ve benzerlik bulguları"
+    },
+    "marka": {
+        "name": "Marka",
+        "terms": "marka, ibare, logo, sınıf, görsel işaret, kullanım, karşılaştırma",
+        "focus": "karşılaştırılan işaretlerin görsel/işitsel/anlamsal teknik özellikleri"
+    },
+    "patent": {
+        "name": "Patent ve Faydalı Model",
+        "terms": "buluş, istem, teknik özellik, tarifname, çizim, unsur, karşılaştırma",
+        "focus": "teknik unsurlar, istemler, tarifname ve karşılaştırılan teknik özellikler"
+    },
+    "imza": {
+        "name": "İmza ve El Yazısı",
+        "terms": "imza, el yazısı, mukayese, çizgi, baskı, eğim, karakteristik",
+        "focus": "inceleme konusu imza/yazı ile mukayese örneklerinin teknik karşılaştırması"
+    },
+    "belge": {
+        "name": "Belge İnceleme",
+        "terms": "belge, kağıt, mürekkep, baskı, silinti, ekleme, tarih, seri",
+        "focus": "belgenin fiziksel/teknik özellikleri ve belge üzerindeki değişiklik/uyumsuzluk bulguları"
+    },
+    "tibbi": {
+        "name": "Tıbbi Bilirkişilik",
+        "terms": "tıbbi kayıt, muayene, tetkik, tanı, tedavi, rapor, tarih",
+        "focus": "dosyada mevcut tıbbi kayıt ve tetkiklerin teknik/tıbbi açıdan değerlendirilmesi"
+    },
+    "psikoloji": {
+        "name": "Psikoloji",
+        "terms": "psikolojik değerlendirme, test, görüşme, kayıt, ölçek, gözlem",
+        "focus": "dosyada bulunan psikolojik değerlendirme, test ve görüşme kayıtlarının teknik değerlendirmesi"
+    },
+    "cevre": {
+        "name": "Çevre",
+        "terms": "emisyon, atık, su, hava, toprak, numune, ölçüm, çevresel etki",
+        "focus": "çevresel ölçüm, numune, atık/emisyon ve saha bulgularının teknik değerlendirmesi"
+    },
+    "kimliklendirme": {
+        "name": "Kimliklendirme ve Adli İnceleme",
+        "terms": "fotoğraf, görüntü, özellik, karşılaştırma, ölçü, kayıt",
+        "focus": "inceleme materyalinin karşılaştırılması ve kimliklendirmeye esas teknik özellikler"
+    }
+};
 
     function selectedBranchKey() {
         return document.getElementById('bransSecim')?.value || "";
@@ -991,58 +1429,124 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         return (typeof branchDatabase !== 'undefined' && branchDatabase[k]) ? branchDatabase[k].adi : "";
     }
 
-    function normalizeOfficial(text) {
-        let t = text.trim();
-        if (!t) return "";
-        t = t.replace(/\bben\b/gi, "yapılan inceleme");
-        t = t.replace(/gördüm/gi, "tespit edilmiştir");
-        t = t.replace(/gördük/gi, "tespit edilmiştir");
-        t = t.replace(/bence/gi, "teknik değerlendirme kapsamında");
-        t = t.replace(/bana göre/gi, "teknik değerlendirme kapsamında");
-        t = t.replace(/bayağı/gi, "belirgin şekilde");
-        t = t.replace(/çok fazla/gi, "belirgin düzeyde");
-        t = t.replace(/yok gibi/gi, "tespit edilememiştir");
-        t = t.replace(/\bvar\b/gi, "mevcuttur");
-        t = t.replace(/\byok\b/gi, "mevcut değildir");
-        t = t.replace(/\s+/g, " ").trim();
-        if (!/[.!?]$/.test(t)) t += ".";
-        if (/^(inceleme|yapılan inceleme)/i.test(t)) return t;
-        return "Yapılan incelemede " + t.charAt(0).toLowerCase() + t.slice(1);
-    }
-
-    function technicalize(text) {
-        let t = normalizeOfficial(text);
+    function currentBranchProfile() {
         const key = selectedBranchKey();
-        const terms = BRANCH_TERMS[key];
-        if (terms && !/teknik açıdan|teknik yönden|teknik değerlendirme/i.test(t)) {
-            t += ` Teknik değerlendirmede ${terms.split(",").slice(0,3).join(", ")} hususları dikkate alınmıştır.`;
-        }
-        return t;
+        return AI_BRANCH_PROFILES[key] || {
+            name: selectedBranchName() || "Bilirkişilik Branşı",
+            terms: "dosya, belge, kayıt, ölçüm, teknik bulgu",
+            focus: "inceleme konusu teknik hususlar"
+        };
     }
 
-    function detailedize(text) {
-        let t = normalizeOfficial(text);
+    function currentStepTitle(index) {
+        const key = selectedBranchKey();
+        const data = (typeof branchDatabase !== 'undefined') ? branchDatabase[key] : null;
+        return data && data.adimlar && data.adimlar[index] ? data.adimlar[index].title : "Teknik İnceleme";
+    }
+
+    function sentenceCase(t) {
+        t = t.trim();
         if (!t) return "";
-        if (!/inceleme kapsamında|mevcut bilgi ve belgeler/i.test(t)) {
-            t += " Söz konusu tespit, inceleme kapsamında mevcut bilgi ve belgelerle birlikte değerlendirilmiştir.";
-        }
-        return t;
+        return t.charAt(0).toLowerCase() + t.slice(1);
+    }
+
+    function cleanColloquial(text) {
+        let t = text.trim();
+        const replacements = [
+            [/\bbence\b/gi, "teknik değerlendirme kapsamında"],
+            [/\bbana göre\b/gi, "teknik değerlendirme kapsamında"],
+            [/\bben gördüm\b/gi, "yapılan incelemede tespit edilmiştir"],
+            [/\bgördüm\b/gi, "tespit edilmiştir"],
+            [/\bgördük\b/gi, "tespit edilmiştir"],
+            [/\bbaktım\b/gi, "incelenmiştir"],
+            [/\bbaktığımızda\b/gi, "inceleme kapsamında"],
+            [/\bbayağı\b/gi, "belirgin düzeyde"],
+            [/\bçok fazla\b/gi, "belirgin düzeyde"],
+            [/\baz biraz\b/gi, "sınırlı düzeyde"],
+            [/\bşurada\b/gi, "ilgili bölümde"],
+            [/\byok gibi\b/gi, "tespit edilememiştir"],
+            [/\bgaliba\b/gi, "mevcut bulgular kapsamında"],
+            [/\bsanırım\b/gi, "mevcut bulgular kapsamında"]
+        ];
+        replacements.forEach(([a,b]) => t = t.replace(a,b));
+        return t.replace(/\s+/g, " ").trim();
+    }
+
+    function splitIntoSentences(text) {
+        return cleanColloquial(text)
+            .split(/(?<=[.!?])\s+|\n+/)
+            .map(x => x.trim())
+            .filter(Boolean);
+    }
+
+    function normalizeOfficial(text) {
+        const sentences = splitIntoSentences(text);
+        if (!sentences.length) return "";
+        let out = sentences.map(x => {
+            let y = x;
+            if (!/^(Yapılan|İnceleme|Dosya|Mevcut|İlgili|Sunulan|İncelenen|Değerlendirilen|Söz konusu|Teknik)/i.test(y)) {
+                y = "Yapılan incelemede " + sentenceCase(y);
+            }
+            y = y.replace(/\bvar\b/gi, "mevcuttur");
+            y = y.replace(/\byok\b/gi, "mevcut değildir");
+            if (!/[.!?]$/.test(y)) y += ".";
+            return y;
+        });
+        return out.join(" ");
+    }
+
+    function technicalize(text, index) {
+        const p = currentBranchProfile();
+        const base = normalizeOfficial(text);
+        if (!base) return "";
+        const step = currentStepTitle(index);
+        return `${base} ${step} kapsamında, ${p.terms.split(",").slice(0,4).join(", ")} yönlerinden teknik değerlendirme yapılmıştır.`;
+    }
+
+    function detailedize(text, index) {
+        const p = currentBranchProfile();
+        const base = normalizeOfficial(text);
+        if (!base) return "";
+        const step = currentStepTitle(index);
+        return `${base} ${step} başlığı altında değerlendirilmiştir. İnceleme konusu husus, ${p.focus} kapsamında ele alınmış; mevcut bilgi, belge ve kullanıcı tarafından bildirilen teknik tespitlerle sınırlı olarak değerlendirilmiştir. Bu kapsam dışında kalan ve dosyada bulunmayan herhangi bir veri hakkında kesin teknik sonuç oluşturulmamıştır.`;
     }
 
     function objectiveize(text) {
         let t = normalizeOfficial(text);
         t = t.replace(/kesinlikle/gi, "mevcut bulgular kapsamında");
-        t = t.replace(/kesin/gi, "mevcut bulgulara göre");
         t = t.replace(/kesin olarak/gi, "mevcut veriler kapsamında");
+        t = t.replace(/\bkesin\b/gi, "mevcut bulgulara göre");
+        t = t.replace(/mutlaka/gi, "gerektiğinde");
         return t;
     }
 
     function shorten(text) {
-        let t = normalizeOfficial(text);
-        if (t.length <= 260) return t;
-        const parts = t.split(/(?<=[.!?])\s+/);
+        const parts = splitIntoSentences(text);
+        if (parts.length <= 2) return normalizeOfficial(text);
         return parts.slice(0, 2).join(" ");
     }
+
+    function aiDraftStep(text, index, mode) {
+        const p = currentBranchProfile();
+        let result = text.trim();
+        if (mode === "official") result = normalizeOfficial(result);
+        if (mode === "technical") result = technicalize(result, index);
+        if (mode === "detailed") result = detailedize(result, index);
+        if (mode === "objective") result = objectiveize(result);
+        if (mode === "short") result = shorten(result);
+
+        const step = currentStepTitle(index);
+        return {
+            report: result,
+            missing: [
+                "Ölçüm/değer bilgisi kullanıcı tarafından verilmemişse eklenmemelidir.",
+                "Belge tarihi veya numarası belirtilmemişse varsayılmamalıdır.",
+                "Nedensellik veya kusur sonucu açıkça desteklenmiyorsa kesin kanaat kurulmamalıdır."
+            ],
+            warning: `${p.name} branşı / ${step}: Metin yalnızca verilen tespitler üzerinden düzenlenmiştir. Yeni teknik veri oluşturulmamıştır.`
+        };
+    }
+
 
     async function generateAIText(prompt, fallback) {
         /*
@@ -1064,24 +1568,28 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             return;
         }
 
-        let transformed = raw;
-        if (mode === "official") transformed = normalizeOfficial(raw);
-        if (mode === "technical") transformed = technicalize(raw);
-        if (mode === "detailed") transformed = detailedize(raw);
-        if (mode === "objective") transformed = objectiveize(raw);
-        if (mode === "short") transformed = shorten(raw);
+        const draft = aiDraftStep(raw, index, mode);
+        result.innerHTML = "";
 
-        result.textContent = transformed;
-        result.style.display = "block";
-        warning.textContent = "AI kuralı: Bu metin yalnızca mevcut tespitinizin anlatımını düzenler; yeni teknik bulgu, ölçü veya sonuç eklememelidir. Metni rapora almadan önce kontrol ediniz.";
-        warning.style.display = "block";
+        const reportTitle = document.createElement("div");
+        reportTitle.innerHTML = "<b>RAPOR METNİ ÖNERİSİ</b>";
+        result.appendChild(reportTitle);
+
+        const reportText = document.createElement("div");
+        reportText.style.marginTop = "7px";
+        reportText.textContent = draft.report;
+        result.appendChild(reportText);
+
+        const missing = document.createElement("div");
+        missing.style.marginTop = "10px";
+        missing.innerHTML = "<b>TEKNİK KONTROL / EKSİK BİLGİ UYARILARI</b><br>• " + draft.missing.join("<br>• ");
+        result.appendChild(missing);
 
         const apply = document.createElement("button");
         apply.type = "button";
         apply.className = "ai-apply";
         apply.textContent = "✓ Bu Metni Rapor Metni Olarak Kullan";
-        apply.onclick = () => { input.value = transformed; };
-        result.appendChild(document.createElement("br"));
+        apply.onclick = () => { input.value = draft.report; };
         result.appendChild(apply);
 
         const regen = document.createElement("button");
@@ -1091,7 +1599,12 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         regen.onclick = () => aiRewriteStep(index, mode);
         result.appendChild(document.createTextNode(" "));
         result.appendChild(regen);
+
+        warning.textContent = draft.warning;
+        warning.style.display = "block";
+        result.style.display = "block";
     }
+
 
     function collectFindings() {
         const findings = [];
@@ -1112,31 +1625,44 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const findings = collectFindings();
         const result = document.getElementById("ai_conclusion_result");
         const warning = document.getElementById("ai_conclusion_warning");
+        const p = currentBranchProfile();
 
         if (findings.length === 0) {
-            alert("Önce inceleme adımlarındaki tespitleri yazınız.");
+            alert("Önce en az bir teknik inceleme tespitini yazınız.");
             return;
         }
 
-        let conclusion = "Yapılan teknik inceleme kapsamında yalnızca doldurulan " +
-            findings.length + " inceleme başlığında yer alan tespitler değerlendirilmiştir. " +
-            findings.map(x => x.split(":").slice(1).join(":").trim()).join(" ") +
-            " Mevcut bilgi ve belgeler ile inceleme bulguları birlikte değerlendirildiğinde, yukarıda belirtilen teknik tespitlerin dosya kapsamındaki değerlendirmede esas alınabileceği kanaatine varılmıştır.";
+        const bodies = findings.map(x => x.split(":").slice(1).join(":").trim());
+        const summary = bodies.join(" ");
 
-        conclusion = objectiveize(conclusion);
-        result.textContent = conclusion;
-        result.style.display = "block";
-        warning.textContent = "Bu sonuç taslağı yalnızca doldurulmuş inceleme alanlarındaki bulguları birleştirir. Nihai teknik kanaati mutlaka bilirkişi kontrol etmeli; desteklenmeyen bir kusur, ölçü veya neden-sonuç ilişkisi eklenmemelidir.";
+        const conclusion =
+            `Yapılan ${p.name} kapsamındaki teknik incelemede, yalnızca dosyada ve kullanıcı tarafından bildirilen verilerle desteklenen ${findings.length} inceleme başlığındaki tespitler değerlendirilmiştir. ` +
+            `${summary} ` +
+            `Mevcut bilgi ve belgeler kapsamında yapılan değerlendirme, ${p.focus} ile sınırlı tutulmuştur. ` +
+            `İncelenmeyen veya dosya kapsamında bulunmayan hususlar hakkında ayrıca teknik kanaat oluşturulmamıştır.`;
+
+        result.innerHTML = "";
+        const title = document.createElement("div");
+        title.innerHTML = "<b>TEKNİK SONUÇ VE KANAAT ÖNERİSİ</b>";
+        result.appendChild(title);
+
+        const body = document.createElement("div");
+        body.style.marginTop = "7px";
+        body.textContent = objectiveize(conclusion);
+        result.appendChild(body);
 
         const apply = document.createElement("button");
         apply.type = "button";
         apply.className = "ai-apply";
         apply.textContent = "✓ Sonucu Rapor Alanına Aktar";
-        apply.onclick = () => { document.getElementById("technicalConclusion").value = conclusion; };
-        result.appendChild(document.createElement("br"));
+        apply.onclick = () => { document.getElementById("technicalConclusion").value = objectiveize(conclusion); };
         result.appendChild(apply);
+
+        warning.textContent = `${p.name} profili kullanıldı. Bu taslak yalnızca doldurulan inceleme başlıklarını esas alır; desteklenmeyen ölçü, kusur, neden-sonuç veya hukuki sonuç eklememelidir.`;
         warning.style.display = "block";
+        result.style.display = "block";
     }
+
 
     function aiImproveConclusion(mode) {
         const input = document.getElementById("technicalConclusion");
@@ -1162,15 +1688,35 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const raporTuru = document.getElementById('raporTuru').value;
         const mahkeme = document.getElementById('mahkemeAdi').value.trim();
         const esas = document.getElementById('esasNo').value.trim();
+        const taraflar = document.getElementById('taraflar') ? document.getElementById('taraflar').value.trim() : "";
+        const gorevlendirme = document.getElementById('gorevlendirme') ? document.getElementById('gorevlendirme').value.trim() : "";
+        const raporTarihi = document.getElementById('raporTarihi') ? document.getElementById('raporTarihi').value.trim() : "";
         const kunye = document.getElementById('materyalKunyesi').value.trim();
         const deliller = document.getElementById('delilListesi') ? document.getElementById('delilListesi').value.trim() : "";
         const yontem = document.getElementById('incelemeYontemi') ? document.getElementById('incelemeYontemi').value.trim() : "";
-        const ekler = document.getElementById('ekler') ? document.getElementById('ekler').value.trim() : "";
+        const eklerText = document.getElementById('ekler') ? document.getElementById('ekler').value.trim() : "";
+        const eklerFileNames = (typeof ekUploadedFiles !== "undefined" && ekUploadedFiles.length)
+            ? ekUploadedFiles.map(f => `• ${f.name}`)
+            : [];
+        // Textarea + yüklenen dosya adlarını birleştir, aynı satırı iki kez yazma
+        const eklerLines = [];
+        const seen = new Set();
+        (eklerText ? eklerText.split(/\n+/) : []).concat(eklerFileNames).forEach(line => {
+            const t = line.trim();
+            if (t && !seen.has(t)) {
+                seen.add(t);
+                eklerLines.push(t);
+            }
+        });
+        const ekler = eklerLines.join("\n");
         const branchSpecial = document.getElementById('branchSpecial') ? document.getElementById('branchSpecial').value.trim() : "";
         const selectedKey = document.getElementById('bransSecim').value;
+        const bkAd = document.getElementById('bilirkişiAd') ? document.getElementById('bilirkişiAd').value.trim() : "";
+        const bkUnvan = document.getElementById('bilirkişiUnvan') ? document.getElementById('bilirkişiUnvan').value.trim() : "";
+        const bkSicil = document.getElementById('bilirkişiSicil') ? document.getElementById('bilirkişiSicil').value.trim() : "";
 
         if (!mahkeme || !esas || !selectedKey) {
-            alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun. Teknik inceleme maddeleri ise ihtiyaca göre doldurulabilir.");
+            alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun.");
             return null;
         }
 
@@ -1178,10 +1724,15 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const raporBasligi = raporTuru === 'ek' ? "BİLİRKİŞİ EK RAPORU" : "BİLİRKİŞİ RAPORU";
 
         let report = `T.C. ${mahkeme.toUpperCase()}\n` +
-                     `DOSYA ESAS NO: ${esas}\n\n` +
-                     `${raporBasligi}\n\n` +
-                     `1. GÖREVLENDİRME VE USUL:\n` +
-                     `Yukarıda belirtilen esas numaralı dosya kapsamında; ${branchData.adi} alanında teknik inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n\n`;
+                     `DOSYA ESAS NO: ${esas}\n`;
+        if (taraflar) report += `TARAFLAR: ${taraflar}\n`;
+        if (raporTarihi) report += `RAPOR TARİHİ: ${raporTarihi}\n`;
+        report += `\n${raporBasligi}\n\n`;
+
+        report += `1. GÖREVLENDİRME VE USUL:\n`;
+        report += `Yukarıda esas numarası yazılı dosya kapsamında ${branchData.adi} alanında teknik inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n`;
+        if (gorevlendirme) report += `Görevlendirme: ${gorevlendirme}\n`;
+        report += `\n`;
 
         if (raporTuru === 'ek') {
             const onceki = document.getElementById('oncekiRaporTarihi') ? document.getElementById('oncekiRaporTarihi').value.trim() : "";
@@ -1193,12 +1744,14 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             if (yeni) report += `YENİ BELGE / DELİLLER:\n${yeni}\n\n`;
         }
 
-        if (kunye) report += `2. İNCELEMEYE KONU MATERYAL KÜNYESİ:\n${kunye}\n\n`;
-        if (deliller) report += `3. İNCELENEN DELİL / BELGE / KAYITLAR:\n${deliller}\n\n`;
-        if (yontem) report += `4. İNCELEME YÖNTEMİ VE KULLANILAN STANDARTLAR:\n${yontem}\n\n`;
-        if (branchSpecial) report += `BRANŞA ÖZEL TEKNİK BİLGİLER:\n${branchSpecial}\n\n`;
+        let bolumNo = 2;
+        if (kunye) { report += `${bolumNo}. İNCELEMEYE KONU MATERYAL KÜNYESİ:\n${kunye}\n\n`; bolumNo++; }
+        if (deliller) { report += `${bolumNo}. İNCELENEN DELİL / BELGE / KAYITLAR:\n${deliller}\n\n`; bolumNo++; }
+        if (yontem) { report += `${bolumNo}. İNCELEME YÖNTEMİ VE KULLANILAN STANDARTLAR:\n${yontem}\n\n`; bolumNo++; }
+        if (branchSpecial) { report += `${bolumNo}. BRANŞA ÖZEL TEKNİK BİLGİLER:\n${branchSpecial}\n\n`; bolumNo++; }
 
-        report += `5. TEKNİK İNCELEME VE BULGULAR:\n\n`;
+        report += `${bolumNo}. TEKNİK İNCELEME VE BULGULAR:\n\n`;
+        bolumNo++;
 
         let activeCount = 0;
         branchData.adimlar.forEach((st, i) => {
@@ -1218,22 +1771,30 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
         const techniqueSummary = document.getElementById('technicalConclusion') ? document.getElementById('technicalConclusion').value.trim() : "";
         if (techniqueSummary) {
-            report += `6. TEKNİK SONUÇ VE KANAAT:\n${techniqueSummary}\n\n`;
+            report += `${bolumNo}. TEKNİK SONUÇ VE KANAAT:\n${techniqueSummary}\n\n`;
+            bolumNo++;
         }
 
-        report += `6. TEKNİK SONUÇ VE KANAAT:\n${techniqueSummary}\n\n`;
-
-        if (ekler) report += `7. EKLER:\n${ekler}\n\n`;
+        if (ekler) {
+            report += `${bolumNo}. EKLER:\n${ekler}\n\n`;
+            bolumNo++;
+        }
 
         let talepler = [];
         if (document.getElementById('talepEkSure').checked) talepler.push("Yasal ek süre verilmesi");
         if (document.getElementById('talepKesif').checked) talepler.push("Mahalinde keşif icrası ve/veya heyet teşkili");
-
         if (talepler.length > 0) {
-            report += `8. EK TALEPLER:\n${talepler.join(" ve ")} hususları takdirlerinize arz olunur.\n\n`;
+            report += `${bolumNo}. EK TALEPLER:\n${talepler.join(" ve ")} hususları takdirlerinize arz olunur.\n\n`;
         }
 
-        report += `Arz olunur.\n\nBilirkişi\nUnvan / Ad Soyad`;
+        report += `Arz olunur.\n\n`;
+        if (raporTarihi) report += `${raporTarihi}\n\n`;
+        report += `Bilirkişi\n`;
+        if (bkAd) report += `${bkAd}\n`;
+        if (bkUnvan) report += `${bkUnvan}\n`;
+        if (bkSicil) report += `Sicil No: ${bkSicil}\n`;
+        if (!bkAd && !bkUnvan) report += `Ad Soyad / Unvan\n`;
+
         return report;
     }
 
@@ -1312,12 +1873,69 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         }, 300);
     }
 
+
+    let ekUploadedFiles = [];
+
+    function handleEkFiles(input) {
+        const preview = document.getElementById("eklerPreview");
+        if (!preview) return;
+        ekUploadedFiles = Array.from(input.files || []);
+        preview.innerHTML = "";
+
+        if (!ekUploadedFiles.length) {
+            preview.innerHTML = '<div style="color:#64748b;font-size:.82rem;">Henüz ek dosya seçilmedi.</div>';
+            return;
+        }
+
+        const wrap = document.createElement("div");
+        wrap.className = "ek-file-list";
+
+        ekUploadedFiles.forEach((file, index) => {
+            const item = document.createElement("div");
+            item.className = "ek-file-item";
+
+            if (file.type.startsWith("image/")) {
+                const img = document.createElement("img");
+                img.alt = file.name;
+                img.src = URL.createObjectURL(file);
+                item.appendChild(img);
+            } else {
+                const icon = document.createElement("span");
+                icon.textContent = "📎";
+                icon.style.fontSize = "22px";
+                item.appendChild(icon);
+            }
+
+            const name = document.createElement("div");
+            name.className = "ek-file-name";
+            name.textContent = `${file.name} (${Math.round(file.size / 1024)} KB)`;
+            item.appendChild(name);
+
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "ek-remove";
+            remove.textContent = "Kaldır";
+            remove.onclick = () => removeEkFile(index);
+            item.appendChild(remove);
+
+            wrap.appendChild(item);
+        });
+
+        preview.appendChild(wrap);
+        // Dosya adları rapora ekUploadedFiles üzerinden yazılır.
+        // Textarea yalnızca kullanıcı açıklaması içindir; otomatik isim eklenmez (çift yazım önlenir).
+    }
+
+    function removeEkFile(index) {
+        ekUploadedFiles.splice(index, 1);
+        const input = document.getElementById("eklerDosya");
+        const dt = new DataTransfer();
+        ekUploadedFiles.forEach(f => dt.items.add(f));
+        if (input) input.files = dt.files;
+        handleEkFiles(input);
+    }
+
 </script>
 </body>
-</html>    <div class="section-title">6. EKLER (VARSA)</div>
-    <div class="form-group">
-        <label>Ekler / Tablo / Fotoğraf / Hesap Cetveli / Kroki:</label>
-        <textarea id="ekler" placeholder="Varsa rapora eklenen belge, tablo, fotoğraf, hesap cetveli, kroki vb."></textarea>
-    </div>
-
+</html>
 
