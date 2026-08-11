@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v12.5)</title>
+    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v13.0)</title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
@@ -31,7 +31,7 @@
 <body>
 
 <div class="container">
-    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v12.5)</h1>
+    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v13.0)</h1>
     
     <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
     <div class="form-group">
@@ -56,7 +56,16 @@
         <input type="text" id="materyalKunyesi" placeholder="Örn: Mahkeme Emanetinin 2026/45 Sırasına Kayıtlı, Mühürlü Poşet İçerisindeki Dijital Materyal">
     </div>
 
-    <div id="ek-rapor-container"></div>
+    
+    <div class="form-group">
+        <label>İncelenen Delil / Belge / Kayıt Listesi:</label>
+        <textarea id="delilListesi" placeholder="İncelenen belge, fotoğraf, kayıt, cihaz, numune, proje, hesap cetveli vb."></textarea>
+    </div>
+    <div class="form-group">
+        <label>İnceleme Yöntemi ve Kullanılan Standartlar:</label>
+        <textarea id="incelemeYontemi" placeholder="Kullanılan teknik yöntemler, ölçüm/karşılaştırma yöntemleri ve varsa ilgili standartlar."></textarea>
+    </div>
+<div id="ek-rapor-container"></div>
 
     <div class="section-title">3. UZMANLIK ALANI VE BRANŞ SEÇİMİ</div>
     <div class="form-group">
@@ -111,13 +120,23 @@
         </select>
     </div>
 
-    <div class="section-title">4. İNCELEME VE BULGULAR ALANI (REHBERLİ ADIMLAR)</div>
+    
+    <div id="branch-special-area"></div>
+<div class="section-title">4. İNCELEME VE BULGULAR ALANI (REHBERLİ ADIMLAR)</div>
     <div id="graphic-tools-area"></div>
     <div id="dynamic-steps-area">
         <p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>
     </div>
 
-    <div class="section-title">5. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
+    
+
+    <div class="section-title">5. TEKNİK SONUÇ VE KANAAT</div>
+    <div class="form-group">
+        <label>9 adımın tamamı değerlendirildikten sonra tek ve toplu teknik sonucu yazınız:</label>
+        <textarea id="technicalConclusion" placeholder="İnceleme bulgularının toplu teknik sonucu; varsa kusur, uygunsuzluk, değer, hesap, benzerlik veya diğer teknik kanaatleri kısa ve somut şekilde yazınız."></textarea>
+    </div>
+
+<div class="section-title">8. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
     <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
         <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="talepEkSure" style="width: auto; margin-right: 8px;"><b>Ek Süre Talebi:</b> İncelemenin tamamlanabilmesi için yasal ek süre verilmesi arz olunur.</label>
         <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="talepKesif" style="width: auto; margin-right: 8px;"><b>Keşif / Kurul Teşkili Talebi:</b> Mahalinde keşif icrası ve/veya heyet teşkili gereklidir.</label>
@@ -731,10 +750,18 @@
         let container = document.getElementById('ek-rapor-container');
         if (tur === 'ek') {
             container.innerHTML = `
-                <div class="section-title" style="background: #9333ea;">TARAFLARIN İTİRAZLARI VE DEĞERLENDİRME ALANI</div>
+                <div class="section-title" style="background: #9333ea;">EK RAPOR – İTİRAZLARIN DEĞERLENDİRİLMESİ</div>
                 <div class="form-group">
-                    <label>Tarafların İtiraz Dilekçesi Özeti ve İtiraz Konuları:</label>
-                    <textarea id="itirazMetni" placeholder="Tarafların rapora yönelttiği itiraz maddelerini buraya yazınız..."></textarea>
+                    <label>Önceki Rapor Tarihi:</label>
+                    <input type="text" id="oncekiRaporTarihi" placeholder="Örn: 10.08.2026">
+                </div>
+                <div class="form-group">
+                    <label>Tarafların İtiraz / Talep Maddeleri:</label>
+                    <textarea id="itirazMetni" placeholder="İtirazları mümkünse madde madde yazınız..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>İtirazlara İlişkin Yeni Belge / Delil Varsa:</label>
+                    <textarea id="yeniDeliller" placeholder="Ek rapor kapsamında sunulan yeni belge veya delilleri yazınız..."></textarea>
                 </div>
             `;
         } else {
@@ -746,9 +773,11 @@
         const selectedKey = document.getElementById('bransSecim').value;
         const toolsArea = document.getElementById('graphic-tools-area');
         const area = document.getElementById('dynamic-steps-area');
-        
+        const specialArea = document.getElementById('branch-special-area');
+
         toolsArea.innerHTML = "";
         area.innerHTML = "";
+        specialArea.innerHTML = "";
 
         if (!selectedKey) {
             area.innerHTML = '<p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>';
@@ -779,11 +808,41 @@
             `;
         }
 
+        const specialLabels = {
+            trafik: "Araç / Yol / Kaza Verileri (plaka, tarih-saat, yol, kamera, hız vb.)",
+            gayrimenkul: "Taşınmaz Bilgileri (il/ilçe, ada-parsel, yüzölçümü, imar, emsal vb.)",
+            hesap: "Hesap Verileri (dönem, kalemler, belgeler, faiz/mahsup vb.)",
+            bilisim: "Dijital Delil Bilgileri (cihaz, imaj, hash, log, yazılım/sürüm vb.)",
+            insaat: "Yapı / Proje Bilgileri (proje, mahal, metraj, ölçüm, keşif vb.)",
+            muhasebe: "Mali Kayıt Bilgileri (hesap dönemi, defter, belge, kalem, tutar vb.)",
+            sgk: "SGK / Hizmet Bilgileri (sicil, dönem, gün, prime esas kazanç vb.)",
+            maden: "Maden / Ruhsat Bilgileri (ruhsat, saha, rezerv, tenör, üretim vb.)",
+            kimya: "Numune / Ürün Bilgileri (numune no, tarih, parti, analiz, sonuç vb.)",
+            biyomedikal: "Cihaz Bilgileri (marka/model, seri no, bakım/kalibrasyon, arıza vb.)",
+            enerji: "Enerji Sistemi Bilgileri (tesis, cihaz, kapasite, ölçüm, üretim vb.)",
+            gemiinsaa: "Gemi Bilgileri (gemi adı, IMO no, sefer, makine, ölçüm vb.)",
+            havacilik: "Uçuş / Hava Aracı Bilgileri (uçuş no, tescil, olay zamanı, kayıtlar vb.)",
+            petrol: "Saha / Kuyu / Hat Bilgileri (kuyu, hat, basınç, debi, üretim vb.)",
+            metalurji: "Malzeme / Numune Bilgileri (malzeme sınıfı, numune, test, kaynak vb.)",
+            spor: "Spor / Tesis Bilgileri (organizasyon, müsabaka, tesis, kayıtlar vb.)",
+            turizm: "Tesis / Konaklama Bilgileri (tesis, dönem, rezervasyon, hizmet vb.)",
+            kutuphane: "Belge / Arşiv Bilgileri (belge no, tarih, fon, kayıt, asıl/suret vb.)",
+            tercume: "Çeviri Belgesi Bilgileri (kaynak dil, hedef dil, belge, tarih, karşılaştırma vb.)",
+            grafik: "Eser / Dosya Bilgileri (eser adı, dosya formatı, kaynak, tarih, sürüm vb.)"
+        };
+        const label = specialLabels[selectedKey] || "Branşa Özel Teknik Bilgiler (ölçüm, belge, numune, kayıt, referans vb.)";
+        specialArea.innerHTML = `
+            <div class="section-title" style="background:#475569;">BRANŞA ÖZEL TEKNİK BİLGİLER (VARSA)</div>
+            <div class="form-group">
+                <label>${label}</label>
+                <textarea id="branchSpecial" placeholder="Bu branşa özgü önemli teknik bilgileri kısa ve somut şekilde giriniz..."></textarea>
+            </div>
+        `;
+
         let stepsHTML = "";
         branchData.adimlar.forEach((s, i) => {
-            let placeholderText = "Bu adımdaki tespitlerinizi buraya yazınız...";
-            if (branchData.isGraphic && i === 8) placeholderText = "Otomatik fark analizi yukarıdan eklenecektir...";
-            
+            let placeholderText = "Bu adımdaki tespitlerinizi yazınız...";
+            if (branchData.isGraphic && i === 7) placeholderText = "Otomatik fark analizi veya teknik tespit buraya işlenecektir...";
             stepsHTML += `
                 <div class="step">
                     <b>${s.title}</b>
@@ -860,6 +919,10 @@
         const mahkeme = document.getElementById('mahkemeAdi').value.trim();
         const esas = document.getElementById('esasNo').value.trim();
         const kunye = document.getElementById('materyalKunyesi').value.trim();
+        const deliller = document.getElementById('delilListesi') ? document.getElementById('delilListesi').value.trim() : "";
+        const yontem = document.getElementById('incelemeYontemi') ? document.getElementById('incelemeYontemi').value.trim() : "";
+        const ekler = document.getElementById('ekler') ? document.getElementById('ekler').value.trim() : "";
+        const branchSpecial = document.getElementById('branchSpecial') ? document.getElementById('branchSpecial').value.trim() : "";
         const selectedKey = document.getElementById('bransSecim').value;
 
         if (!mahkeme || !esas || !selectedKey) {
@@ -869,57 +932,68 @@
 
         const branchData = branchDatabase[selectedKey];
         const raporBasligi = raporTuru === 'ek' ? "BİLİRKİŞİ EK RAPORU" : "BİLİRKİŞİ RAPORU";
-        
+
         let report = `T.C. ${mahkeme.toUpperCase()}\n` +
                      `DOSYA ESAS NO: ${esas}\n\n` +
                      `${raporBasligi}\n\n` +
-                     `1. GÖREVLENİRME VE USUL:\n` +
-                     `Yüce Mahkemenizin yukarıda belirtilen esas numaralı dosyası kapsamında; ${branchData.adi} alanında inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n\n`;
+                     `1. GÖREVLENDİRME VE USUL:\n` +
+                     `Yukarıda belirtilen esas numaralı dosya kapsamında; ${branchData.adi} alanında teknik inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n\n`;
 
         if (raporTuru === 'ek') {
-            let itirazVal = document.getElementById('itirazMetni').value.trim();
-            report += `TARAFLARIN İTİRAZLARI:\n${itirazVal}\n\n`;
+            const onceki = document.getElementById('oncekiRaporTarihi') ? document.getElementById('oncekiRaporTarihi').value.trim() : "";
+            const itiraz = document.getElementById('itirazMetni') ? document.getElementById('itirazMetni').value.trim() : "";
+            const yeni = document.getElementById('yeniDeliller') ? document.getElementById('yeniDeliller').value.trim() : "";
+            report += `EK RAPORUN DAYANAĞI:\n`;
+            if (onceki) report += `Önceki rapor tarihi: ${onceki}\n`;
+            report += `İTİRAZ / TALEPLER:\n${itiraz || "Belirtilmemiştir."}\n\n`;
+            if (yeni) report += `YENİ BELGE / DELİLLER:\n${yeni}\n\n`;
         }
 
-        if (kunye) {
-            report += `2. İNCELEMEYE KONU MATERYAL KÜNYESİ:\n${kunye}\n\n`;
-        }
+        if (kunye) report += `2. İNCELEMEYE KONU MATERYAL KÜNYESİ:\n${kunye}\n\n`;
+        if (deliller) report += `3. İNCELENEN DELİL / BELGE / KAYITLAR:\n${deliller}\n\n`;
+        if (yontem) report += `4. İNCELEME YÖNTEMİ VE KULLANILAN STANDARTLAR:\n${yontem}\n\n`;
+        if (branchSpecial) report += `BRANŞA ÖZEL TEKNİK BİLGİLER:\n${branchSpecial}\n\n`;
 
-        report += `3. MADDİ OLAY VE UYUŞMAZLIĞIN KONUSU:\n` +
-                  `Dava dosyası kapsamındaki ihtilaflı unsurlar, ${branchData.kanun} hükümleri çerçevesinde teknik incelemeye tabi tutulmuştur.\n\n` +
-                  `4. TEKNİK İNCELEME VE BULGULAR:\n\n`;
+        report += `5. TEKNİK İNCELEME VE BULGULAR:\n\n`;
 
+        let missing = [];
         let activeCount = 0;
-        branchData.adimlar.forEach((s, i) => {
-            let el = document.getElementById(`step_input_${i}`);
-            if (el) {
-                let val = el.value.trim();
-                if (val !== "") {
-                    activeCount++;
-                    let cleanTitle = s.title.replace(/^[0-9]+\.\s*/, '');
-                    report += `${activeCount}. ${cleanTitle.toUpperCase()}:\n${s.template.replace("{input}", val)}\n\n`;
-                }
+        branchData.adimlar.forEach((st, i) => {
+            const el = document.getElementById(`step_input_${i}`);
+            const val = el ? el.value.trim() : "";
+            if (!val) {
+                missing.push(st.title);
+            } else {
+                activeCount++;
+                const cleanTitle = st.title.replace(/^[0-9]+\.\s*/, '');
+                report += `${activeCount}. ${cleanTitle.toUpperCase()}:\n${val}\n\n`;
             }
         });
 
-        if (activeCount === 0) {
-            alert("Lütfen en az bir inceleme adımına bulgu giriniz!");
+        if (missing.length > 0) {
+            alert("Lütfen branşın tüm inceleme adımlarındaki tespit alanlarını doldurun:\n\n" + missing.join("\n"));
             return null;
         }
+
+        const techniqueSummary = document.getElementById('technicalConclusion') ? document.getElementById('technicalConclusion').value.trim() : "";
+        if (!techniqueSummary) {
+            alert("Lütfen en sonda yer alan 'Teknik Sonuç ve Kanaat' alanını doldurun.");
+            return null;
+        }
+
+        report += `6. TEKNİK SONUÇ VE KANAAT:\n${techniqueSummary}\n\n`;
+
+        if (ekler) report += `7. EKLER:\n${ekler}\n\n`;
 
         let talepler = [];
         if (document.getElementById('talepEkSure').checked) talepler.push("Yasal ek süre verilmesi");
         if (document.getElementById('talepKesif').checked) talepler.push("Mahalinde keşif icrası ve/veya heyet teşkili");
 
-        report += `5. SONUÇ VE KANAAT:\n` +
-                  `Yukarıda ${branchData.adi} branşına ait ${branchData.kanun} ve ilgili teknik standartlar çerçevesinde toplam ${activeCount} parametre üzerinden inceleme gerçekleştirilmiştir. ` +
-                  `Dosyaya sunulan maddi deliller, sayısal veriler ve teknik bulgular yukarıda arz edilmiş olup; somut olaydaki hukuki değerlendirme, hak ihlali/kusur tespiti ve nihai takdir Yüce Mahkemenizin yetki ve takdirindedir.\n`;
-
         if (talepler.length > 0) {
-            report += `\nEK TALEPLER: ${talepler.join(" ve ")} hususları takdirlerinize arz olunur.\n`;
+            report += `8. EK TALEPLER:\n${talepler.join(" ve ")} hususları takdirlerinize arz olunur.\n\n`;
         }
 
-        report += `\nArz olunur.\n\nBilirkişi\nUnvan / Ad Soyad`;
+        report += `Arz olunur.\n\nBilirkişi\nUnvan / Ad Soyad`;
         return report;
     }
 
@@ -928,7 +1002,7 @@
         if (!report) return;
         document.getElementById('output').innerText = report;
         navigator.clipboard.writeText(report);
-        alert("Bilirkişilik Daire Başkanlığı standartlarına uygun rapor oluşturuldu ve panoya kopyalandı!");
+        alert("Rapor oluşturuldu ve panoya kopyalandı!");
     }
 
     function downloadWordDoc() {
@@ -997,4 +1071,10 @@
 
 </script>
 </body>
-</html>
+</html>    <div class="section-title">6. EKLER (VARSA)</div>
+    <div class="form-group">
+        <label>Ekler / Tablo / Fotoğraf / Hesap Cetveli / Kroki:</label>
+        <textarea id="ekler" placeholder="Varsa rapora eklenen belge, tablo, fotoğraf, hesap cetveli, kroki vb."></textarea>
+    </div>
+
+
