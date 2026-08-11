@@ -133,7 +133,7 @@
 
     
     <div id="branch-special-area"></div>
-<div class="section-title">4. İNCELEME VE BULGULAR ALANI (REHBERLİ ADIMLAR)</div>
+<div class="section-title">4. İNCELEME VE BULGULAR ALANI (İHTİYACA GÖRE)</div>
     <div id="graphic-tools-area"></div>
     <div id="dynamic-steps-area">
         <p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>
@@ -143,8 +143,8 @@
 
     <div class="section-title">5. TEKNİK SONUÇ VE KANAAT</div>
     <div class="form-group">
-        <label>9 adımın tamamı değerlendirildikten sonra tek ve toplu teknik sonucu yazınız:</label>
-        <textarea id="technicalConclusion" placeholder="İnceleme bulgularının toplu teknik sonucu; varsa kusur, uygunsuzluk, değer, hesap, benzerlik veya diğer teknik kanaatleri kısa ve somut şekilde yazınız."></textarea>
+        <label>Yalnızca doldurulan teknik inceleme alanları değerlendirildikten sonra tek ve toplu teknik sonucu yazınız (isteğe bağlı):</label>
+        <textarea id="technicalConclusion" placeholder="Yalnızca yapılan incelemelere ilişkin toplu teknik sonucu; varsa kusur, uygunsuzluk, değer, hesap, benzerlik veya diğer teknik kanaatleri kısa ve somut şekilde yazınız."></textarea>
         <div class="ai-assistant-box">
             <b>✦ YAPAY ZEKA BİLİRKİŞİ ASİSTANI – TOPLU TEKNİK SONUÇ</b>
             <div class="ai-buttons">
@@ -1118,15 +1118,15 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             return;
         }
 
-        let conclusion = "Yapılan teknik inceleme kapsamında " +
-            findings.length + " inceleme başlığında tespitler değerlendirilmiştir. " +
+        let conclusion = "Yapılan teknik inceleme kapsamında yalnızca doldurulan " +
+            findings.length + " inceleme başlığında yer alan tespitler değerlendirilmiştir. " +
             findings.map(x => x.split(":").slice(1).join(":").trim()).join(" ") +
             " Mevcut bilgi ve belgeler ile inceleme bulguları birlikte değerlendirildiğinde, yukarıda belirtilen teknik tespitlerin dosya kapsamındaki değerlendirmede esas alınabileceği kanaatine varılmıştır.";
 
         conclusion = objectiveize(conclusion);
         result.textContent = conclusion;
         result.style.display = "block";
-        warning.textContent = "Bu sonuç taslağı yalnızca girilmiş bulguları birleştirir. Nihai teknik kanaati mutlaka bilirkişi kontrol etmeli; desteklenmeyen bir kusur, ölçü veya neden-sonuç ilişkisi eklenmemelidir.";
+        warning.textContent = "Bu sonuç taslağı yalnızca doldurulmuş inceleme alanlarındaki bulguları birleştirir. Nihai teknik kanaati mutlaka bilirkişi kontrol etmeli; desteklenmeyen bir kusur, ölçü veya neden-sonuç ilişkisi eklenmemelidir.";
 
         const apply = document.createElement("button");
         apply.type = "button";
@@ -1170,7 +1170,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const selectedKey = document.getElementById('bransSecim').value;
 
         if (!mahkeme || !esas || !selectedKey) {
-            alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun!");
+            alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun. Teknik inceleme maddeleri ise ihtiyaca göre doldurulabilir.");
             return null;
         }
 
@@ -1200,29 +1200,25 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
         report += `5. TEKNİK İNCELEME VE BULGULAR:\n\n`;
 
-        let missing = [];
         let activeCount = 0;
         branchData.adimlar.forEach((st, i) => {
             const el = document.getElementById(`step_input_${i}`);
             const val = el ? el.value.trim() : "";
-            if (!val) {
-                missing.push(st.title);
-            } else {
+            if (val) {
                 activeCount++;
                 const cleanTitle = st.title.replace(/^[0-9]+\.\s*/, '');
                 report += `${activeCount}. ${cleanTitle.toUpperCase()}:\n${val}\n\n`;
             }
         });
 
-        if (missing.length > 0) {
-            alert("Lütfen branşın tüm inceleme adımlarındaki tespit alanlarını doldurun:\n\n" + missing.join("\n"));
+        if (activeCount === 0) {
+            alert("En az bir teknik inceleme/tespit alanını doldurmanız gerekir.");
             return null;
         }
 
         const techniqueSummary = document.getElementById('technicalConclusion') ? document.getElementById('technicalConclusion').value.trim() : "";
-        if (!techniqueSummary) {
-            alert("Lütfen en sonda yer alan 'Teknik Sonuç ve Kanaat' alanını doldurun.");
-            return null;
+        if (techniqueSummary) {
+            report += `6. TEKNİK SONUÇ VE KANAAT:\n${techniqueSummary}\n\n`;
         }
 
         report += `6. TEKNİK SONUÇ VE KANAAT:\n${techniqueSummary}\n\n`;
