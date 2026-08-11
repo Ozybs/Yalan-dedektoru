@@ -61,7 +61,7 @@
         <label>Bilirkişilik Branşını Seçin:</label>
         <select id="bransSecim" onchange="loadBranchParameters()">
             <option value="">-- Lütfen Branş Seçiniz --</option>
-            <option value="grafik">1. Grafik, Matbaa und Görsel İletişim Tasarımı (Özel Piksel/FSEK Motoru)</option>
+            <option value="grafik">1. Grafik, Matbaa ve Görsel İletişim Tasarımı (Özel Piksel/FSEK Motoru)</option>
             <option value="bilisim">2. Bilişim Teknolojileri ve Standart Yazılım</option>
             <option value="trafik">3. Trafik Kazaları ve Kaza Tespit Uzmanlığı</option>
             <option value="gayrimenkul">4. Gayrimenkul Değerleme ve İmar Mevzuatı</option>
@@ -102,199 +102,199 @@
 
     const branchDatabase = {
         grafik: {
-            adi: "Grafik, Matbaa und Görsel İletişim Tasarımı",
+            adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
             kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
             isGraphic: true,
             adimlar: [
-                { title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını ve benzerlerini tespit eder.<br><strong>PSD / AI Kısayolları:</strong> Görsel boyut doğrulaması için Photoshop'ta <span class='tech-tag'>Ctrl + Alt + I</span> (Image Size) veya <span class='tech-tag'>Ctrl + Alt + C</span> (Canvas Size) kullanılır.", template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." },
-                { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini, stillerini, glifleri ve karakter dizilimlerini inceler.<br><strong>PSD / AI Kısayolları:</strong> Illustrator'da metni vektörleştirerek incelemek için <span class='tech-tag'>Shift + Ctrl + O</span> (Create Outlines); Karakter Panelini açmak için <span class='tech-tag'>Ctrl + T</span> kullanılır.", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
-                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "<strong>Ne İşe Yarar:</strong> Ekran (RGB) ve baskı (CMYK) renk profillerini, renk gamlarını ve sayısal ton değerlerini kıyaslar.<br><strong>PSD / AI Kısayolları:</strong> Renk örneği/dalgalık aracı için <span class='tech-tag'>I</span>; Bilgi Paneli için <span class='tech-tag'>F8</span>; Photoshop Renk Ayarları için <span class='tech-tag'>Shift + Ctrl + K</span> kullanılır.", template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." },
-                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "<strong>Ne İşe Yarar:</strong> Maskeleme katmanlarının arkasına gizlenmiş grafik ögelerini, vektör kesim sınırlarını ve maske ilişkilerini ortaya çıkarır.<br><strong>PSD / AI Kısayolları:</strong> Illustrator'da Kırpma Maskesi <span class='tech-tag'>Ctrl + 7</span>. Photoshop'ta Clipping Mask <span class='tech-tag'>Alt + Ctrl + G</span>.", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
-                { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder.<br><strong>PSD / AI Kısayolları:</strong> Katmanlar Panelini açmak için <span class='tech-tag'>F7</span>. Katmanı izole etmek için <span class='tech-tag'>Alt + Göz İkonuna Tıklama</span> yapılır.", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
-                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını kıyaslar.<br><strong>PSD / AI Kısayolları:</strong> Doğrudan Seçim Aracı <span class='tech-tag'>A</span>, Kalem Aracı (Pen Tool) <span class='tech-tag'>P</span> tuşu.", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir: {input}" },
-                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Katmanların saydamlık ve harmanlama modlarını inceler.<br><strong>PSD / AI Kısayolları:</strong> Opaklık için <span class='tech-tag'>1-0</span> tuşları. Harmanlama modları arası geçiş için <span class='tech-tag'>Shift + '+' veya '-'</span>.", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir: {input}" },
-                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder.<br><strong>PSD / AI Kısayolları:</strong> Izgarayı göster/gizle <span class='tech-tag'>Ctrl + '</span>. Cetveller <span class='tech-tag'>Ctrl + R</span>.", template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." },
-                { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "<strong>Ne İşe Yarar:</strong> İki görseli üst üste bindirerek piksel bazında örtüşme oranını kanıtlar.<br><strong>PSD / AI Kısayolları:</strong> Fark (Difference) harmanlama moduna doğrudan geçiş kısayolu <span class='tech-tag'>Shift + Alt + D</span>.", template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." }
+                { title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını ve benzerlerini tespit eder.", template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." },
+                { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini, stillerini, glifleri ve karakter dizilimlerini inceler.", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
+                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "<strong>Ne İşe Yarar:</strong> Ekran (RGB) ve baskı (CMYK) renk profillerini ve sayısal ton değerlerini kıyaslar.", template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." },
+                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "<strong>Ne İşe Yarar:</strong> Maskeleme katmanlarının arkasına gizlenmiş grafik ögelerini ve vektör kesim sınırlarını ortaya çıkarır.", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
+                { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder.", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
+                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını kıyaslar.", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir: {input}" },
+                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Katmanların saydamlık ve harmanlama modlarını inceler.", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir: {input}" },
+                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder.", template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "<strong>Ne İşe Yarar:</strong> İki görseli üst üste bindirerek piksel bazında örtüşme oranını kanıtlar.", template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." }
             ]
         },
         bilisim: {
             adi: "Bilişim Teknolojileri ve Standart Yazılım",
             kanun: "5651 sayılı İnternet Ortamında Yapılan Yayınların Düzenlenmesi Hakkında Kanun",
             adimlar: [
-                { title: "1. İmaj Hash (MD5/SHA) Doğrulaması", guide: "<strong>Ne İşe Yarar:</strong> Adli imajın orijinal depolama birimiyle bit-seviyesinde eşleşip eşleşmediğini doğrular.<br><strong>Teknik Kısayol:</strong> Komut satırı hash kontrolü için <span class='tech-tag'>certutil -hashfile</span> komutu kullanılır.", template: "elde edilen dijital imajın hash değerleri karşılaştırılmış olup, {input} tespit edilmiştir." },
-                { title: "2. Sistem Artifact ve Kayıt İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> İşletim sistemi kalıntıları, kayıt defteri (registry) ve kullanıcı etkinliklerini inceler.<br><strong>Teknik Kısayol:</strong> Windows Kayıt Defteri için <span class='tech-tag'>Win + R -> regedit</span>.", template: "sistem artifact ve kayıt dosyaları üzerinde yapılan incelemede, {input} saptanmıştır." },
-                { title: "3. Dosya Sistemi ve Veri Kurtarma", guide: "<strong>Ne İşe Yarar:</strong> Silinmiş bölümleri, dosya tablolarını (MFT/FAT) ve kurtarılan verileri analiz eder.<br><strong>Teknik Kısayol:</strong> Disk yönetimi için <span class='tech-tag'>diskmgmt.msc</span>.", template: "dosya sistemi yapısı ve veri kurtarma bulguları incelenmiş olup, {input} görülmüştür." },
-                { title: "4. Sunucu Log Kayıtları Analizi", guide: "<strong>Ne İşe Yarar:</strong> Erişim logları, güvenlik duvarı kayıtları ve zaman damgalarını inceler.<br><strong>Teknik Kısayol:</strong> Olay Görüntüleyicisi için <span class='tech-tag'>eventvwr.msc</span>.", template: "sunucu ve sistem log kayıtları tetkik edilmiş olup, {input} tespiti yapılmıştır." },
-                { title: "5. Network Trafik ve Paket Analizi", guide: "<strong>Ne İşe Yarar:</strong> Şüpheli bağlantıları, port hareketlerini ve pcap dosyalarını inceler.<br><strong>Teknik Kısayol:</strong> Ağ arayüz listesi için <span class='tech-tag'>ipconfig /all</span> veya Wireshark.", template: "ağ trafiği ve paket hareketleri analiz edilmiş, {input} saptanmıştır." },
-                { title: "6. Kaynak Kod / Reverse Engineering", guide: "<strong>Ne İşe Yarar:</strong> Yazılım kaynak kodları, derlenmiş dosyalar ve tersine mühendislik bulgularını inceler.<br><strong>Teknik Kısayol:</strong> Kod editörleri için <span class='tech-tag'>Ctrl + Shift + F</span> (Global Arama).", template: "kaynak kod blokları ve yazılım yapısı üzerinde yapılan incelemede, {input} belirlenmiştir." },
-                { title: "7. Malware Davranışsal Analizi", guide: "<strong>Ne İşe Yarar:</strong> Zararlı yazılım örneklerinin tetiklenme mekanizmalarını ve etkilerini inceler.<br><strong>Teknik Kısayol:</strong> Görev Yöneticisi için <span class='tech-tag'>Ctrl + Shift + Esc</span>.", template: "zararlı yazılımın sistem üzerindeki davranışları incelenmiş olup, {input} saptanmıştır." },
-                { title: "8. Veritabanı Bütünlük Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Tablo yapıları, işlem logları ve veritabanı bütünlüğünü denetler.<br><strong>Teknik Kısayol:</strong> SQL sorgu çalıştırma için <span class='tech-tag'>F5</span>.", template: "veritabanı logları ve bütünlük kontrolleri neticesinde, {input} tespit edilmiştir." },
-                { title: "9. Siber Suç ve İlliyet Analizi", guide: "<strong>Ne İşe Yarar:</strong> Eylemin teknik izleri ile fail arasındaki illiyet bağını kurar.<br><strong>Teknik Kısayol:</strong> Raporlama birimi için <span class='tech-tag'>Ctrl + P</span>.", template: "elde edilen dijital veriler ve siber izler bağlamında, {input} kanaatine varılmıştır." }
+                { title: "1. İmaj Hash (MD5/SHA) Doğrulaması", guide: "Adli imajın orijinal depolama birimiyle bit-seviyesinde eşleşip eşleşmediğini doğrular.", template: "elde edilen dijital imajın hash değerleri karşılaştırılmış olup, {input} tespit edilmiştir." },
+                { title: "2. Sistem Artifact ve Kayıt İncelemesi", guide: "İşletim sistemi kalıntıları, kayıt defteri ve kullanıcı etkinliklerini inceler.", template: "sistem artifact ve kayıt dosyaları üzerinde yapılan incelemede, {input} saptanmıştır." },
+                { title: "3. Dosya Sistemi ve Veri Kurtarma", guide: "Silinmiş bölümleri, dosya tablolarını ve kurtarılan verileri analiz eder.", template: "dosya sistemi yapısı ve veri kurtarma bulguları incelenmiş olup, {input} görülmüştür." },
+                { title: "4. Sunucu Log Kayıtları Analizi", guide: "Erişim logları, güvenlik duvarı kayıtları ve zaman damgalarını inceler.", template: "sunucu ve sistem log kayıtları tetkik edilmiş olup, {input} tespiti yapılmıştır." },
+                { title: "5. Network Trafik ve Paket Analizi", guide: "Şüpheli bağlantıları, port hareketlerini ve pcap dosyalarını inceler.", template: "ağ trafiği ve paket hareketleri analiz edilmiş, {input} saptanmıştır." },
+                { title: "6. Kaynak Kod / Reverse Engineering", guide: "Yazılım kaynak kodları ve derlenmiş dosyaları inceler.", template: "kaynak kod blokları ve yazılım yapısı üzerinde yapılan incelemede, {input} belirlenmiştir." },
+                { title: "7. Malware Davranışsal Analizi", guide: "Zararlı yazılım örneklerinin tetiklenme mekanizmalarını inceler.", template: "zararlı yazılımın sistem üzerindeki davranışları incelenmiş olup, {input} saptanmıştır." },
+                { title: "8. Veritabanı Bütünlük Kontrolü", guide: "Tablo yapıları ve veritabanı bütünlüğünü denetler.", template: "veritabanı logları ve bütünlük kontrolleri neticesinde, {input} tespit edilmiştir." },
+                { title: "9. Siber Suç ve İlliyet Analizi", guide: "Eylemin teknik izleri ile fail arasındaki illiyet bağını kurar.", template: "elde edilen dijital veriler ve siber izler bağlamında, {input} kanaatine varılmıştır." }
             ]
         },
         trafik: {
             adi: "Trafik Kazaları ve Kaza Tespit Uzmanlığı",
-            kanun: "2918 sayılı Karayolları Trafik Kanunu ve İlgili Yönetmelikler",
+            kanun: "2918 sayılı Karayolları Trafik Kanunu",
             adimlar: [
-                { title: "1. Olay Yeri Krokisi ve Fiziki Bulgular", guide: "<strong>Ne İşe Yarar:</strong> Fren izleri, çarpışma noktası ve parça saçılımlarını inceler.<br><strong>Teknik Araç:</strong> Ölçüm tekerleği ve lazer metre.", template: "olay yeri krokisi ve fiziki bulgular incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Momentum ve Hız Hesaplamaları", guide: "<strong>Ne İşe Yarar:</strong> Fren izi boyutu ve deformasyon enerjisine göre hız hesaplaması yapar.", template: "fiziki deformasyonlar ve fren izleri üzerinden yapılan hız hesaplamasında, {input} saptanmıştır." },
-                { title: "3. Görüş Mesafesi ve Refleks Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sürücünün görüş açısı, hava/yol şartları ve intikal süresini değerlendirir.", template: "görüş mesafesi ve sürücü reaksiyon süresi analiz edilmiş olup, {input} görülmüştür." },
-                { title: "4. Yol Kusuru ve İşaretleme İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Karayolunun fiziki kusurları ve trafik işaretlerinin yeterliliğini denetler.", template: "yolun fiziki yapısı ve trafik işaretlemeleri incelenmiş, {input} tespit edilmiştir." },
-                { title: "5. Araç Mekanik Ekspertizi", guide: "<strong>Ne İşe Yarar:</strong> Fren sistemi, direksiyon, lastik ve mekanik aksam arızalarını inceler.", template: "araçların mekanik aksamları üzerinde yapılan incelemede, {input} saptanmıştır." },
-                { title: "6. Kusur Dağılım Oranları", guide: "<strong>Ne İşe Yarar:</strong> Tarafların asli ve tali kusur durumlarını KTK uyarınca belirler.", template: "tarafların kusur oranları değerlendirilmiş olup, {input} kanaatine varılmıştır." },
-                { title: "7. MOBESE ve Kamera Kayıt Analizi", guide: "<strong>Ne İşe Yarar:</strong> Güvenlik kamera görüntüleri üzerinden kaza anı rekonstrüksiyonu yapar.", template: "kamera kayıtları üzerinde yapılan incelemede, {input} tespit edilmiştir." },
-                { title: "8. Tanık İfadeleri ve Çapraz Sorgu", guide: "<strong>Ne İşe Yarar:</strong> Görgü tanıklarının beyanlarını fiziksel bulgularla karşılaştırır.", template: "tanık beyanları fiziki delillerle bağdaştırıldığında, {input} saptanmıştır." },
-                { title: "9. Kaza Rekonstrüksiyonu ve İlliyet Bağı", guide: "<strong>Ne İşe Yarar:</strong> Kazanın oluş mekanizmasını bütüncül olarak yeniden canlandırır.", template: "kaza rekonstrüksiyonu neticesinde olayın gelişim süreci ve illiyet bağı {input} olarak belirlenmiştir." }
+                { title: "1. Olay Yeri Krokisi ve Fiziki Bulgular", guide: "Fren izleri, çarpışma noktası ve parça saçılımlarını inceler.", template: "olay yeri krokisi ve fiziki bulgular incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Momentum ve Hız Hesaplamaları", guide: "Fren izi boyutu ve deformasyon enerjisine göre hız hesaplaması yapar.", template: "fiziki deformasyonlar ve fren izleri üzerinden yapılan hız hesaplamasında, {input} saptanmıştır." },
+                { title: "3. Görüş Mesafesi ve Refleks Analizi", guide: "Sürücünün görüş açısı ve intikal süresini değerlendirir.", template: "görüş mesafesi ve sürücü reaksiyon süresi analiz edilmiş olup, {input} görülmüştür." },
+                { title: "4. Yol Kusuru ve İşaretleme İncelemesi", guide: "Karayolunun fiziki kusurlarını ve işaretlerin yeterliliğini denetler.", template: "yolun fiziki yapısı ve trafik işaretlemeleri incelenmiş, {input} tespit edilmiştir." },
+                { title: "5. Araç Mekanik Ekspertizi", guide: "Fren sistemi, direksiyon ve lastik arızalarını inceler.", template: "araçların mekanik aksamları üzerinde yapılan incelemede, {input} saptanmıştır." },
+                { title: "6. Kusur Dağılım Oranları", guide: "Tarafların asli ve tali kusur durumlarını belirler.", template: "tarafların kusur oranları değerlendirilmiş olup, {input} kanaatine varılmıştır." },
+                { title: "7. MOBESE ve Kamera Kayıt Analizi", guide: "Güvenlik kamera görüntüleri üzerinden kaza anını inceler.", template: "kamera kayıtları üzerinde yapılan incelemede, {input} tespit edilmiştir." },
+                { title: "8. Tanık İfadeleri ve Çapraz Sorgu", guide: "Görgü tanıklarının beyanlarını fiziksel bulgularla karşılaştırır.", template: "tanık beyanları fiziki delillerle bağdaştırıldığında, {input} saptanmıştır." },
+                { title: "9. Kaza Rekonstrüksiyonu ve İlliyet Bağı", guide: "Kazanın oluş mekanizmasını bütüncül olarak yeniden canlandırır.", template: "kaza rekonstrüksiyonu neticesinde olayın gelişim süreci ve illiyet bağı {input} olarak belirlenmiştir." }
             ]
         },
         gayrimenkul: {
             adi: "Gayrimenkul Değerleme ve İmar Mevzuatı",
             kanun: "3194 sayılı İmar Kanunu ve Tapu-Kadastro Mevzuatı",
             adimlar: [
-                { title: "1. Tapu Sicil ve Kayıt İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Takyidatlar, şerhler, ipotekler ve mülkiyet zincirini inceler.", template: "tapu sicil kayıtları ve takyidatlar incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Kadastro Haritası ve Parsel Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çap, kroki ve zemin uyumunu kadastro paftası üzerinden kontrol eder.", template: "kadastro paftası ve zemin uyumu incelenmiş, {input} saptanmıştır." },
-                { title: "3. İmar Durumu ve Yapılaşma Hakları", guide: "<strong>Ne İşe Yarar:</strong> Belediye imar planı notları, emsal (KAKS) ve gabari hükümlerini inceler.", template: "imar durumu ve yapılaşma koşulları tetkik edilmiş olup, {input} saptanmıştır." },
-                { title: "4. Değerleme ve Pazar Emsal Analizi", guide: "<strong>Ne İşe Yarar:</strong> Bölgedeki benzer gayrimenkullerin satış verilerini (emsal) kıyaslar.", template: "emsal piyasa araştırması ve değerleme hesaplamaları neticesinde, {input} tespit edilmiştir." },
-                { title: "5. Hisseli Tapu ve Mülkiyet Hakları", guide: "<strong>Ne İşe Yarar:</strong> Müşterek/elbirliği mülkiyet durumları ve fiili taksimi inceler.", template: "hisseli mülkiyet yapısı ve fiili kullanım durumları incelenmiş, {input} görülmüştür." },
-                { title: "6. İrtifak ve Sınır İhtilafları", guide: "<strong>Ne İşe Yarar:</strong> Geçit hakkı, intifa hakkı ve tecavüz durumlarını denetler.", template: "irtifak hakları ve sınır durumları incelenmiş olup, {input} saptanmıştır." },
-                { title: "7. Belediye Arşiv Dosyası İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Ruhsatlar, onaylı mimari projeler ve iskan belgelerini inceler.", template: "belediye arşiv dosyasındaki ruhsat ve projeler incelenmiş, {input} tespit edilmiştir." },
-                { title: "8. Zilyetlik ve Fiili Kullanım Durumu", guide: "<strong>Ne İşe Yarar:</strong> Gayrimenkulün yerinde fiilen kim tarafından kullanıldığını tespit eder.", template: "mahalinde yapılan tespitte fiili kullanım durumunun {input} olduğu görülmüştür." },
-                { title: "9. İmar Kirliliği ve Ruhsatsız Yapı Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Yapının ruhsata ve projesine aykırı kısımlarını inceler.", template: "imar mevzuatına aykırılıklar yönünden yapılan incelemede, {input} saptanmıştır." }
+                { title: "1. Tapu Sicil ve Kayıt İncelemesi", guide: "Takyidatlar, şerhler, ipotekler ve mülkiyet zincirini inceler.", template: "tapu sicil kayıtları ve takyidatlar incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Kadastro Haritası ve Parsel Analizi", guide: "Çap, kroki ve zemin uyumunu kadastro paftası üzerinden kontrol eder.", template: "kadastro paftası ve zemin uyumu incelenmiş, {input} saptanmıştır." },
+                { title: "3. İmar Durumu ve Yapılaşma Hakları", guide: "Belediye imar planı notları, emsal ve gabari hükümlerini inceler.", template: "imar durumu ve yapılaşma koşulları tetkik edilmiş olup, {input} saptanmıştır." },
+                { title: "4. Değerleme ve Pazar Emsal Analizi", guide: "Bölgedeki benzer gayrimenkullerin satış verilerini kıyaslar.", template: "emsal piyasa araştırması ve değerleme hesaplamaları neticesinde, {input} tespit edilmiştir." },
+                { title: "5. Hisseli Tapu ve Mülkiyet Hakları", guide: "Müşterek mülkiyet durumları ve fiili taksimi inceler.", template: "hisseli mülkiyet yapısı ve fiili kullanım durumları incelenmiş, {input} görülmüştür." },
+                { title: "6. İrtifak ve Sınır İhtilafları", guide: "Geçit hakkı, intifa hakkı ve tecavüz durumlarını denetler.", template: "irtifak hakları ve sınır durumları incelenmiş olup, {input} saptanmıştır." },
+                { title: "7. Belediye Arşiv Dosyası İncelemesi", guide: "Ruhsatlar, onaylı mimari projeler ve iskan belgelerini inceler.", template: "belediye arşiv dosyasındaki ruhsat ve projeler incelenmiş, {input} tespit edilmiştir." },
+                { title: "8. Zilyetlik ve Fiili Kullanım Durumu", guide: "Gayrimenkulün yerinde fiilen kim tarafından kullanıldığını tespit eder.", template: "mahalinde yapılan tespitte fiili kullanım durumunun {input} olduğu görülmüştür." },
+                { title: "9. İmar Kirliliği ve Ruhsatsız Yapı Tespiti", guide: "Yapının ruhsata ve projesine aykırı kısımlarını inceler.", template: "imar mevzuatına aykırılıklar yönünden yapılan incelemede, {input} saptanmıştır." }
             ]
         },
         hesap: {
             adi: "Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler",
             kanun: "Türk Ticaret Kanunu (TTK) ve Vergi Usul Kanunu (VUK)",
             adimlar: [
-                { title: "1. Ticari Defter Tasdik ve Bütünlük Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Yasal defterlerin açılış/kapanış tasdiklerini ve usulüne uygunluklarını denetler.", template: "ticari defterlerin tasdik ve açılış/kapanış kayıtları incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Fatura ve İrsaliye Mutabakatı", guide: "<strong>Ne İşe Yarar:</strong> Ticari belgelerin mal/hizmet akışına uygunluğunu çapraz sorgular.", template: "fatura ve irsaliye mutabakatı yapılmış, {input} saptanmıştır." },
-                { title: "3. Banka Ekstre ve Kasa Analizi", guide: "<strong>Ne İşe Yarar:</strong> Şirket hesap hareketleri, nakit akışı ve dekontları inceler.", template: "banka ekstreleri ve kasa kayıtları tetkik edilmiş olup, {input} görülmüştür." },
-                { title: "4. Vergi Matrahı ve Dönemsellik İlkesi", guide: "<strong>Ne İşe Yarar:</strong> Gelir-gider kayıtlarının ilgili dönemde tahakkuk edip etmediğini denetler.", template: "vergi matrahı ve dönemsellik ilkeleri açısından yapılan incelemede, {input} saptanmıştır." },
-                { title: "5. Ticari Alacak / Borç Zamanaşımı", guide: "<strong>Ne İşe Yarar:</strong> Alacakların Borçlar Kanunu ve TTK uyarınca zamanaşımı sürelerini inceler.", template: "alacak ve borç kalemlerinin zamanaşımı durumları incelenmiş, {input} tespit edilmiştir." },
-                { title: "6. Bilanço ve Özkaynak Analizi", guide: "<strong>Ne İşe Yarar:</strong> Mali tablolar üzerinden şirketin aktif/pasif yapısını ve özkaynak durumunu analiz eder.", template: "bilanço ve mali tablolar analiz edilmiş olup, {input} saptanmıştır." },
-                { title: "7. Ortaklık Payı ve Kar/Zarar İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Şirket ortaklarının pay oranları, kar dağıtımı ve temettü hesaplarını inceler.", template: "ortaklık payları ve kar/zarar hesaplamaları tetkik edilmiş, {input} saptanmıştır." },
-                { title: "8. Mali İlliyet ve Hak Ediş Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Taraflar arasındaki alacak-verecek kalemini sayısal olarak hesaplar.", template: "ticari defterler ve belgeler üzerinden yapılan hesaplama sonucunda, {input} borç/alacak tespiti yapılmıştır." },
-                { title: "9. Ticari Faaliyetin Bütüncül Mali Analizi", guide: "<strong>Ne İşe Yarar:</strong> İşletmenin genel mali durumu ve ticari işlemlerini değerlendirir.", template: "mali veriler bütüncül olarak incelendiğinde, {input} kanaatine varılmıştır." }
+                { title: "1. Ticari Defter Tasdik ve Bütünlük Kontrolü", guide: "Yasal defterlerin açılış/kapanış tasdiklerini ve usulüne uygunluklarını denetler.", template: "ticari defterlerin tasdik ve açılış/kapanış kayıtları incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Fatura ve İrsaliye Mutabakatı", guide: "Ticari belgelerin mal/hizmet akışına uygunluğunu çapraz sorgular.", template: "fatura ve irsaliye mutabakatı yapılmış, {input} saptanmıştır." },
+                { title: "3. Banka Ekstre ve Kasa Analizi", guide: "Şirket hesap hareketleri, nakit akışı ve dekontları inceler.", template: "banka ekstreleri ve kasa kayıtları tetkik edilmiş olup, {input} görülmüştür." },
+                { title: "4. Vergi Matrahı ve Dönemsellik İlkesi", guide: "Gelir-gider kayıtlarının ilgili dönemde tahakkuk edip etmediğini denetler.", template: "vergi matrahı ve dönemsellik ilkeleri açısından yapılan incelemede, {input} saptanmıştır." },
+                { title: "5. Ticari Alacak / Borç Zamanaşımı", guide: "Alacakların Borçlar Kanunu ve TTK uyarınca zamanaşımı sürelerini inceler.", template: "alacak ve borç kalemlerinin zamanaşımı durumları incelenmiş, {input} tespit edilmiştir." },
+                { title: "6. Bilanço ve Özkaynak Analizi", guide: "Mali tablolar üzerinden şirketin aktif/pasif yapısını ve özkaynak durumunu analiz eder.", template: "bilanço ve mali tablolar analiz edilmiş olup, {input} saptanmıştır." },
+                { title: "7. Ortaklık Payı ve Kar/Zarar İncelemesi", guide: "Şirket ortaklarının pay oranları, kar dağıtımı ve temettü hesaplarını inceler.", template: "ortaklık payları ve kar/zarar hesaplamaları tetkik edilmiş, {input} saptanmıştır." },
+                { title: "8. Mali İlliyet ve Hak Ediş Hesabı", guide: "Taraflar arasındaki alacak-verecek kalemini sayısal olarak hesaplar.", template: "ticari defterler ve belgeler üzerinden yapılan hesaplama sonucunda, {input} borç/alacak tespiti yapılmıştır." },
+                { title: "9. Ticari Faaliyetin Bütüncül Mali Analizi", guide: "İşletmenin genel mali durumu ve ticari işlemlerini değerlendirir.", template: "mali veriler bütüncül olarak incelendiğinde, {input} kanaatine varılmıştır." }
             ]
         },
         insaat: {
             adi: "İnşaat Mühendisliği, Statik ve Keşif Hizmetleri",
-            kanun: "İmar Kanunu, Yapı Denetimi Hakkında Kanun ve Türk Borçlar Kanunu",
+            kanun: "İmar Kanunu, Yapı Denetimi Kanunu ve Türk Borçlar Kanunu",
             adimlar: [
-                { title: "1. Proje ve Yapı Ruhsatı Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Mimari ve statik projelerin ruhsata uygunluğunu inceler.", template: "mimari/statik projeler ile yapı ruhsatı karşılaştırılmış olup, {input} tespit edilmiştir." },
-                { title: "2. Beton ve Donatı Yerinde Ölçümü", guide: "<strong>Ne İşe Yarar:</strong> Beton kalitesi, demir çapı ve adetlerini yerinde non-destrüktif testlerle ölçer.", template: "yerinde yapılan donatı ve malzeme ölçümlerinde, {input} saptanmıştır." },
-                { title: "3. İş Programı ve Hak Ediş Kıyası", guide: "<strong>Ne İşe Yarar:</strong> Sözleşme iş programı ile şantiyedeki fiili gerçekleşme oranlarını kıyaslar.", template: "iş programı ve hak ediş seviyeleri incelenmiş, {input} görülmüştür." },
-                { title: "4. Yapı Denetim ve Şantiye Defteri", guide: "<strong>Ne İşe Yarar:</strong> Şantiye günlük defterleri ve yapı denetim tutanaklarını inceler.", template: "şantiye defterleri ve yapı denetim kayıtları tetkik edilmiş olup, {input} tespiti yapılmıştır." },
-                { title: "5. Eksik ve Ayıplı İmalat Metrajı", guide: "<strong>Ne İşe Yarar:</strong> Eksik yapılan ya da kusurlu üretilen imalatların metrajını çıkarır.", template: "eksik ve ayıplı imalatlar üzerinde yapılan metraj ve maliyet çalışmasında, {input} saptanmıştır." },
-                { title: "6. Afet Yönetmeliği / Statik Kontrol", guide: "<strong>Ne İşe Yarar:</strong> Bina taşıyıcı sisteminin güncel deprem yönetmeliğine uygunluğunu inceler.", template: "taşıyıcı sistemin statik güvenliği ve yönetmelik uyumu açısından, {input} tespit edilmiştir." },
-                { title: "7. Sözleşme Kapsamı ve İmalat Kıyası", guide: "<strong>Ne İşe Yarar:</strong> Yüklenici sözleşmesindeki taahhütler ile sahadaki imalatları kıyaslar.", template: "sözleşme hükümleri ve fiili imalatlar karşılaştırıldığında, {input} saptanmıştır." },
-                { title: "8. Zemin Etüdü ve Temel Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Zemin mekaniği raporları ile temel sisteminin uygunluğunu inceler.", template: "zemin etüt raporları ve temel tasarımı kıyaslandığında, {input} görülmüştür." },
-                { title: "9. Yapı Kusurları ve İlliyet Bağı", guide: "<strong>Ne İşe Yarar:</strong> Tespit edilen yapısal kusurlar ile zarar arasındaki illiyet bağını kurar.", template: "yapısal kusurlar ve hasar durumu incelenerek {input} sonucuna varılmıştır." }
+                { title: "1. Proje ve Yapı Ruhsatı Uyumu", guide: "Mimari ve statik projelerin ruhsata uygunluğunu inceler.", template: "mimari/statik projeler ile yapı ruhsatı karşılaştırılmış olup, {input} tespit edilmiştir." },
+                { title: "2. Beton ve Donatı Yerinde Ölçümü", guide: "Beton kalitesi, demir çapı ve adetlerini yerinde testlerle ölçer.", template: "yerinde yapılan donatı ve malzeme ölçümlerinde, {input} saptanmıştır." },
+                { title: "3. İş Programı ve Hak Ediş Kıyası", guide: "Sözleşme iş programı ile şantiyedeki fiili gerçekleşme oranlarını kıyaslar.", template: "iş programı ve hak ediş seviyeleri incelenmiş, {input} görülmüştür." },
+                { title: "4. Yapı Denetim ve Şantiye Defteri", guide: "Şantiye günlük defterleri ve yapı denetim tutanaklarını inceler.", template: "şantiye defterleri ve yapı denetim kayıtları tetkik edilmiş olup, {input} tespiti yapılmıştır." },
+                { title: "5. Eksik ve Ayıplı İmalat Metrajı", guide: "Eksik yapılan ya da kusurlu üretilen imalatların metrajını çıkarır.", template: "eksik ve ayıplı imalatlar üzerinde yapılan metraj ve maliyet çalışmasında, {input} saptanmıştır." },
+                { title: "6. Afet Yönetmeliği / Statik Kontrol", guide: "Bina taşıyıcı sisteminin güncel deprem yönetmeliğine uygunluğunu inceler.", template: "taşıyıcı sistemin statik güvenliği ve yönetmelik uyumu açısından, {input} tespit edilmiştir." },
+                { title: "7. Sözleşme Kapsamı ve İmalat Kıyası", guide: "Yüklenici sözleşmesindeki taahhütler ile sahadaki imalatları kıyaslar.", template: "sözleşme hükümleri ve fiili imalatlar karşılaştırıldığında, {input} saptanmıştır." },
+                { title: "8. Zemin Etüdü ve Temel Uyumu", guide: "Zemin mekaniği raporları ile temel sisteminin uygunluğunu inceler.", template: "zemin etüt raporları ve temel tasarımı kıyaslandığında, {input} görülmüştür." },
+                { title: "9. Yapı Kusurları ve İlliyet Bağı", guide: "Tespit edilen yapısal kusurlar ile zarar arasındaki illiyet bağını kurar.", template: "yapısal kusurlar ve hasar durumu incelenerek {input} sonucuna varılmıştır." }
             ]
         },
         sesgoruntu: {
-            adi: "Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi",
+            adi: "Ses, Görüntü ve Adli Belge İncelemesi",
             kanun: "Hukuk Muhakemeleri Kanunu (HMK) ve Adli Belge İnceleme Kriterleri",
             adimlar: [
-                { title: "1. İmza ve El Yazısı Karakteri Kıyaslaması", guide: "<strong>Ne İşe Yarar:</strong> İmzanın atılış hızı, baskı derecesi, istikameti ve mukayese imzalarını inceler.", template: "imza örnekleri ve mukayese imzaları üzerinde yapılan incelemede, {input} tespit edilmiştir." },
-                { title: "2. Biyometrik Yüz / Görüntü Karşılaştırma", guide: "<strong>Ne İşe Yarar:</strong> Görüntüdeki şahıs veya nesnelerin biyometrik özelliklerini kıyaslar.", template: "görüntü kayıtları ve biyometrik veriler karşılaştırılmış olup, {input} saptanmıştır." },
-                { title: "3. Ses Frekans ve Spektrogram Analizi", guide: "<strong>Ne İşe Yarar:</strong> Ses kayıtlarının ses izleri, formant yapıları ve frekans dağılımlarını inceler.", template: "ses kayıtlarının spektrogram analizinde, {input} tespit edilmiştir." },
-                { title: "4. Kurgu, Montaj ve Müdahale Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ses veya görüntü dosyalarında kesme, ekleme, montaj izlerini arar.", template: "ses/görüntü dosyalarının bütünlüğü incelenmiş olup, {input} saptanmıştır." },
-                { title: "5. Dijital İyileştirme ve Gürültü İzolasyonu", guide: "<strong>Ne İşe Yarar:</strong> Arka plan gürültülerini filtre ederek ses anlaşılırlığını artırır.", template: "kayıtlar üzerinde yapılan gürültü izolasyonu ve iyileştirmede, {input} görülmüştür." },
-                { title: "6. Zaman Damgası ve Veri Doğrulama", guide: "<strong>Ne İşe Yarar:</strong> Kayıt cihazının meta verileri ve zaman tutarlılığını inceler.", template: "kayıt dosyası meta verileri ve zaman damgaları tetkik edilmiş, {input} saptanmıştır." },
-                { title: "7. Belge Üzerinde Kimyasal / Fiziksel İnceleme", guide: "<strong>Ne İşe Yarar:</strong> Kâğıt kalitesi, mürekkep yaşı ve silinti/kazıntı izlerini inceler.", template: "belge materyali üzerinde yapılan fiziksel incelemede, {input} tespit edilmiştir." },
-                { title: "8. Optik ve Işık Altında İnceleme", guide: "<strong>Ne İşe Yarar:</strong> Farklı ışık açılarında (UV, kızılötesi vb.) gizli ibareleri arar.", template: "özel ışık kaynakları altında yapılan incelemede, {input} saptanmıştır." },
-                { title: "9. Bütüncül Adli Belge ve Ses Raporlaması", guide: "<strong>Ne İşe Yarar:</strong> Tüm bulguları birleştirerek nihai kanaati oluşturur.", template: "elde edilen tüm bulgular ışığında, {input} kanaatine varılmıştır." }
+                { title: "1. İmza ve El Yazısı Karakteri Kıyaslaması", guide: "İmzanın atılış hızı, baskı derecesi ve mukayese imzalarını inceler.", template: "imza örnekleri ve mukayese imzaları üzerinde yapılan incelemede, {input} tespit edilmiştir." },
+                { title: "2. Biyometrik Yüz / Görüntü Karşılaştırma", guide: "Görüntüdeki şahıs veya nesnelerin biyometrik özelliklerini kıyaslar.", template: "görüntü kayıtları ve biyometrik veriler karşılaştırılmış olup, {input} saptanmıştır." },
+                { title: "3. Ses Frekans ve Spektrogram Analizi", guide: "Ses kayıtlarının formant yapıları ve frekans dağılımlarını inceler.", template: "ses kayıtlarının spektrogram analizinde, {input} tespit edilmiştir." },
+                { title: "4. Kurgu, Montaj ve Müdahale Tespiti", guide: "Ses veya görüntü dosyalarında kesme, ekleme, montaj izlerini arar.", template: "ses/görüntü dosyalarının bütünlüğü incelenmiş olup, {input} saptanmıştır." },
+                { title: "5. Dijital İyileştirme ve Gürültü İzolasyonu", guide: "Arka plan gürültülerini filtre ederek ses anlaşılırlığını artırır.", template: "kayıtlar üzerinde yapılan gürültü izolasyonu ve iyileştirmede, {input} görülmüştür." },
+                { title: "6. Zaman Damgası ve Veri Doğrulama", guide: "Kayıt cihazının meta verileri ve zaman tutarlılığını inceler.", template: "kayıt dosyası meta verileri ve zaman damgaları tetkik edilmiş, {input} saptanmıştır." },
+                { title: "7. Belge Üzerinde Kimyasal / Fiziksel İnceleme", guide: "Kâğıt kalitesi, mürekkep yaşı ve silinti/kazıntı izlerini inceler.", template: "belge materyali üzerinde yapılan fiziksel incelemede, {input} tespit edilmiştir." },
+                { title: "8. Optik ve Işık Altında İnceleme", guide: "Farklı ışık açılarında (UV, kızılötesi vb.) gizli ibareleri arar.", template: "özel ışık kaynakları altında yapılan incelemede, {input} saptanmıştır." },
+                { title: "9. Bütüncül Adli Belge ve Ses Raporlaması", guide: "Tüm bulguları birleştirerek nihai kanaati oluşturur.", template: "elde edilen tüm bulgular ışığında, {input} kanaatine varılmıştır." }
             ]
         },
         isguvenligi: {
             adi: "İş Sağlığı ve Güvenliği (İSG) / İş Kazaları",
             kanun: "6331 sayılı İş Sağlığı ve Güvenliği Kanunu",
             adimlar: [
-                { title: "1. Risk Değerlendirme Raporu Analizi", guide: "<strong>Ne İşe Yarar:</strong> İş yerindeki risk analizi ve acil durum planlarının yeterliliğini inceler.", template: "işyeri risk değerlendirme raporları incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. İSG Eğitim ve Sertifika Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Çalışana verilmesi zorunlu temel İSG ve mesleki eğitim kayıtlarını denetler.", template: "personel İSG eğitim kayıtları ve sertifikaları incelenmiş, {input} saptanmıştır." },
-                { title: "3. Kişisel Koruyucu Donanım (KKD) Uygunluğu", guide: "<strong>Ne İşe Yarar:</strong> Kazanın meydana geldiği anda kullanılması gereken KKD'leri tetkik eder.", template: "kişisel koruyucu donanım temini ve kullanımı hususunda, {input} tespit edilmiştir." },
-                { title: "4. İş Ekipmanı Periyodik Kontrolleri", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan makine ve ekipmanların periyodik muayene raporlarını inceler.", template: "iş ekipmanlarına ait periyodik kontrol raporları tetkik edilmiş olup, {input} saptanmıştır." },
-                { title: "5. Kaza Anı İhmal ve Kusur Zinciri", guide: "<strong>Ne İşe Yarar:</strong> İşverenin önlem alma yükümlülüğü ile işçinin hareketlerini irdeler.", template: "kaza anındaki güvenlik tedbirleri ve kusur unsurları incelenmiş, {input} kanaatine varılmıştır." },
-                { title: "6. İlliyet Bağı Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Mevzuat ihlali ile meydana gelen iş kazası arasındaki illiyet bağını kurar.", template: "mevzuat aykırılıkları ve kaza neticesi arasındaki illiyet bağı {input} olarak belirlenmiştir." },
-                { title: "7. Ortam Ölçümleri ve Havalandırma", guide: "<strong>Ne İşe Yarar:</strong> Çalışma ortamındaki toz, gürültü ve gaz seviyelerini denetler.", template: "ortam ölçüm raporları incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "8. Acil Durum ve İlkyardım Düzenleri", guide: "<strong>Ne İşe Yarar:</strong> İş yerindeki acil eylem planları ve ilkyardım imkanlarını tetkik eder.", template: "acil durum organizasyonu incelenmiş, {input} görülmüştür." },
-                { title: "9. İş Güvenliği Uzmanı / Hekim Görevleri", guide: "<strong>Ne İşe Yarar:</strong> İSG profesyonellerinin yasal yükümlülükleri ve atamalarını denetler.", template: "İSG birimi faaliyetleri incelenerek {input} sonucuna varılmıştır." }
+                { title: "1. Risk Değerlendirme Raporu Analizi", guide: "İş yerindeki risk analizi ve acil durum planlarının yeterliliğini inceler.", template: "işyeri risk değerlendirme raporları incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. İSG Eğitim ve Sertifika Kontrolü", guide: "Çalışana verilmesi zorunlu temel İSG ve mesleki eğitim kayıtlarını denetler.", template: "personel İSG eğitim kayıtları ve sertifikaları incelenmiş, {input} saptanmıştır." },
+                { title: "3. Kişisel Koruyucu Donanım (KKD) Uygunluğu", guide: "Kazanın meydana geldiği anda kullanılması gereken KKD'leri tetkik eder.", template: "kişisel koruyucu donanım temini ve kullanımı hususunda, {input} tespit edilmiştir." },
+                { title: "4. İş Ekipmanı Periyodik Kontrolleri", guide: "Kullanılan makine ve ekipmanların periyodik muayene raporlarını inceler.", template: "iş ekipmanlarına ait periyodik kontrol raporları tetkik edilmiş olup, {input} saptanmıştır." },
+                { title: "5. Kaza Anı İhmal ve Kusur Zinciri", guide: "İşverenin önlem alma yükümlülüğü ile işçinin hareketlerini irdeler.", template: "kaza anındaki güvenlik tedbirleri ve kusur unsurları incelenmiş, {input} kanaatine varılmıştır." },
+                { title: "6. İlliyet Bağı Tespiti", guide: "Mevzuat ihlali ile meydana gelen iş kazası arasındaki illiyet bağını kurar.", template: "mevzuat aykırılıkları ve kaza neticesi arasındaki illiyet bağı {input} olarak belirlenmiştir." },
+                { title: "7. Ortam Ölçümleri ve Havalandırma", guide: "Çalışma ortamındaki toz, gürültü ve gaz seviyelerini denetler.", template: "ortam ölçüm raporları incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "8. Acil Durum ve İlkyardım Düzenleri", guide: "İş yerindeki acil eylem planları ve ilkyardım imkanlarını tetkik eder.", template: "acil durum organizasyonu incelenmiş, {input} görülmüştür." },
+                { title: "9. İş Güvenliği Uzmanı / Hekim Görevleri", guide: "İSG profesyonellerinin yasal yükümlülükleri ve atamalarını denetler.", template: "İSG birimi faaliyetleri incelenerek {input} sonucuna varılmıştır." }
             ]
         },
         elektrik: {
             adi: "Elektrik, Elektronik ve Mekanik Mühendisliği",
-            kanun: "Elektrik Tesisleri İç Tesisat Yönetmeliği ve İlgili Teknik Mevzuat",
+            kanun: "Elektrik Tesisleri İç Tesisat Yönetmeliği",
             adimlar: [
-                { title: "1. Tesisat Proje ve Ruhsat Uygunluğu", guide: "<strong>Ne İşe Yarar:</strong> Elektrik projesinin yerindeki uygulama ile uygunluğunu denetler.", template: "elektrik projeleri ve yerindeki tesisat uyumu incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Kısa Devre, Ark ve Yangın İlişkisi", guide: "<strong>Ne İşe Yarar:</strong> Yangın mahallindeki iletkenlerde ark izleri ve kısa devre bulgularını arar.", template: "elektrik tesisat kalıntıları ve ark izleri incelenmiş, {input} saptanmıştır." },
-                { title: "3. Topraklama ve İzolasyon Direnci", guide: "<strong>Ne İşe Yarar:</strong> Topraklama direnci ölçümleri ve yalıtım seviyelerini kontrol eder.", template: "topraklama tesisatı ve yalıtım direnci ölçümleri neticesinde, {input} saptanmıştır." },
-                { title: "4. Koruma Röleleri ve Sigorta Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Kaçak akım rölesi ve sigortaların amperaj/fonksiyon uygunluğunu denetler.", template: "sigorta ve kaçak akım koruma cihazları incelenmiş olup, {input} görülmüştür." },
-                { title: "5. Montaj ve Standart Uyumu (TSE)", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan kablo kesitleri, pano montajları ve TSE standartlarını denetler.", template: "kablo kesitleri ve malzeme standartları tetkik edilmiş, {input} tespit edilmiştir." },
-                { title: "6. Harmonik ve Enerji Kalitesi Analizi", guide: "<strong>Ne İşe Yarar:</strong> Şebeke gerilimi, akım dalgalanmaları ve harmonik bozulmaları inceler.", template: "enerji kalitesi ölçümleri incelenmiş olup, {input} saptanmıştır." },
-                { title: "7. Jeneratör ve Kesintisiz Güç Kaynağı (UPS)", guide: "<strong>Ne İşe Yarar:</strong> Yedek güç sistemlerinin devreye girme süreleri ve kapasitelerini denetler.", template: "yedek güç sistemleri tetkik edilmiş, {input} tespit edilmiştir." },
-                { title: "8. Panoların Termal ve Fiziksel Durumu", guide: "<strong>Ne İşe Yarar:</strong> Elektrik panolarındaki ısınma izleri, klemens sıkılıklarını inceler.", template: "pano kontrollerinde {input} olduğu gözlemlenmiştir." },
-                { title: "9. Elektrik Kazası ve İlliyet Bağı", guide: "<strong>Ne İşe Yarar:</strong> Elektrik çarpması veya arızalarda sorumluluk zincirini kurar.", template: "elektrik tesisatındaki kusurlar ile kaza arasındaki ilişki {input} olarak tespit edilmiştir." }
+                { title: "1. Tesisat Proje ve Ruhsat Uygunluğu", guide: "Elektrik projesinin yerindeki uygulama ile uygunluğunu denetler.", template: "elektrik projeleri ve yerindeki tesisat uyumu incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Kısa Devre, Ark ve Yangın İlişkisi", guide: "Yangın mahallindeki iletkenlerde ark izleri ve kısa devre bulgularını arar.", template: "elektrik tesisat kalıntıları ve ark izleri incelenmiş, {input} saptanmıştır." },
+                { title: "3. Topraklama ve İzolasyon Direnci", guide: "Topraklama direnci ölçümleri ve yalıtım seviyelerini kontrol eder.", template: "topraklama tesisatı ve yalıtım direnci ölçümleri neticesinde, {input} saptanmıştır." },
+                { title: "4. Koruma Röleleri ve Sigorta Kontrolü", guide: "Kaçak akım rölesi ve sigortaların amperaj/fonksiyon uygunluğunu denetler.", template: "sigorta ve kaçak akım koruma cihazları incelenmiş olup, {input} görülmüştür." },
+                { title: "5. Montaj ve Standart Uyumu (TSE)", guide: "Kullanılan kablo kesitleri, pano montajları ve TSE standartlarını denetler.", template: "kablo kesitleri ve malzeme standartları tetkik edilmiş, {input} tespit edilmiştir." },
+                { title: "6. Harmonik ve Enerji Kalitesi Analizi", guide: "Şebeke gerilimi, akım dalgalanmaları ve harmonik bozulmaları inceler.", template: "enerji kalitesi ölçümleri incelenmiş olup, {input} saptanmıştır." },
+                { title: "7. Jeneratör ve Kesintisiz Güç Kaynağı (UPS)", guide: "Yedek güç sistemlerinin devreye girme süreleri ve kapasitelerini denetler.", template: "yedek güç sistemleri tetkik edilmiş, {input} tespit edilmiştir." },
+                { title: "8. Panoların Termal ve Fiziksel Durumu", guide: "Elektrik panolarındaki ısınma izleri, klemens sıkılıklarını inceler.", template: "pano kontrollerinde {input} olduğu gözlemlenmiştir." },
+                { title: "9. Elektrik Kazası ve İlliyet Bağı", guide: "Elektrik çarpması veya arızalarda sorumluluk zincirini kurar.", template: "elektrik tesisatındaki kusurlar ile kaza arasındaki ilişki {input} olarak tespit edilmiştir." }
             ]
         },
         kripto: {
             adi: "Kriptoloji, Siber Suçlar ve İleri Adli Bilişim",
-            kanun: "5651 sayılı Kanun ve Türk Ceza Kanunu (Bilişim Suçları)",
+            kanun: "5651 sayılı Kanun ve Türk Ceza Kanunu",
             adimlar: [
-                { title: "1. Blockchain İşlem (On-chain) İzleme", guide: "<strong>Ne İşe Yarar:</strong> Kripto varlık transferlerinin blokzincir üzerindeki geçmişini izler.", template: "blockchain işlem hareketleri ve cüzdan akışları incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Cüzdan (Wallet) ve Adres Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sıcak/soğuk cüzdan hareketleri, borsa (exchange) kayıtlarını eşleştirir.", template: "kripto para cüzdan adresleri ve transfer grafikleri analiz edilmiş, {input} saptanmıştır." },
-                { title: "3. Smart Contract (Akıllı Sözleşme) İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> DeFi veya NFT sözleşmelerindeki kod açıkları ya da manipülasyonları inceler.", template: "akıllı sözleşme kaynak kodları tetkik edilmiş olup, {input} saptanmıştır." },
-                { title: "4. Phishing ve Siber Saldırı Vektörü", guide: "<strong>Ne İşe Yarar:</strong> Oltalama (phishing) siteleri, zararlı bağlantılar ve saldırı metotlarını çözümler.", template: "saldırı vektörleri ve oltalama mekanizmaları incelenmiş, {input} tespit edilmiştir." },
-                { title: "5. Private Key ve Güvenlik İhlali", guide: "<strong>Ne İşe Yarar:</strong> Özel anahtar (private key) sızıntısı veya yetkisiz erişim bulgularını arar.", template: "güvenlik ihlali ve anahtar yönetimi süreçleri incelenmiş olup, {input} görülmüştür." },
-                { title: "6. Kripto Varlıkların Takibi ve Borsalar", guide: "<strong>Ne İşe Yarar:</strong> Merkezi ve merkeziyetsiz borsalar üzerinden varlık akışını izler.", template: "borsa entegrasyonları ve KYC verileri incelenerek {input} saptanmıştır." },
-                { title: "7. Kriptografik Şifreleme ve Hash Kırma", guide: "<strong>Ne İşe Yarar:</strong> Şifrelenmiş verilerin çözülmesi veya hash analizlerini yapar.", template: "kriptografik analizler neticesinde, {input} tespit edilmiştir." },
-                { title: "8. Dark Web ve Tor Ağ İzleri", guide: "<strong>Ne İşe Yarar:</strong> Yeraltı forumları ve gizli ağlardaki siber ayak izlerini tarar.", template: "dark web tarama sonuçlarında {input} bulgusuna rastlanmıştır." },
-                { title: "9. Bilişim Suçu ve İlliyet Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kripto dolandırıcılığı veya siber saldırılarda sorumluluk zincirini kurar.", template: "dijital izler ve cüzdan sahipliği bağlamında {input} kanaatine varılmıştır." }
+                { title: "1. Blockchain İşlem (On-chain) İzleme", guide: "Kripto varlık transferlerinin blokzincir üzerindeki geçmişini izler.", template: "blockchain işlem hareketleri ve cüzdan akışları incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Cüzdan (Wallet) ve Adres Analizi", guide: "Sıcak/soğuk cüzdan hareketleri, borsa kayıtlarını eşleştirir.", template: "kripto para cüzdan adresleri ve transfer grafikleri analiz edilmiş, {input} saptanmıştır." },
+                { title: "3. Smart Contract (Akıllı Sözleşme) İncelemesi", guide: "DeFi veya NFT sözleşmelerindeki kod açıkları ya da manipülasyonları inceler.", template: "akıllı sözleşme kaynak kodları tetkik edilmiş olup, {input} saptanmıştır." },
+                { title: "4. Phishing ve Siber Saldırı Vektörü", guide: "Oltalama siteleri, zararlı bağlantılar ve saldırı metotlarını çözümler.", template: "saldırı vektörleri ve oltalama mekanizmaları incelenmiş, {input} tespit edilmiştir." },
+                { title: "5. Private Key ve Güvenlik İhlali", guide: "Özel anahtar sızıntısı veya yetkisiz erişim bulgularını arar.", template: "güvenlik ihlali ve anahtar yönetimi süreçleri incelenmiş olup, {input} görülmüştür." },
+                { title: "6. Kripto Varlıkların Takibi ve Borsalar", guide: "Merkezi ve merkeziyetsiz borsalar üzerinden varlık akışını izler.", template: "borsa entegrasyonları ve KYC verileri incelenerek {input} saptanmıştır." },
+                { title: "7. Kriptografik Şifreleme ve Hash Kırma", guide: "Şifrelenmiş verilerin çözülmesi veya hash analizlerini yapar.", template: "kriptografik analizler neticesinde, {input} tespit edilmiştir." },
+                { title: "8. Dark Web ve Tor Ağ İzleri", guide: "Yeraltı forumları ve gizli ağlardaki siber ayak izlerini tarar.", template: "dark web tarama sonuçlarında {input} bulgusuna rastlanmıştır." },
+                { title: "9. Bilişim Suçu ve İlliyet Analizi", guide: "Kripto dolandırıcılığı veya siber saldırılarda sorumluluk zincirini kurar.", template: "dijital izler ve cüzdan sahipliği bağlamında {input} kanaatine varılmıştır." }
             ]
         },
         cevre: {
             adi: "Çevre Mühendisliği, Atık ve İmar Kirliliği",
             kanun: "2872 sayılı Çevre Kanunu ve İlgili Yönetmelikler",
             adimlar: [
-                { title: "1. Emisyon, Atık ve Deşarj Ölçümleri", guide: "<strong>Ne İşe Yarar:</strong> Tesisten kaynaklanan baca gazı, atık su deşarjı ve katı atık değerlerini inceler.", template: "çevresel ölçüm raporları ve deşarj analizleri incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. ÇED Raporu ve Mevzuat Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Çevresel Etki Değerlendirmesi raporu ve çevre izin/lisans belgelerini denetler.", template: "ÇED raporu ve çevre lisans belgeleri tetkik edilmiş, {input} saptanmıştır." },
-                { title: "3. Su ve Toprak Kirliliği Analizi", guide: "<strong>Ne İşe Yarar:</strong> Faaliyet alanındaki toprak numuneleri ve yeraltı/yüzey suyu kirlilik verilerini inceler.", template: "su ve toprak kirliliği bulguları değerlendirilmiş olup, {input} saptanmıştır." },
-                { title: "4. Atık Yönetim Planı ve Bertaraf", guide: "<strong>Ne İşe Yarar:</strong> Tehlikeli ve tehlikesiz atıkların depolanma, taşıma ve bertaraf kayıtlarını inceler.", template: "atık yönetim planı ve bertaraf kayıtları incelenmiş, {input} tespit edilmiştir." },
-                { title: "5. Gürültü ve Titreşim Kontrolleri", guide: "<strong>Ne İşe Yarar:</strong> Endüstriyel tesislerin çevreye yayan gürültü ve titreşim seviyelerini ölçer.", template: "gürültü ölçüm raporları tetkik edilmiş, {input} tespit edilmiştir." },
-                { title: "6. Tehlikeli Madde Depolama Koşulları", guide: "<strong>Ne İşe Yarar:</strong> Kimyasal ve tehlikeli maddelerin depolama güvenliğini denetler.", template: "depolama alanları incelenmiş olup, {input} saptanmıştır." },
-                { title: "7. Çevre Cezaları ve İdari Yaptırımlar", guide: "<strong>Ne İşe Yarar:</strong> Geçmişte kesilen idari para cezaları ve denetim tutanaklarını inceler.", template: "çevre denetim tutanakları ve cezalar tetkik edilmiş, {input} görülmüştür." },
-                { title: "8. Ekosistem ve Flora/Fauna Etkisi", guide: "<strong>Ne İşe Yarar:</strong> Faaliyetin yerel ekosisteme verdiği zararları değerlendirir.", template: "ekolojik etki değerlendirmesinde {input} olduğu saptanmıştır." },
-                { title: "9. Çevresel Zarar ve İlliyet Bağı", guide: "<strong>Ne İşe Yarar:</strong> Kirlilik ile faaliyet arasındaki nedensellik bağını kurar.", template: "çevresel kirlilik bulguları ile tesis faaliyeti arasındaki bağ {input} olarak kurulmuştur." }
+                { title: "1. Emisyon, Atık ve Deşarj Ölçümleri", guide: "Tesisten kaynaklanan baca gazı, atık su deşarjı ve katı atık değerlerini inceler.", template: "çevresel ölçüm raporları ve deşarj analizleri incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. ÇED Raporu ve Mevzuat Uyumu", guide: "Çevresel Etki Değerlendirmesi raporu ve çevre izin/lisans belgelerini denetler.", template: "ÇED raporu ve çevre lisans belgeleri tetkik edilmiş, {input} saptanmıştır." },
+                { title: "3. Su ve Toprak Kirliliği Analizi", guide: "Faaliyet alanındaki toprak numuneleri ve su kirliliği verilerini inceler.", template: "su ve toprak kirliliği bulguları değerlendirilmiş olup, {input} saptanmıştır." },
+                { title: "4. Atık Yönetim Planı ve Bertaraf", guide: "Tehlikeli ve tehlikesiz atıkların depolanma, taşıma ve bertaraf kayıtlarını inceler.", template: "atık yönetim planı ve bertaraf kayıtları incelenmiş, {input} tespit edilmiştir." },
+                { title: "5. Gürültü ve Titreşim Kontrolleri", guide: "Endüstriyel tesislerin çevreye yayan gürültü ve titreşim seviyelerini ölçer.", template: "gürültü ölçüm raporları tetkik edilmiş, {input} tespit edilmiştir." },
+                { title: "6. Tehlikeli Madde Depolama Koşulları", guide: "Kimyasal ve tehlikeli maddelerin depolama güvenliğini denetler.", template: "depolama alanları incelenmiş olup, {input} saptanmıştır." },
+                { title: "7. Çevre Cezaları ve İdari Yaptırımlar", guide: "Geçmişte kesilen idari para cezaları ve denetim tutanaklarını inceler.", template: "çevre denetim tutanakları ve cezalar tetkik edilmiş, {input} görülmüştür." },
+                { title: "8. Ekosistem ve Flora/Fauna Etkisi", guide: "Faaliyetin yerel ekosisteme verdiği zararları değerlendirir.", template: "ekolojik etki değerlendirmesinde {input} olduğu saptanmıştır." },
+                { title: "9. Çevresel Zarar ve İlliyet Bağı", guide: "Kirlilik ile faaliyet arasındaki nedensellik bağını kurar.", template: "çevresel kirlilik bulguları ile tesis faaliyeti arasındaki bağ {input} olarak kurulmuştur." }
             ]
         },
         deniz: {
             adi: "Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği",
-            kanun: "Türk Ticaret Kanunu (Deniz Ticareti) ve Uluslararası Denizcilik Kuralları",
+            kanun: "Türk Ticaret Kanunu (Deniz Ticareti) ve Uluslararası Kurallar",
             adimlar: [
-                { title: "1. Seyir Defteri (Log) ve VDR Analizi", guide: "<strong>Ne İşe Yarar:</strong> Gemi seyir defterleri ve Veri Kayıt Cihazı (VDR) verilerini inceler.", template: "seyir defterleri ve VDR kayıtları incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Manevra, Seyir ve Çatışma Kuralları (COLREG)", guide: "<strong>Ne İşe Yarar:</strong> Denizde çatışmayı önleme tüzüğü kurallarına göre gemi hareketlerini analiz eder.", template: "COLREG kuralları ve gemi manevraları tetkik edilmiş, {input} saptanmıştır." },
-                { title: "3. Gemi Trafik Hizmetleri (VTS) ve AIS Verisi", guide: "<strong>Ne İşe Yarar:</strong> Radarlar, AIS rotaları ve liman trafik kayıtlarını karşılaştırır.", template: "AIS ve VTS verileri üzerinden yapılan analizde, {input} saptanmıştır." },
-                { title: "4. Deniz Kirliliği (MARPOL) İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Gemiden yapılan sintine veya atık deşarjlarını MARPOL kurallarına göre inceler.", template: "MARPOL mevzuatı açısından yapılan incelemede, {input} tespit edilmiştir." },
-                { title: "5. Gemi Stabilitesi ve Yükleme Durumu", guide: "<strong>Ne İşe Yarar:</strong> Geminin denge hesapları, draft ve yük istifleme planını inceler.", template: "gemi stabilite hesapları ve yük dağılımı tetkik edilmiş, {input} görülmüştür." },
-                { title: "6. Makine Dairesi ve Sevk Sistemi", guide: "<strong>Ne İşe Yarar:</strong> Ana makine, pervane ve dümen sistemlerinin arıza durumlarını inceler.", template: "makine dairesi operasyonları ve sevk sistemleri incelenmiş olup, {input} saptanmıştır." },
-                { title: "7. Liman ve Rıhtım Hasar Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Yanaşma manevraları sırasında rıhtım veya diğer gemilere verilen zararları inceler.", template: "liman yapıları ve hasar tespiti neticesinde, {input} tespit edilmiştir." },
-                { title: "8. Gemi Donanımı ve Sertifika Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Bayrak devleti ve uluslararası klas sertifikalarının geçerliliğini denetler.", template: "gemi klas belgeleri ve sertifikaları incelenmiş, {input} saptanmıştır." },
-                { title: "9. Deniz Kazası ve Kusur Dağılımı", guide: "<strong>Ne İşe Yarar:</strong> Çatışma, karaya oturma veya batma olaylarında kusur oranlarını belirler.", template: "deniz kazasına sebep olan unsurlar incelenerek {input} kanaatine varılmıştır." }
+                { title: "1. Seyir Defteri (Log) ve VDR Analizi", guide: "Gemi seyir defterleri ve Veri Kayıt Cihazı verilerini inceler.", template: "seyir defterleri ve VDR kayıtları incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Manevra, Seyir ve Çatışma Kuralları (COLREG)", guide: "Denizde çatışmayı önleme tüzüğü kurallarına göre gemi hareketlerini analiz eder.", template: "COLREG kuralları ve gemi manevraları tetkik edilmiş, {input} saptanmıştır." },
+                { title: "3. Gemi Trafik Hizmetleri (VTS) ve AIS Verisi", guide: "Radarlar, AIS rotaları ve liman trafik kayıtlarını karşılaştırır.", template: "AIS ve VTS verileri üzerinden yapılan analizde, {input} saptanmıştır." },
+                { title: "4. Deniz Kirliliği (MARPOL) İncelemesi", guide: "Gemiden yapılan sintine veya atık deşarjlarını MARPOL kurallarına göre inceler.", template: "MARPOL mevzuatı açısından yapılan incelemede, {input} tespit edilmiştir." },
+                { title: "5. Gemi Stabilitesi ve Yükleme Durumu", guide: "Geminin denge hesapları, draft ve yük istifleme planını inceler.", template: "gemi stabilite hesapları ve yük dağılımı tetkik edilmiş, {input} görülmüştür." },
+                { title: "6. Makine Dairesi ve Sevk Sistemi", guide: "Ana makine, pervane ve dümen sistemlerinin arıza durumlarını inceler.", template: "makine dairesi operasyonları ve sevk sistemleri incelenmiş olup, {input} saptanmıştır." },
+                { title: "7. Liman ve Rıhtım Hasar Tespiti", guide: "Yanaşma manevraları sırasında rıhtım veya diğer gemilere verilen zararları inceler.", template: "liman yapıları ve hasar tespiti neticesinde, {input} tespit edilmiştir." },
+                { title: "8. Gemi Donanımı ve Sertifika Kontrolü", guide: "Bayrak devleti ve uluslararası klas sertifikalarının geçerliliğini denetler.", template: "gemi klas belgeleri ve sertifikaları incelenmiş, {input} saptanmıştır." },
+                { title: "9. Deniz Kazası ve Kusur Dağılımı", guide: "Çatışma, karaya oturma veya batma olaylarında kusur oranlarını belirler.", template: "deniz kazasına sebep olan unsurlar incelenerek {input} kanaatine varılmıştır." }
             ]
         },
         aktuer: {
             adi: "Sigortacılık ve Aktüeryal Tazminat Hesaplamaları",
             kanun: "Türk Borçlar Kanunu ve İş Kanunu",
             adimlar: [
-                { title: "1. Destekten Yoksun Kalma Tazminat Hesabı", guide: "<strong>Ne İşe Yarar:</strong> TRH yaşam tablosu ve aktif/pasif dönem gelir projeksiyonlarını hesaplar.", template: "aktüeryal yaşam tabloları ve gelir verileri esas alınarak yapılan hesaplamada, {input} bulunmuştur." },
-                { title: "2. Maluliyet Oranı ve Sağlık Raporu Entegrasyonu", guide: "<strong>Ne İşe Yarar:</strong> Adli tıp maluliyet oranını tazminat formüllerine entegre eder.", template: "maluliyet raporu verileri hesaba yansıtılmış olup, {input} tespit edilmiştir." },
-                { title: "3. Enflasyon, Faiz ve İskonto Oranı Etkisi", guide: "<strong>Ne İşe Yarar:</strong> Gelecekteki kazançların peşin değer hesaplamasında iskonto/faiz oranlarını uygular.", template: "iskonto ve teknik faiz uygulamaları neticesinde, {input} hesaplanmıştır." },
-                { title: "4. Kusur İndirimi ve Nihai Tazminat", guide: "<strong>Ne İşe Yarar:</strong> Tespit edilen kusur oranlarını tazminat tutarından düşer.", template: "kusur oranları indirimi sonrasında nihai tazminat tutarı {input} olarak hesaplanmıştır." },
-                { title: "5. Aktif ve Pasif Dönem Gelir Projeksiyonu", guide: "<strong>Ne İşe Yarar:</strong> Çalışma dönemi ve emeklilik dönemindeki gelir kayıplarını ayrı ayrı hesaplar.", template: "aktif ve pasif dönem gelir projeksiyonlarında {input} esas alınmıştır." },
-                { title: "6. Destek Olunacak Kişilerin Payları", guide: "<strong>Ne İşe Yarar:</strong> Geride kalan hak sahiplerinin yaş ve medeni durumlarına göre pay oranlarını ayırır.", template: "hak sahiplerinin pay oranları hesaplanmış olup, {input} tespit edilmiştir." },
-                { title: "7. Geçici İş Göremezlik ve Bakıcı Gideri", guide: "<strong>Ne İşe Yarar:</strong> İyileşme süresindeki kazanç kayıpları ve bakım masraflarını hesaplar.", template: "geçici iş göremezlik ve bakıcı gideri hesaplamalarında {input} saptanmıştır." },
-                { title: "8. Destekten Yoksun Kalma Süresi Sınırları", guide: "<strong>Ne İşe Yarar:</strong> Hak sahiplerinin destek sürelerini hukuki ve aktüeryal esaslara göre belirler.", template: "destek süresi hesaplamaları neticesinde {input} sonucuna ulaşılmıştır." },
-                { title: "9. Bütüncül Aktüeryal Tazminat Raporlaması", guide: "<strong>Ne İşe Yarar:</strong> Tüm hesap kalemlerini birleştirerek nihai tazminat tablosunu oluşturur.", template: "aktüeryal veriler bütüncül olarak değerlendirildiğinde {input} hesaplanmıştır." }
+                { title: "1. Destekten Yoksun Kalma Tazminat Hesabı", guide: "TRH yaşam tablosu ve aktif/pasif dönem gelir projeksiyonlarını hesaplar.", template: "aktüeryal yaşam tabloları ve gelir verileri esas alınarak yapılan hesaplamada, {input} bulunmuştur." },
+                { title: "2. Maluliyet Oranı ve Sağlık Raporu Entegrasyonu", guide: "Adli tıp maluliyet oranını tazminat formüllerine entegre eder.", template: "maluliyet raporu verileri hesaba yansıtılmış olup, {input} tespit edilmiştir." },
+                { title: "3. Enflasyon, Faiz ve İskonto Oranı Etkisi", guide: "Gelecekteki kazançların peşin değer hesaplamasında iskonto/faiz oranlarını uygular.", template: "iskonto ve teknik faiz uygulamaları neticesinde, {input} hesaplanmıştır." },
+                { title: "4. Kusur İndirimi ve Nihai Tazminat", guide: "Tespit edilen kusur oranlarını tazminat tutarından düşer.", template: "kusur oranları indirimi sonrasında nihai tazminat tutarı {input} olarak hesaplanmıştır." },
+                { title: "5. Aktif ve Pasif Dönem Gelir Projeksiyonu", guide: "Çalışma dönemi ve emeklilik dönemindeki gelir kayıplarını ayrı ayrı hesaplar.", template: "aktif ve pasif dönem gelir projeksiyonlarında {input} esas alınmıştır." },
+                { title: "6. Destek Olunacak Kişilerin Payları", guide: "Geride kalan hak sahiplerinin yaş ve medeni durumlarına göre pay oranlarını ayırır.", template: "hak sahiplerinin pay oranları hesaplanmış olup, {input} tespit edilmiştir." },
+                { title: "7. Geçici İş Göremezlik ve Bakıcı Gideri", guide: "İyileşme süresindeki kazanç kayıpları ve bakım masraflarını hesaplar.", template: "geçici iş göremezlik ve bakıcı gideri hesaplamalarında {input} saptanmıştır." },
+                { title: "8. Destekten Yoksun Kalma Süresi Sınırları", guide: "Hak sahiplerinin destek sürelerini hukuki ve aktüeryal esaslara göre belirler.", template: "destek süresi hesaplamaları neticesinde {input} sonucuna ulaşılmıştır." },
+                { title: "9. Bütüncül Aktüeryal Tazminat Raporlaması", guide: "Tüm hesap kalemlerini birleştirerek nihai tazminat tablosunu oluşturur.", template: "aktüeryal veriler bütüncül olarak değerlendirildiğinde {input} hesaplanmıştır." }
             ]
         }
     };
@@ -316,55 +316,48 @@
     }
 
     function loadBranchParameters() {
-    const selectedKey = document.getElementById('bransSecim').value;
-    const toolsArea = document.getElementById('graphic-tools-area');
-    const area = document.getElementById('dynamic-steps-area');
-    
-    // Önce alanları tamamen temizle
-    toolsArea.innerHTML = "";
-    area.innerHTML = "";
+        const selectedKey = document.getElementById('bransSecim').value;
+        const toolsArea = document.getElementById('graphic-tools-area');
+        const area = document.getElementById('dynamic-steps-area');
+        
+        toolsArea.innerHTML = "";
+        area.innerHTML = "";
 
-    if (!selectedKey || !branchDatabase[selectedKey]) {
-        return;
-    }
+        if (!selectedKey) {
+            area.innerHTML = '<p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>';
+            return;
+        }
 
-    const branchData = branchDatabase[selectedKey];
+        const branchData = branchDatabase[selectedKey];
 
-    // Grafik araçlarını kontrol et ve ekle
-    if (branchData.isGraphic) {
-        toolsArea.innerHTML = `
-            <div class="graphic-controls">
-                <button onclick="calculateGraphicDiff()">Analizi Başlat</button>
-                <div id="graphic-result"></div>
-            </div>`;
-    }
+        if (branchData.isGraphic) {
+            toolsArea.innerHTML = `
+                <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">Görselleri yükleyip piksel fark analizini çalıştırın.</p>
+                <div class="upload-grid">
+                    <div class="upload-box">
+                        <label><b>Orijinal / Dava Konusu Eser (A)</b></label><br>
+                        <input type="file" id="img1Input" accept="image/*" onchange="loadImages()">
+                        <canvas id="canvas1"></canvas>
+                    </div>
+                    <div class="upload-box">
+                        <label><b>İhlal Eden / Şüpheli Eser (B)</b></label><br>
+                        <input type="file" id="img2Input" accept="image/*" onchange="loadImages()">
+                        <canvas id="canvas2"></canvas>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="runDifferenceAnalysis()" style="background: #2563eb; padding: 12px; font-size: 0.95rem; margin-top:0; width:100%;">PİKSEL FARK ANALİZİNİ ÇALIŞTIR</button>
+                </div>
+                <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif; text-align: center;"></div>
+            `;
+        }
 
-    // 9 adımın tamamını render eden döngü
-    let stepsHTML = `<div class="steps-container">`;
-    
-    branchData.adimlar.forEach((s, index) => {
-        stepsHTML += `
-            <div class="step-card" style="margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px;">
-                <h3 style="margin-bottom: 5px;">${s.title}</h3>
-                <div class="guide" style="font-size: 0.9em; color: #555; margin-bottom: 10px;">${s.guide}</div>
-                <textarea id="step_input_${index}" 
-                          style="width: 100%; height: 80px; padding: 10px; box-sizing: border-box;" 
-                          placeholder="Buraya notlarınızı girin..."></textarea>
-            </div>
-        `;
-    });
-    
-    stepsHTML += `</div>`;
-    
-    // Tek seferde DOM'a yaz
-    area.innerHTML = stepsHTML;
-}
-
+        let stepsHTML = "";
         branchData.adimlar.forEach((s, i) => {
             let placeholderText = "Bu adımdaki tespitlerinizi buraya yazınız...";
             if (branchData.isGraphic && i === 8) placeholderText = "Otomatik fark analizi yukarıdan eklenecektir...";
             
-            area.innerHTML += `
+            stepsHTML += `
                 <div class="step">
                     <b>${s.title}</b>
                     <div class="guide-box">${s.guide}</div>
@@ -372,6 +365,7 @@
                 </div>
             `;
         });
+        area.innerHTML = stepsHTML;
     }
 
     function loadImages() {
