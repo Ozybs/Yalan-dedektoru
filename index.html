@@ -2,130 +2,289 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ADLİ BİLİRKİŞİ İNCELEME VE MÜTALAA MOTORU (v7.0)</title>
+    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v12.0)</title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
-        h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; font-size: 1.4rem; font-family: sans-serif; }
-        .section-title { background: #2c3e50; color: white; padding: 10px 15px; margin-top: 30px; font-family: sans-serif; font-size: 1rem; font-weight: bold; }
-        .step { margin-bottom: 25px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 6px; background: #f8fafc; }
-        .guide-box { background: #e2e8f0; padding: 8px 12px; font-size: 0.85rem; font-family: sans-serif; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; }
-        textarea { width: 100%; height: 60px; margin-top: 5px; font-family: sans-serif; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; }
+        h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; font-size: 1.3rem; font-family: sans-serif; }
+        .section-title { background: #2c3e50; color: white; padding: 10px 15px; margin-top: 25px; font-family: sans-serif; font-size: 0.95rem; font-weight: bold; }
+        .form-group { margin-top: 15px; font-family: sans-serif; }
+        label { font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 5px; color: #333; }
+        select, input, textarea { width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-family: sans-serif; box-sizing: border-box; }
+        textarea { height: 70px; }
+        .step { margin-bottom: 20px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 6px; background: #f8fafc; font-family: sans-serif; }
+        .guide-box { background: #e2e8f0; padding: 8px 12px; font-size: 0.85rem; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; }
         .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .upload-box { border: 2px dashed #94a3b8; padding: 15px; text-align: center; background: #f8fafc; border-radius: 6px; font-family: sans-serif; }
         canvas { max-width: 100%; height: auto; margin-top: 10px; border: 1px solid #cbd5e1; display: none; }
-        button { background: #2c3e50; color: white; border: none; padding: 15px 30px; cursor: pointer; width: 100%; font-size: 1.1rem; font-family: sans-serif; font-weight: bold; margin-top: 20px; border-radius: 4px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 30px; }
+        button { background: #2c3e50; color: white; border: none; padding: 15px 20px; cursor: pointer; flex: 1; font-size: 1rem; font-family: sans-serif; font-weight: bold; border-radius: 4px; }
         button:hover { background: #1a252f; }
+        .btn-word { background: #0284c7; }
+        .btn-word:hover { background: #0369a1; }
         #output { margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; padding: 25px; border: 1px solid #ddd; font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>ADLİ BİLİRKİŞİ TEKNİK MÜTALAA VE KIYASLAMA SİSTEMİ</h1>
+    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v12.0)</h1>
     
-    <div class="section-title">1. OTOMATİK PİKSEL ÇAKIŞTIRMA VE İNTERNET/LENS EMSAL ARAŞTIRMASI</div>
-    <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">Görselleri yükleyip piksel fark analizini çalıştırın. Ayrıca internette öncül araştırma için Google Lens / TinEye kısayollarını kullanın.</p>
-    
-    <div class="upload-grid">
-        <div class="upload-box">
-            <label><b>Orijinal / Dava Konusu Eser (A)</b></label><br><br>
-            <input type="file" id="img1Input" accept="image/*" onchange="loadImages()">
-            <canvas id="canvas1"></canvas>
-        </div>
-        <div class="upload-box">
-            <label><b>İhlal Eden / Şüpheli Eser (B)</b></label><br><br>
-            <input type="file" id="img2Input" accept="image/*" onchange="loadImages()">
-            <canvas id="canvas2"></canvas>
-        </div>
+    <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
+    <div class="form-group">
+        <label>Rapor Türü:</label>
+        <select id="raporTuru" onchange="toggleEkRaporAlani()">
+            <option value="asil">Asıl Rapor</option>
+            <option value="ek">Ek Rapor (İtirazların Değerlendirilmesi)</option>
+        </select>
     </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
-        <button onclick="runDifferenceAnalysis()" style="background: #2563eb; margin-top:0; padding: 10px; font-size: 0.9rem;">PİKSEL FARK (DIFFERENCE) ANALİZİNİ ÇALIŞTIR</button>
-        <button onclick="openWebSearchTools()" style="background: #0d9488; margin-top:0; padding: 10px; font-size: 0.9rem;">GOOGLE LENS / TINEYE İLE İNTERNETTE ARA</button>
+    <div class="form-group">
+        <label>Mahkeme Adı:</label>
+        <input type="text" id="mahkemeAdi" placeholder="Örn: Ankara 1. Fikri ve Sınai Haklar Hukuk Mahkemesi">
     </div>
-    <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif; text-align: center;"></div>
+    <div class="form-group">
+        <label>Esas Numarası:</label>
+        <input type="text" id="esasNo" placeholder="Örn: 2026/123 Esas">
+    </div>
 
-    <div class="section-title" style="margin-top: 40px;">2. PROGRAM İÇİ UZMAN İNCELEME VE REHBERLİ KONTROL KRİTERLERİ</div>
-    <p style="font-size: 0.85rem; color: #555; font-family: sans-serif;">İncelediğiniz adımlara bulgunuzu yazın. Boş bırakılan adımlar resmî rapora kesinlikle yansıtılmaz.</p>
+    <div class="section-title">2. İNCELEMEYE KONU MATERYAL KÜNYESİ (EMANET / DELİL BİLGİLERİ)</div>
+    <div class="form-group">
+        <label>Emanet / Dosya / Seri / Mühür Durumu:</label>
+        <input type="text" id="materyalKunyesi" placeholder="Örn: Mahkeme Emanetinin 2026/45 Sırasına Kayıtlı, ... Nolu Mühürlü Poşet İçerisindeki Dijital Materyal / Belge Asılları">
+    </div>
+
+    <div id="ek-rapor-container"></div>
+
+    <div class="section-title">3. UZMANLIK ALANI VE BRANŞ SEÇİMİ</div>
+    <div class="form-group">
+        <label>Bilirkişilik Branşını Seçin:</label>
+        <select id="bransSecim" onchange="loadBranchParameters()">
+            <option value="">-- Lütfen Branş Seçiniz --</option>
+            <option value="grafik">1. Grafik, Matbaa ve Görsel İletişim Tasarımı (Özel Piksel/FSEK Motoru)</option>
+            <option value="bilisim">2. Bilişim Teknolojileri ve Standart Yazılım</option>
+            <option value="trafik">3. Trafik Kazaları ve Kaza Tespit Uzmanlığı</option>
+            <option value="gayrimenkul">4. Gayrimenkul Değerleme ve İmar Mevzuatı</option>
+            <option value="hesap">5. Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler</option>
+            <option value="insaat">6. İnşaat Mühendisliği, Statik ve Keşif Hizmetleri</option>
+            <option value="sesgoruntu">7. Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi</option>
+            <option value="isguvenligi">8. İş Sağlığı ve Güvenliği (İSG) / İş Kazaları</option>
+            <option value="elektrik">9. Elektrik, Elektronik ve Mekanik Mühendisliği</option>
+            <option value="kripto">10. Kriptoloji, Siber Suçlar ve İleri Adli Bilişim</option>
+            <option value="cevre">11. Çevre Mühendisliği, Atık ve İmar Kirliliği</option>
+            <option value="deniz">12. Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği</option>
+            <option value="aktuer">13. Sigortacılık ve Aktüeryal Tazminat Hesaplamaları</option>
+        </select>
+    </div>
+
+    <div class="section-title">4. İNCELEME VE BULGULAR ALANI</div>
+    <div id="graphic-tools-area"></div>
+    <div id="dynamic-steps-area">
+        <p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>
+    </div>
+
+    <div class="section-title">5. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
+    <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="talepEkSure" style="width: auto; margin-right: 8px;"><b>Ek Süre Talebi:</b> İncelemenin tamamlanabilmesi için yasal ek süre verilmesi arz olunur.</label>
+        <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="talepKesif" style="width: auto; margin-right: 8px;"><b>Keşif / Kurul Teşkili Talebi:</b> Mahalinde keşif icrası ve/או heyet teşkili gereklidir.</label>
+    </div>
+
+    <div class="btn-group">
+        <button onclick="generateStandardReport()">RAPORU OLUŞTUR VE KOPYALA</button>
+        <button class="btn-word" onclick="downloadWordDoc()">WORD DOSYASI İNDİR (.doc)</button>
+    </div>
     
-    <div id="form-area" style="margin-top: 20px;"></div>
-    
-    <button onclick="generateReport()">RESMİ BİLİRKİŞİ RAPORUNU OLUŞTUR VE KOPYALA</button>
     <div id="output"></div>
 </div>
 
 <script>
     let img1 = null, img2 = null;
-    let computedDifferenceRate = "";
 
-    const steps = [
-        { 
-            title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", 
-            guide: "Ne İş Yapar: Eserin internet üzerindeki öncül örneklerini, benzerlerini ve font eşleşmelerini tarar. | Yol: Google Lens veya TinEye ile web tabanlı tarama.",
-            template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." 
-        },
-        { 
-            title: "2. Tipografi ve Font Analizi (Harici/Program Verisi)", 
-            guide: "Ne İş Yapar: Metinlerin font ailesini ve tipografik uyumunu inceler. | Yol: Harici font tarama siteleri veya program içi karakter paneli.",
-            template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." 
-        },
-        { 
-            title: "3. Renk Uzayı ve CMYK/RGB Değerleri", 
-            guide: "Ne İş Yapar: Renk kodlarının doğruluğunu ve baskı profillerini inceler. | Yol: Damlalık aracı (I) ve Color Picker renk kimliği kontrolü.",
-            template: "renk profilleri ve dijital/baskı renk kodları (CMYK/RGB/HEX) karşılaştırılmış olup, {input} saptanmıştır." 
-        },
-        { 
-            title: "4. Maske (Clipping) Hiyerarşisi", 
-            guide: "Ne İş Yapar: Maskenin arkasına gizlenmiş orijinal katmanları/logoları açığa çıkarır. | Kısayol: PS: Alt+Ctrl+G | AI: Alt+Ctrl+7",
-            template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." 
-        },
-        { 
-            title: "5. Katman Yapısı ve Gizli İzler", 
-            guide: "Ne İş Yapar: Tasarımcının silmeyip gözünü kapattığı eski katmanları görünür yapar. | Kısayol: F7 (Katmanlar paneli) -> Göz (👁️) simgeleri.",
-            template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." 
-        },
-        { 
-            title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", 
-            guide: "Ne İş Yapar: Bağlantı noktalarını ve kavis açılarını açığa çıkararak otomatik vektör (Image Trace) hilesini yakalar. | Kısayol: A tuşu",
-            template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiş olup, {input} kanaatine varılmıştır." 
-        },
-        { 
-            title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", 
-            guide: "Ne İş Yapar: Katmanların saydamlık ve karışım modlarını inceler. | Yol: Katmanlar panelinden harmanlama modunu değiştirme.",
-            template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiş, {input} görülmüştür." 
-        },
-        { 
-            title: "8. Izgara (Grid) ve Geometrik Hizalama", 
-            guide: "Ne İş Yapar: Sayfanın arkasına milimetrik kareli kılavuz sererek oran-orantı ve hizalama hatalarını gösterir. | Kısayol: Ctrl + ' (PS)",
-            template: "geometrik hizalama kılavuzları üzerinde yapılan karşılaştırmalı incelemede {input} tespit edilmiştir." 
-        },
-        { 
-            title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", 
-            guide: "Ne İş Yapar: İki görseli üst üste koyduğunda birebir aynı olan yerleri siyah yapar, kopyalamayı kanıtlar. | Otomatik tarayıcı analizi.",
-            template: "iki görselin piksel matrisleri çakıştırıldığında {input} matematiksel olarak doğrulanmıştır." 
+    function toggleEkRaporAlani() {
+        let tur = document.getElementById('raporTuru').value;
+        let container = document.getElementById('ek-rapor-container');
+        if (tur === 'ek') {
+            container.innerHTML = `
+                <div class="section-title" style="background: #9333ea;">TARAFLARIN İTİRAZLARI VE DEĞERLENDİRME ALANI</div>
+                <div class="form-group">
+                    <label>Tarafların İtiraz Dilekçesi Özeti ve İtiraz Konuları:</label>
+                    <textarea id="itirazMetni" placeholder="Tarafların rapora yönelttiği itiraz maddelerini buraya yazınız..."></textarea>
+                </div>
+            `;
+        } else {
+            container.innerHTML = "";
         }
-    ];
+    }
 
-    const formArea = document.getElementById('form-area');
-    steps.forEach((s, i) => {
-        let extraPlaceholder = "Bu adımı incelediyseniz bulgunuzu yazın, incelemediyseniz boş bırakın...";
-        if (i === 0) extraPlaceholder = "Örn: Google Lens taramasında eserin daha önce X platformunda yer aldığı ve fontların birebir örtüştüğü görüldü...";
-        if (i === 8) extraPlaceholder = "Otomatik fark analizi yukarıdan eklenecektir...";
+    const branchDatabase = {
+        grafik: {
+            adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
+            kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
+            isGraphic: true,
+            adimlar: [
+                { title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", guide: "Eserin internet üzerindeki öncül örnekleri ve benzerlik tespiti.", template: "yapılan internet tabanlı tersine görsel araştırmasında, {input} tespit edilmiştir." },
+                { title: "2. Tipografi ve Font Analizi", guide: "Metinlerin font ailesi ve tipografik uyumu.", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
+                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "Renk kodlarının doğruluğu ve baskı profilleri.", template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." },
+                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "Maskenin arkasındaki gizli katmanlar.", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
+                { title: "5. Katman Yapısı ve Gizli İzler", guide: "Silinmeyip gizlenmiş eski katmanlar.", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
+                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "Bağlantı noktaları ve kavis açıları.", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir." },
+                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "Saydamlık ve karışım modları.", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir." },
+                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "Oran-orantı ve hizalama kılavuzları.", template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "İki görselin piksel düzeyinde çakıştırılması.", template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." }
+            ]
+        },
+        bilisim: {
+            adi: "Bilişim Teknolojileri ve Yazılım",
+            kanun: "5651 sayılı Kanun ve İlgili Bilişim Mevzuatı",
+            adimlar: [
+                { title: "1. Dijital Materyal ve İmaj (Image) Analizi", guide: "Forensik imajın alınması ve bütünlüğü.", template: "elde edilen dijital imajın hash değerleri incelenmiş olup, {input} görülmüştür." },
+                { title: "2. Log Kayıtları ve Zaman Damgası İncelemesi", guide: "Sistem logları ve IP eşleşmeleri.", template: "sunucu log kayıtları üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "3. Kaynak Kod / Yazılım Yapısı Kontrolü", guide: "Yazılım mimarisi ve iktibas tespiti.", template: "kaynak kod blokları karşılaştırılmış, {input} saptanmıştır." }
+            ]
+        },
+        trafik: {
+            adi: "Trafik Kazaları ve Kaza Tespit Uzmanlığı",
+            kanun: "Karayolları Trafik Kanunu ve İlgili Yönetmelikler",
+            adimlar: [
+                { title: "1. Kusur Oranı ve Fiziksel İz Analizi", guide: "Fren izleri, çarpışma noktası ve yol kusurları.", template: "olay yerindeki fren izleri ve fiziksel bulgular değerlendirildiğinde {input} kanaatine varılmıştır." },
+                { title: "2. Sürücü Kusur Durumu", guide: "Tarafların kural ihlalleri ve kusur dağılımı.", template: "tarafların kusur oranları 2918 sayılı Kanun kapsamında incelenmiş, {input} tespit edilmiştir." }
+            ]
+        },
+        gayrimenkul: {
+            adi: "Gayrimenkul Değerleme ve İmar Mevzuatı",
+            kanun: "İmar Kanunu ve Tapu Mevzuatı",
+            adimlar: [
+                { title: "1. Tapu ve Kadastro Kayıt İncelemesi", guide: "Taşınmazın çap ve mülkiyet durumu.", template: "tapu kayıtları üzerinden yapılan incelemede {input} saptanmıştır." },
+                { title: "2. Emsal Değer ve İmar Durumu Tespiti", guide: "Rayiç bedeller ve imar planı uygunluğu.", template: "imar planı hükümleri ve emsal piyasa araştırması neticesinde {input} görülmüştür." }
+            ]
+        },
+        hesap: {
+            adi: "Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler",
+            kanun: "Türk Ticaret Kanunu (TTK) ve Vergi Usul Kanunu (VUK)",
+            adimlar: [
+                { title: "1. Defter ve Belge İncelemesi (Yasal Defterler)", guide: "Yevmiye ve defteri kebir tasdikleri.", template: "taraflara ait yasal ticari defterler incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Ticari Bakiye ve Cari Hesap Mutabakatı", guide: "Fatura, irsaliye ve alacak/borç durumu.", template: "ticari kayıtlar ve banka ekstreleri karşılaştırıldığında {input} saptanmıştır." }
+            ]
+        },
+        insaat: {
+            adi: "İnşaat Mühendisliği, Statik ve Keşif Hizmetleri",
+            kanun: "İmar Kanunu, Yapı Denetimi ve Türk Borçlar Kanunu",
+            adimlar: [
+                { title: "1. Proje ve Mahal İncelemesi", guide: "Projeler ile fiili durumun kıyaslanması.", template: "yerinde yapılan fiziki ölçüm ve projeler karşılaştırıldığında {input} görülmüştür." },
+                { title: "2. Kusur, Eksik İmalat ve Bedel Tespiti", guide: "Yapıdaki kusurlar ve güncel rayiç maliyetleri.", template: "inşaat kalemi eksiklikleri ve yapı kusurları incelenmiş, {input} tespit edilmiştir." }
+            ]
+        },
+        sesgoruntu: {
+            adi: "Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi",
+            kanun: "Hukuk Muhakemeleri Kanunu (HMK) ve Adli Tıp Kriterleri",
+            adimlar: [
+                { title: "1. İmza ve Yazı Karakteri Kıyaslaması", guide: "İmzanın atılış hızı ve aidiyet tespiti.", template: "imza örnekleri ve mukayese imzaları üzerinde yapılan incelemede {input} saptanmıştır." },
+                { title: "2. Ses/Görüntü İyileştirme ve Montaj Analizi", guide: "Kayıtların manipülasyon analizi.", template: "ses/görüntü kayıtları teknik filtrelemeden geçirilmiş olup, {input} tespit edilmiştir." }
+            ]
+        },
+        isguvenligi: {
+            adi: "İş Sağlığı ve Güvenliği (İSG) / İş Kazaları",
+            kanun: "6331 sayılı İş Sağlığı ve Güvenliği Kanunu",
+            adimlar: [
+                { title: "1. Risk Değerlendirmesi ve Alınan Tedbirler", guide: "İş yerindeki güvenlik önlemleri.", template: "işyeri İSG dosyaları ve risk analizleri incelenmiş olup, {input} saptanmıştır." },
+                { title: "2. Kusur ve İlliyet Bağı Tespiti", guide: "Kazanın meydana gelmesindeki kusur oranları.", template: "olayın oluş şekli ve mevzuat hükümleri çerçevesinde {input} kanaatine varılmıştır." }
+            ]
+        },
+        elektrik: {
+            adi: "Elektrik, Elektronik ve Mekanik Mühendisliği",
+            kanun: "Elektrik Tesisleri Yönetmeliği ve İlgili Teknik Mevzuat",
+            adimlar: [
+                { title: "1. Tesisat, Pano ve Proje Uygunluğu", guide: "Elektrik projelerinin fiili durumla uygunluğu.", template: "elektrik tesisatı ve panolar üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "2. Arıza, Yangın ve Mekanik Kusur Tespiti", guide: "Kısa devre, aşırı yük ve mekanik kırılmalar.", template: "fiziki kalıntılar ve teknik veriler incelendiğinde {input} saptanmıştır." }
+            ]
+        },
+        kripto: {
+            adi: "Kriptoloji, Siber Suçlar ve İleri Adli Bilişim",
+            kanun: "5651 Sayılı Kanun ve Türk Ceza Kanunu",
+            adimlar: [
+                { title: "1. Şifre Çözme, Veri Kurtarma ve Hash Analizi", guide: "Silinen verilerin kurtarılması.", template: "dijital materyaller üzerinde yapılan ileri bilişim incelemesinde {input} saptanmıştır." },
+                { title: "2. Kripto Varlık, IP ve Dijital İz Tespiti", guide: "Blockchain hareketleri ve log izleri.", template: "dijital ağ izleri ve transfer hareketleri incelenmiş olup, {input} tespit edilmiştir." }
+            ]
+        },
+        cevre: {
+            adi: "Çevre Mühendisliği, Atık ve İmar Kirliliği",
+            kanun: "2872 sayılı Çevre Kanunu ve İlgili Yönetmelikler",
+            adimlar: [
+                { title: "1. Atık, Emisyon ve Deşarj İncelemesi", guide: "Endüstriyel atık sular ve baca gazı emisyonları.", template: "tesis atıkları ve çevresel etki ölçümleri incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. ÇED ve Çevre Mevzuatı Uygunluğu", guide: "ÇED raporları ve ruhsat denetimi.", template: "faaliyetlerin çevre mevzuatına uygunluğu açısından {input} saptanmıştır." }
+            ]
+        },
+        deniz: {
+            adi: "Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği",
+            kanun: "Türk Ticaret Kanunu (Deniz Ticareti)",
+            adimlar: [
+                { title: "1. Gemi Manevra, Seyir ve Çatışma Analizi", guide: "Vardiya kayıtları ve rota verileri (VDR).", template: "seyir defterleri ve radar kayıtları incelendiğinde {input} tespit edilmiştir." },
+                { title: "2. Deniz Kirliliği ve Hasar Tespiti", guide: "Gemiden atık sızması ve kirlilik oranları.", template: "deniz kazası ve kirlilik unsurları değerlendirildiğinde {input} tespit edilmiştir." }
+            ]
+        },
+        aktuer: {
+            adi: "Sigortacılık ve Aktüeryal Tazminat Hesaplamaları",
+            kanun: "Türk Borçlar Kanunu ve İş Kanunu",
+            adimlar: [
+                { title: "1. Destekten Yoksun Kalma ve Gelir Tespiti", guide: "Kazanç durumu ve TRH yaşam tablosu projeksiyonu.", template: "aktüeryal yaşam tabloları esas alınarak yapılan hesaplamada {input} bulunmuştur." },
+                { title: "2. İş Göremezlik ve Kusur İndirimli Tazminat", guide: "Maluliyet oranları ve tazminat tutarları.", template: "maluliyet raporu ve kusur oranları entegre edilerek net tazminat tutarı {input} olarak hesaplanmıştır." }
+            ]
+        }
+    };
+
+    function loadBranchParameters() {
+        const selectedKey = document.getElementById('bransSecim').value;
+        const toolsArea = document.getElementById('graphic-tools-area');
+        const area = document.getElementById('dynamic-steps-area');
         
-        formArea.innerHTML += `
-            <div class="step">
-                <b>${s.title}</b>
-                <div class="guide-box">${s.guide}</div>
-                <textarea id="input_${i}" placeholder="${extraPlaceholder}"></textarea>
-            </div>
-        `;
-    });
+        toolsArea.innerHTML = "";
+        area.innerHTML = "";
+
+        if (!selectedKey) {
+            area.innerHTML = '<p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>';
+            return;
+        }
+
+        const branchData = branchDatabase[selectedKey];
+
+        if (branchData.isGraphic) {
+            toolsArea.innerHTML = `
+                <p style="font-size: 0.85rem; font-style: italic; color: #555; font-family: sans-serif;">Görselleri yükleyip piksel fark analizini çalıştırın.</p>
+                <div class="upload-grid">
+                    <div class="upload-box">
+                        <label><b>Orijinal / Dava Konusu Eser (A)</b></label><br>
+                        <input type="file" id="img1Input" accept="image/*" onchange="loadImages()">
+                        <canvas id="canvas1"></canvas>
+                    </div>
+                    <div class="upload-box">
+                        <label><b>İhlal Eden / Şüpheli Eser (B)</b></label><br>
+                        <input type="file" id="img2Input" accept="image/*" onchange="loadImages()">
+                        <canvas id="canvas2"></canvas>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <button onclick="runDifferenceAnalysis()" style="background: #2563eb; padding: 12px; font-size: 0.95rem; margin-top:0; width:100%;">PİKSEL FARK ANALİZİNİ ÇALIŞTIR</button>
+                </div>
+                <div id="diffResult" style="margin-top: 10px; font-weight: bold; color: #b91c1c; font-family: sans-serif; text-align: center;"></div>
+            `;
+        }
+
+        branchData.adimlar.forEach((s, i) => {
+            let placeholderText = "Bu adımdaki tespitlerinizi buraya yazınız...";
+            if (branchData.isGraphic && i === 8) placeholderText = "Otomatik fark analizi yukarıdan eklenecektir...";
+            
+            area.innerHTML += `
+                <div class="step">
+                    <b>${s.title}</b>
+                    <div class="guide-box">${s.guide}</div>
+                    <textarea id="step_input_${i}" placeholder="${placeholderText}"></textarea>
+                </div>
+            `;
+        });
+    }
 
     function loadImages() {
         const file1 = document.getElementById('img1Input').files[0];
         const file2 = document.getElementById('img2Input').files[0];
-
         if (file1) {
             let reader = new FileReader();
             reader.onload = function(e) {
@@ -135,7 +294,6 @@
             }
             reader.readAsDataURL(file1);
         }
-
         if (file2) {
             let reader = new FileReader();
             reader.onload = function(e) {
@@ -150,9 +308,9 @@
     function drawToCanvas(img, canvasId) {
         let canvas = document.getElementById(canvasId);
         let ctx = canvas.getContext('2d');
-        canvas.width = 150;
-        canvas.height = 150;
-        ctx.drawImage(img, 0, 0, 150, 150);
+        canvas.width = 130;
+        canvas.height = 130;
+        ctx.drawImage(img, 0, 0, 130, 130);
         canvas.style.display = 'block';
     }
 
@@ -161,74 +319,125 @@
             alert("Lütfen önce iki görseli de yükleyin!");
             return;
         }
-
         let canvas = document.createElement('canvas');
         let ctx = canvas.getContext('2d');
-        canvas.width = 100;
-        canvas.height = 100;
-
+        canvas.width = 100; canvas.height = 100;
         ctx.drawImage(img1, 0, 0, 100, 100);
         let data1 = ctx.getImageData(0, 0, 100, 100).data;
-
         ctx.clearRect(0, 0, 100, 100);
         ctx.drawImage(img2, 0, 0, 100, 100);
         let data2 = ctx.getImageData(0, 0, 100, 100).data;
 
         let totalPixels = 100 * 100;
         let diffPixels = 0;
-
         for (let i = 0; i < data1.length; i += 4) {
             let rDiff = Math.abs(data1[i] - data2[i]);
             let gDiff = Math.abs(data1[i+1] - data2[i+1]);
             let bDiff = Math.abs(data1[i+2] - data2[i+2]);
-            
-            if ((rDiff + gDiff + bDiff) / 3 > 25) {
-                diffPixels++;
-            }
+            if ((rDiff + gDiff + bDiff) / 3 > 25) { diffPixels++; }
         }
-
         let similarity = ((1 - (diffPixels / totalPixels)) * 100).toFixed(2);
-        computedDifferenceRate = `görseller arasında %${similarity} oranında sayısal ve geometrik örtüşme/benzerlik olduğu`;
-        
-        document.getElementById('input_8').value = computedDifferenceRate;
+        let computedDifferenceRate = `görseller arasında %${similarity} oranında sayısal ve geometrik örtüşme/benzerlik olduğu`;
+        document.getElementById('step_input_8').value = computedDifferenceRate;
         document.getElementById('diffResult').innerText = `Piksel Analizi Tamamlandı: %${similarity} Benzerlik Saptandı (9. Adıma işlendi).`;
     }
 
-    function openWebSearchTools() {
-        window.open("https://lens.google.com", "_blank");
-        window.open("https://tineye.com", "_blank");
-        alert("Google Lens ve TinEye sekmeleri açıldı. Görsellerinizi bu sitelere sürükleyerek internet emsallerini ve font eşleşmelerini kontrol edebilir, bulgularınızı 1. adımdaki kutuya yazabilirsiniz.");
-    }
+    function compileReportText() {
+        const raporTuru = document.getElementById('raporTuru').value;
+        const mahkeme = document.getElementById('mahkemeAdi').value.trim();
+        const esas = document.getElementById('esasNo').value.trim();
+        const kunye = document.getElementById('materyalKunyesi').value.trim();
+        const selectedKey = document.getElementById('bransSecim').value;
 
-    function generateReport() {
-        let report = `T.C. ANKARA NÖBETÇİ MAHKEMESİNE\n\nKONU: Fikri ve Sınai Haklar - Grafik Tasarım İhlali Mütalaası\n\nTEKNİK İNCELEME BULGULARI:\n\n`;
+        if (!mahkeme || !esas || !selectedKey) {
+            alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun!");
+            return null;
+        }
+
+        const branchData = databaseLookup(selectedKey);
+        const raporBasligi = raporTuru === 'ek' ? "BİLİRKİŞİ EK RAPORU" : "BİLİRKİŞİ RAPORU";
         
-        let activeStepCount = 0;
+        let report = `T.C. ${mahkeme.toUpperCase()}\n` +
+                     `DOSYA ESAS NO: ${esas}\n\n` +
+                     `${raporBasligi}\n\n` +
+                     `1. GÖREVLENİRME VE USUL:\n` +
+                     `Yüce Mahkemenizin yukarıda belirtilen esas numaralı dosyası kapsamında; ${branchData.adi} alanında inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n\n`;
 
-        steps.forEach((s, i) => {
-            let val = document.getElementById('input_' + i).value.trim();
-            if (val !== "") {
-                activeStepCount++;
-                let cleanTitle = s.title.replace(/^[0-9]+\.\s*/, '');
-                report += `${activeStepCount}. ${cleanTitle.toUpperCase()}:\n${s.template.replace("{input}", val)}\n\n`;
+        if (raporTuru === 'ek') {
+            let itirazVal = document.getElementById('itirazMetni').value.trim();
+            report += `TARAFLARIN İTİRAZLARI:\n${itirazVal}\n\n`;
+        }
+
+        if (kunye) {
+            report += `2. İNCELEMEYE KONU MATERYAL KÜNYESİ:\n${kunye}\n\n`;
+        }
+
+        report += `3. MADDİ OLAY VE UYUŞMAZLIĞIN KONUSU:\n` +
+                  `Dava dosyası kapsamındaki ihtilaflı unsurlar, ${branchData.kanun} hükümleri çerçevesinde teknik incelemeye tabi tutulmuştur.\n\n` +
+                  `4. TEKNİK İNCELEME VE BULGULAR:\n\n`;
+
+        let activeCount = 0;
+        branchData.adimlar.forEach((s, i) => {
+            let el = document.getElementById(`step_input_${i}`);
+            if (el) {
+                let val = el.value.trim();
+                if (val !== "") {
+                    activeCount++;
+                    let cleanTitle = s.title.replace(/^[0-9]+\.\s*/, '');
+                    report += `${activeCount}. ${cleanTitle.toUpperCase()}:\n${s.template.replace("{input}", val)}\n\n`;
+                }
             }
         });
 
-        if (activeStepCount === 0) {
-            alert("Hiçbir inceleme adımı doldurulmamış! Lütfen en az bir bulgu girin.");
-            return;
+        if (activeCount === 0) {
+            alert("Lütfen en az bir inceleme adımına bulgu giriniz!");
+            return null;
         }
 
-        // Kusursuz ve Hakime Yönelik Durum Açıklaması İçeren Sonuç Paragrafı
-        report += `SONUÇ VE KANAAT:\n` +
-                  `Söz konusu eserler üzerinde 5846 sayılı Fikir ve Sanat Eserleri Kanunu ve uluslararası grafik standartları çerçevesinde toplam ${activeStepCount} farklı teknik ve adli parametre üzerinden inceleme gerçekleştirilmiştir. ` +
-                  `Yukarıda detaylıca arz edilen bulgular doğrultusunda; incelenen unsurlar arasında tespit edilen benzerliklerin mahiyeti, dijital örtüşme oranları ve tipografik yapılar yargılamanın seyrine ışık tutacak niteliktedir. ` +
-                  `Raporda sunulan tüm bu teknik ve sayısal veriler, tasarımların özgünlük durumu ile olası bir iktibas/ihlal durumunu ortaya koymak amacıyla açıklanmış olup; eserler arasındaki benzerliğin hukuki anlamda bir hak ihlali (intihal) teşkil edip etmediği hususunda nihai takdir ve karar, Yüce Mahkemenize aittir.\n\n` +
-                  `Saygılarımla,\nGrafik Bilirkişisi`;
-        
+        let talepler = [];
+        if (document.getElementById('talepEkSure').checked) talepler.push("Yasal ek süre verilmesi");
+        if (document.getElementById('talepKesif').checked) talepler.push("Mahalinde keşif icrası ve/veya heyet teşkili");
+
+        report += `5. SONUÇ VE KANAAT:\n` +
+                  `Yukarıda ${branchData.adi} branşına ait ${branchData.kanun} ve ilgili teknik standartlar çerçevesinde toplam ${activeCount} parametre üzerinden inceleme gerçekleştirilmiştir. ` +
+                  `Dosyaya sunulan maddi deliller, sayısal veriler ve teknik bulgular yukarıda arz edilmiş olup; somut olaydaki hukuki değerlendirme, hak ihlali/kusur tespiti ve nihai takdir Yüce Mahkemenizin yetki ve takdirindedir.\n`;
+
+        if (talepler.length > 0) {
+            report += `\nEK TALEPLER: ${talepler.join(" ve ")} hususları takdirlerinize arz olunur.\n`;
+        }
+
+        report += `\nArz olunur.\n\nBilirkişi\nUnvan / Ad Soyad`;
+        return report;
+    }
+
+    function databaseLookup(key) {
+        return branchDatabase[key];
+    }
+
+    function generateStandardReport() {
+        let report = compileReportText();
+        if (!report) return;
         document.getElementById('output').innerText = report;
         navigator.clipboard.writeText(report);
-        alert("Resmi bilirkişi raporu tam metin olarak hazırlandı ve panoya kopyalandı!");
+        alert("Bilirkişilik Daire Başkanlığı standartlarına uygun rapor oluşturuldu ve panoya kopyalandı!");
+    }
+
+    function downloadWordDoc() {
+        let report = compileReportText();
+        if (!report) return;
+        
+        let blob = new Blob(['\ufeff' + report], {
+            type: 'application/msword;charset=utf-8'
+        });
+        
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `Bilirkisi_Raporu_${document.getElementById('esasNo').value.replace(/[^a-zA-Z0-9]/g, '_') || 'Dosya'}.doc`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 </script>
 </body>
