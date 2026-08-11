@@ -101,22 +101,23 @@
     let img1 = null, img2 = null;
 
     const branchDatabase = {
-        grafik: {
-            adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
-            kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
-            isGraphic: true,
-            adimlar: [
-                { title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını ve benzerlerini tespit eder.", template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." },
-                { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini, stillerini, glifleri ve karakter dizilimlerini inceler.", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
-                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "<strong>Ne İşe Yarar:</strong> Ekran (RGB) ve baskı (CMYK) renk profillerini ve sayısal ton değerlerini kıyaslar.", template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." },
-                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "<strong>Ne İşe Yarar:</strong> Maskeleme katmanlarının arkasına gizlenmiş grafik ögelerini ve vektör kesim sınırlarını ortaya çıkarır.", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
-                { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder.", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
-                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını kıyaslar.", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir: {input}" },
-                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Katmanların saydamlık ve harmanlama modlarını inceler.", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir: {input}" },
-                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder.", template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." },
-                { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "<strong>Ne İşe Yarar:</strong> İki görseli üst üste bindirerek piksel bazında örtüşme oranını kanıtlar.", template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." }
-            ]
-        },
+        // Kodun içindeki 'grafik' bölümünü bununla değiştirin:
+grafik: {
+    adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
+    kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
+    isGraphic: true,
+    adimlar: [
+        { title: "1. İnternet ve Tersine Görsel Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını test eder. <br><strong>Kısayol:</strong> Tarayıcıda sağ tık + S (Google'da görseli ara)." },
+        { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini ve karakter dizilimlerini inceler. <br><strong>Kısayol:</strong> Photoshop/AI'da yazı seçiliyken (T) tuşu ile font panelini açın." },
+        { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "<strong>Ne İşe Yarar:</strong> Ekran (RGB) ve baskı (CMYK) değerlerini kıyaslar. <br><strong>Kısayol:</strong> (Ctrl + Y) ile baskı önizlemeye (Proof Colors) geçiş yapın." },
+        { title: "4. Maske (Clipping) Hiyerarşisi", guide: "<strong>Ne İşe Yarar:</strong> Gizlenmiş grafik ögeleri ve vektör kesim sınırlarını ortaya çıkarır. <br><strong>Kısayol:</strong> (Alt + Ctrl + 7) Maskeyi serbest bırakır / (Alt + Ctrl + G) Clipping Mask." },
+        { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder. <br><strong>Kısayol:</strong> (F7) Katmanlar panelini açar." },
+        { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Bağlantı noktalarının koordinatlarını kıyaslar. <br><strong>Kısayol:</strong> (A) Direct Selection Tool ile noktaları seçin." },
+        { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Saydamlık ve harmanlama modlarını inceler. <br><strong>Kısayol:</strong> Katman seçiliyken klavyeden rakam tuşları (1-0 arası) opaklığı değiştirir." },
+        { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder. <br><strong>Kısayol:</strong> (Ctrl + ' ) Izgarayı (Grid) açıp kapatır." },
+        { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "<strong>Ne İşe Yarar:</strong> İki görseli üst üste bindirerek piksel farkını kanıtlar. <br><strong>Kısayol:</strong> Katmanlar panelinde 'Difference' modunu seçin." }
+    ]
+},
         bilisim: {
             adi: "Bilişim Teknolojileri ve Standart Yazılım",
             kanun: "5651 sayılı İnternet Ortamında Yapılan Yayınların Düzenlenmesi Hakkında Kanun",
