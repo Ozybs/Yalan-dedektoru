@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v12.0)</title>
+    <title>EVRENSEL ADLİ BİLİRKİŞİ RAPORLAMA VE ANALİZ SİSTEMİ (v12.1)</title>
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
@@ -11,9 +11,9 @@
         .form-group { margin-top: 15px; font-family: sans-serif; }
         label { font-weight: bold; font-size: 0.9rem; display: block; margin-bottom: 5px; color: #333; }
         select, input, textarea { width: 100%; padding: 8px; border: 1px solid #94a3b8; border-radius: 4px; font-family: sans-serif; box-sizing: border-box; }
-        textarea { height: 70px; }
+        textarea { height: 75px; }
         .step { margin-bottom: 20px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 6px; background: #f8fafc; font-family: sans-serif; }
-        .guide-box { background: #e2e8f0; padding: 8px 12px; font-size: 0.85rem; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; }
+        .guide-box { background: #e2e8f0; padding: 10px 12px; font-size: 0.85rem; color: #1e293b; border-left: 4px solid #2563eb; margin-bottom: 10px; border-radius: 2px; line-height: 1.4; }
         .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .upload-box { border: 2px dashed #94a3b8; padding: 15px; text-align: center; background: #f8fafc; border-radius: 6px; font-family: sans-serif; }
         canvas { max-width: 100%; height: auto; margin-top: 10px; border: 1px solid #cbd5e1; display: none; }
@@ -28,7 +28,7 @@
 <body>
 
 <div class="container">
-    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v12.0)</h1>
+    <h1>T.C. ADALET BAKANLIĞI BİLİRKİŞİLİK DAİRE BAŞKANLIĞI<br>STANDART RAPOR OTOMASYONU (v12.1)</h1>
     
     <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
     <div class="form-group">
@@ -50,7 +50,7 @@
     <div class="section-title">2. İNCELEMEYE KONU MATERYAL KÜNYESİ (EMANET / DELİL BİLGİLERİ)</div>
     <div class="form-group">
         <label>Emanet / Dosya / Seri / Mühür Durumu:</label>
-        <input type="text" id="materyalKunyesi" placeholder="Örn: Mahkeme Emanetinin 2026/45 Sırasına Kayıtlı, ... Nolu Mühürlü Poşet İçerisindeki Dijital Materyal / Belge Asılları">
+        <input type="text" id="materyalKunyesi" placeholder="Örn: Mahkeme Emanetinin 2026/45 Sırasına Kayıtlı, Mühürlü Poşet İçerisindeki Dijital Materyal">
     </div>
 
     <div id="ek-rapor-container"></div>
@@ -76,7 +76,7 @@
         </select>
     </div>
 
-    <div class="section-title">4. İNCELEME VE BULGULAR ALANI</div>
+    <div class="section-title">4. İNCELEME VE BULGULAR ALANI (REHBERLİ ADIMLAR)</div>
     <div id="graphic-tools-area"></div>
     <div id="dynamic-steps-area">
         <p style="font-style: italic; color: #777; font-family: sans-serif; margin-top: 15px;">Lütfen yukarıdan bir branş seçiniz.</p>
@@ -85,7 +85,7 @@
     <div class="section-title">5. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
     <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
         <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="talepEkSure" style="width: auto; margin-right: 8px;"><b>Ek Süre Talebi:</b> İncelemenin tamamlanabilmesi için yasal ek süre verilmesi arz olunur.</label>
-        <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="talepKesif" style="width: auto; margin-right: 8px;"><b>Keşif / Kurul Teşkili Talebi:</b> Mahalinde keşif icrası ve/או heyet teşkili gereklidir.</label>
+        <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="talepKesif" style="width: auto; margin-right: 8px;"><b>Keşif / Kurul Teşkili Talebi:</b> Mahalinde keşif icrası ve/veya heyet teşkili gereklidir.</label>
     </div>
 
     <div class="btn-group">
@@ -121,112 +121,112 @@
             kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
             isGraphic: true,
             adimlar: [
-                { title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", guide: "Eserin internet üzerindeki öncül örnekleri ve benzerlik tespiti.", template: "yapılan internet tabanlı tersine görsel araştırmasında, {input} tespit edilmiştir." },
-                { title: "2. Tipografi ve Font Analizi", guide: "Metinlerin font ailesi ve tipografik uyumu.", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
-                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "Renk kodlarının doğruluğu ve baskı profilleri.", template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." },
-                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "Maskenin arkasındaki gizli katmanlar.", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
-                { title: "5. Katman Yapısı ve Gizli İzler", guide: "Silinmeyip gizlenmiş eski katmanlar.", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
-                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "Bağlantı noktaları ve kavis açıları.", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir." },
-                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "Saydamlık ve karışım modları.", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir." },
-                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "Oran-orantı ve hizalama kılavuzları.", template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." },
-                { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "İki görselin piksel düzeyinde çakıştırılması.", template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." }
+                { title: "1. İnternet ve Tersine Görsel (Google Lens / TinEye) Taraması", guide: "Ne İş Yapar / Açıklama: Eserin internet üzerindeki öncül örneklerini, benzerlerini ve yayınlandığı ilk tarihleri tarayarak özgünlük durumunu irdeler.", template: "yapılan internet tabanlı tersine görsel (Google Lens/TinEye) araştırmasında, {input} tespit edilmiştir." },
+                { title: "2. Tipografi ve Font Analizi", guide: "Ne İş Yapar / Açıklama: Kullanılan yazı tiplerinin (font ailelerinin) lisans durumunu, karakter dizilimlerini ve tipografik benzerlik oranlarını inceler.", template: "metin katmanları ve karakter dizilimleri üzerinde yapılan tipografik incelemede, {input} tespit edilmiştir." },
+                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "Ne İş Yapar / Açıklama: Tasarımın dijital ekran (RGB) ve baskı (CMYK) renk profillerini karşılaştırarak renk tonu kopyalamalarını saptar.", template: "renk profilleri ve dijital/baskı renk kodları karşılaştırılmış olup, {input} saptanmıştır." },
+                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "Ne İş Yapar / Açıklama: Vektör veya piksel tabanlı maskeleme katmanlarının arkasına gizlenmiş orijinal unsurları ve logoları açığa çıkarır.", template: "gerçekleştirilen maske hiyerarşisi incelemesinde {input} olduğu saptanmıştır." },
+                { title: "5. Katman Yapısı ve Gizli İzler", guide: "Ne İş Yapar / Açıklama: Tasarım dosyasının (PSD/AI vb.) katman geçmişini inceleyerek silinmeyip sadece görünürlüğü kapatılmış eski grafikleri ortaya çıkarır.", template: "katman dizilimi ve silinmeyip gizlenmiş unsurlar üzerinde yapılan analizde, {input} gözlemlenmiştir." },
+                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "Ne İş Yapar / Açıklama: Çizimi oluşturan bağlantı noktalarının (anchor points) koordinatlarını ve kavis açılarını kıyaslayarak otomatik vektör kopyalamalarını yakalar.", template: "çizimi oluşturan düğüm noktalarının koordinat dizilimi ve kavis açıları incelenmiştir." },
+                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "Ne İş Yapar / Açıklama: Katmanların saydamlık değerleri ile harmanlama modlarının orijinal eser üzerindeki manipülasyon izlerini inceler.", template: "katmanların saydamlık değerleri ve harmanlama modları incelenmiştir." },
+                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "Ne İş Yapar / Açıklama: Tasarım unsurlarının milimetrik kılavuz hatlarına (grid) göre konumlandırılmasını oran-orantı yönünden test eder.", template: "geometrik hizalama kılavuzları üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "9. Örtüşme (Difference) Modu ve Piksel Matrisi", guide: "Ne İş Yapar / Açıklama: İki görseli matematiksel olarak üst üste bindirerek piksel bazında örtüşme oranını (çakışma yüzdesini) sayısal olarak kanıtlar.", template: "iki görselin piksel matrisleri çakıştırıldığında {input} doğrulanmıştır." }
             ]
         },
         bilisim: {
             adi: "Bilişim Teknolojileri ve Yazılım",
             kanun: "5651 sayılı Kanun ve İlgili Bilişim Mevzuatı",
             adimlar: [
-                { title: "1. Dijital Materyal ve İmaj (Image) Analizi", guide: "Forensik imajın alınması ve bütünlüğü.", template: "elde edilen dijital imajın hash değerleri incelenmiş olup, {input} görülmüştür." },
-                { title: "2. Log Kayıtları ve Zaman Damgası İncelemesi", guide: "Sistem logları ve IP eşleşmeleri.", template: "sunucu log kayıtları üzerinde yapılan incelemede {input} tespit edilmiştir." },
-                { title: "3. Kaynak Kod / Yazılım Yapısı Kontrolü", guide: "Yazılım mimarisi ve iktibas tespiti.", template: "kaynak kod blokları karşılaştırılmış, {input} saptanmıştır." }
+                { title: "1. Dijital Materyal ve İmaj (Image) Analizi", guide: "Ne İş Yapar / Açıklama: İncelemeye konu diskin adli kopyasının (forensik imaj) alınması ve bütünlüğünün hash değerleriyle doğrulanması.", template: "elde edilen dijital imajın hash değerleri incelenmiş olup, {input} görülmüştür." },
+                { title: "2. Log Kayıtları ve Zaman Damgası İncelemesi", guide: "Ne İş Yapar / Açıklama: Sunucu ve sistem log kayıtları ile IP adreslerinin zaman damgaları eşliğinde incelenmesi.", template: "sunucu log kayıtları üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "3. Kaynak Kod / Yazılım Yapısı Kontrolü", guide: "Ne İş Yapar / Açıklama: Yazılım mimarisi, fonksiyon blokları ve fikri mülkiyet ihlali (iktibas) tespiti.", template: "kaynak kod blokları karşılaştırılmış, {input} saptanmıştır." }
             ]
         },
         trafik: {
             adi: "Trafik Kazaları ve Kaza Tespit Uzmanlığı",
             kanun: "Karayolları Trafik Kanunu ve İlgili Yönetmelikler",
             adimlar: [
-                { title: "1. Kusur Oranı ve Fiziksel İz Analizi", guide: "Fren izleri, çarpışma noktası ve yol kusurları.", template: "olay yerindeki fren izleri ve fiziksel bulgular değerlendirildiğinde {input} kanaatine varılmıştır." },
-                { title: "2. Sürücü Kusur Durumu", guide: "Tarafların kural ihlalleri ve kusur dağılımı.", template: "tarafların kusur oranları 2918 sayılı Kanun kapsamında incelenmiş, {input} tespit edilmiştir." }
+                { title: "1. Kusur Oranı ve Fiziksel İz Analizi", guide: "Ne İş Yapar / Açıklama: Fren izleri, çarpışma noktası, savrulma mesafeleri ve yol kusurlarının fiziksel hesaplamalarla tespiti.", template: "olay yerindeki fren izleri ve fiziksel bulgular değerlendirildiğinde {input} kanaatine varılmıştır." },
+                { title: "2. Sürücü Kusur Durumu", guide: "Ne İş Yapar / Açıklama: Tarafların kural ihlalleri ve kusur dağılım oranlarının tespiti.", template: "tarafların kusur oranları 2918 sayılı Kanun kapsamında incelenmiş, {input} tespit edilmiştir." }
             ]
         },
         gayrimenkul: {
             adi: "Gayrimenkul Değerleme ve İmar Mevzuatı",
             kanun: "İmar Kanunu ve Tapu Mevzuatı",
             adimlar: [
-                { title: "1. Tapu ve Kadastro Kayıt İncelemesi", guide: "Taşınmazın çap ve mülkiyet durumu.", template: "tapu kayıtları üzerinden yapılan incelemede {input} saptanmıştır." },
-                { title: "2. Emsal Değer ve İmar Durumu Tespiti", guide: "Rayiç bedeller ve imar planı uygunluğu.", template: "imar planı hükümleri ve emsal piyasa araştırması neticesinde {input} görülmüştür." }
+                { title: "1. Tapu ve Kadastro Kayıt İncelemesi", guide: "Ne İş Yapar / Açıklama: Taşınmazın çap, kroki, mülkiyet ve takyidat durumunun tapu sicili üzerinden incelenmesi.", template: "tapu kayıtları üzerinden yapılan incelemede {input} saptanmıştır." },
+                { title: "2. Emsal Değer ve İmar Durumu Tespiti", guide: "Ne İş Yapar / Açıklama: İmar planı hükümleri, yapı ruhsatları ve piyasa emsal değerlerinin analizi.", template: "imar planı hükümleri ve emsal piyasa araştırması neticesinde {input} görülmüştür." }
             ]
         },
         hesap: {
             adi: "Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler",
             kanun: "Türk Ticaret Kanunu (TTK) ve Vergi Usul Kanunu (VUK)",
             adimlar: [
-                { title: "1. Defter ve Belge İncelemesi (Yasal Defterler)", guide: "Yevmiye ve defteri kebir tasdikleri.", template: "taraflara ait yasal ticari defterler incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. Ticari Bakiye ve Cari Hesap Mutabakatı", guide: "Fatura, irsaliye ve alacak/borç durumu.", template: "ticari kayıtlar ve banka ekstreleri karşılaştırıldığında {input} saptanmıştır." }
+                { title: "1. Defter ve Belge İncelemesi (Yasal Defterler)", guide: "Ne İş Yapar / Açıklama: Yevmiye, defteri kebir ve envanter defterlerinin açılış-kapanış tasdikleri ile usulüne uygunluk denetimi.", template: "taraflara ait yasal ticari defterler incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. Ticari Bakiye ve Cari Hesap Mutabakatı", guide: "Ne İş Yapar / Açıklama: Fatura, irsaliye, banka ekstreleri ve cari hesap alacak/borç bakiyelerinin kıyaslanması.", template: "ticari kayıtlar ve banka ekstreleri karşılaştırıldığında {input} saptanmıştır." }
             ]
         },
         insaat: {
             adi: "İnşaat Mühendisliği, Statik ve Keşif Hizmetleri",
             kanun: "İmar Kanunu, Yapı Denetimi ve Türk Borçlar Kanunu",
             adimlar: [
-                { title: "1. Proje ve Mahal İncelemesi", guide: "Projeler ile fiili durumun kıyaslanması.", template: "yerinde yapılan fiziki ölçüm ve projeler karşılaştırıldığında {input} görülmüştür." },
-                { title: "2. Kusur, Eksik İmalat ve Bedel Tespiti", guide: "Yapıdaki kusurlar ve güncel rayiç maliyetleri.", template: "inşaat kalemi eksiklikleri ve yapı kusurları incelenmiş, {input} tespit edilmiştir." }
+                { title: "1. Proje ve Mahal İncelemesi", guide: "Ne İş Yapar / Açıklama: Mimari ve statik projeler ile mahal listesinin yerinde fiili imalat ölçümleriyle kıyaslanması.", template: "yerinde yapılan fiziki ölçüm ve projeler karşılaştırıldığında {input} görülmüştür." },
+                { title: "2. Kusur, Eksik İmalat ve Bedel Tespiti", guide: "Ne İş Yapar / Açıklama: Yapıdaki eksik ve kusurlu imalatların güncel birim fiyat rayiçlerine göre bedel hesabı.", template: "inşaat kalemi eksiklikleri ve yapı kusurları incelenmiş, {input} tespit edilmiştir." }
             ]
         },
         sesgoruntu: {
             adi: "Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi",
             kanun: "Hukuk Muhakemeleri Kanunu (HMK) ve Adli Tıp Kriterleri",
             adimlar: [
-                { title: "1. İmza ve Yazı Karakteri Kıyaslaması", guide: "İmzanın atılış hızı ve aidiyet tespiti.", template: "imza örnekleri ve mukayese imzaları üzerinde yapılan incelemede {input} saptanmıştır." },
-                { title: "2. Ses/Görüntü İyileştirme ve Montaj Analizi", guide: "Kayıtların manipülasyon analizi.", template: "ses/görüntü kayıtları teknik filtrelemeden geçirilmiş olup, {input} tespit edilmiştir." }
+                { title: "1. İmza ve Yazı Karakteri Kıyaslaması", guide: "Ne İş Yapar / Açıklama: İmzanın atılış hızı, baskı derecesi ve el yazısı karakterlerinin aidiyet yönünden incelenmesi.", template: "imza örnekleri ve mukayese imzaları üzerinde yapılan incelemede {input} saptanmıştır." },
+                { title: "2. Ses/Görüntü İyileştirme ve Montaj Analizi", guide: "Ne İş Yapar / Açıklama: Ses ve görüntü kayıtlarının teknik filtrelemeden geçirilerek manipülasyon tespiti.", template: "ses/görüntü kayıtları teknik filtrelemeden geçirilmiş olup, {input} tespit edilmiştir." }
             ]
         },
         isguvenligi: {
             adi: "İş Sağlığı ve Güvenliği (İSG) / İş Kazaları",
             kanun: "6331 sayılı İş Sağlığı ve Güvenliği Kanunu",
             adimlar: [
-                { title: "1. Risk Değerlendirmesi ve Alınan Tedbirler", guide: "İş yerindeki güvenlik önlemleri.", template: "işyeri İSG dosyaları ve risk analizleri incelenmiş olup, {input} saptanmıştır." },
-                { title: "2. Kusur ve İlliyet Bağı Tespiti", guide: "Kazanın meydana gelmesindeki kusur oranları.", template: "olayın oluş şekli ve mevzuat hükümleri çerçevesinde {input} kanaatine varılmıştır." }
+                { title: "1. Risk Değerlendirmesi ve Alınan Tedbirler", guide: "Ne İş Yapar / Açıklama: İş yerindeki İSG dosyaları, risk analizleri ve alınan koruyucu tedbirlerin mevzuata uygunluğu.", template: "işyeri İSG dosyaları ve risk analizleri incelenmiş olup, {input} saptanmıştır." },
+                { title: "2. Kusur ve İlliyet Bağı Tespiti", guide: "Ne İş Yapar / Açıklama: Kazanın meydana gelmesindeki etkenler ile tarafların kusur oranları ve illiyet bağının kurulması.", template: "olayın oluş şekli ve mevzuat hükümleri çerçevesinde {input} kanaatine varılmıştır." }
             ]
         },
         elektrik: {
             adi: "Elektrik, Elektronik ve Mekanik Mühendisliği",
             kanun: "Elektrik Tesisleri Yönetmeliği ve İlgili Teknik Mevzuat",
             adimlar: [
-                { title: "1. Tesisat, Pano ve Proje Uygunluğu", guide: "Elektrik projelerinin fiili durumla uygunluğu.", template: "elektrik tesisatı ve panolar üzerinde yapılan incelemede {input} tespit edilmiştir." },
-                { title: "2. Arıza, Yangın ve Mekanik Kusur Tespiti", guide: "Kısa devre, aşırı yük ve mekanik kırılmalar.", template: "fiziki kalıntılar ve teknik veriler incelendiğinde {input} saptanmıştır." }
+                { title: "1. Tesisat, Pano ve Proje Uygunluğu", guide: "Ne İş Yapar / Açıklama: Elektrik projelerinin, sigorta panolarının ve tesisatın fiili durumla uygunluğunun denetimi.", template: "elektrik tesisatı ve panolar üzerinde yapılan incelemede {input} tespit edilmiştir." },
+                { title: "2. Arıza, Yangın ve Mekanik Kusur Tespiti", guide: "Ne İş Yapar / Açıklama: Kısa devre, aşırı yük, ark izleri ve mekanik kırılmaların teknik analizi.", template: "fiziki kalıntılar ve teknik veriler incelendiğinde {input} saptanmıştır." }
             ]
         },
         kripto: {
             adi: "Kriptoloji, Siber Suçlar ve İleri Adli Bilişim",
             kanun: "5651 Sayılı Kanun ve Türk Ceza Kanunu",
             adimlar: [
-                { title: "1. Şifre Çözme, Veri Kurtarma ve Hash Analizi", guide: "Silinen verilerin kurtarılması.", template: "dijital materyaller üzerinde yapılan ileri bilişim incelemesinde {input} saptanmıştır." },
-                { title: "2. Kripto Varlık, IP ve Dijital İz Tespiti", guide: "Blockchain hareketleri ve log izleri.", template: "dijital ağ izleri ve transfer hareketleri incelenmiş olup, {input} tespit edilmiştir." }
+                { title: "1. Şifre Çözme, Veri Kurtarma ve Hash Analizi", guide: "Ne İş Yapar / Açıklama: Şifrelenmiş verilerin çözülmesi, silinen dosyaların kurtarılması ve hash doğrulama.", template: "dijital materyaller üzerinde yapılan ileri bilişim incelemesinde {input} saptanmıştır." },
+                { title: "2. Kripto Varlık, IP ve Dijital İz Tespiti", guide: "Ne İş Yapar / Açıklama: Blockchain cüzdan hareketleri, transfer logları ve ağ izlerinin takibi.", template: "dijital ağ izleri ve transfer hareketleri incelenmiş olup, {input} tespit edilmiştir." }
             ]
         },
         cevre: {
             adi: "Çevre Mühendisliği, Atık ve İmar Kirliliği",
             kanun: "2872 sayılı Çevre Kanunu ve İlgili Yönetmelikler",
             adimlar: [
-                { title: "1. Atık, Emisyon ve Deşarj İncelemesi", guide: "Endüstriyel atık sular ve baca gazı emisyonları.", template: "tesis atıkları ve çevresel etki ölçümleri incelenmiş olup, {input} tespit edilmiştir." },
-                { title: "2. ÇED ve Çevre Mevzuatı Uygunluğu", guide: "ÇED raporları ve ruhsat denetimi.", template: "faaliyetlerin çevre mevzuatına uygunluğu açısından {input} saptanmıştır." }
+                { title: "1. Atık, Emisyon ve Deşarj İncelemesi", guide: "Ne İş Yapar / Açıklama: Endüstriyel atık sular, baca gazı emisyonları ve çevre kirliliği ölçümleri.", template: "tesis atıkları ve çevresel etki ölçümleri incelenmiş olup, {input} tespit edilmiştir." },
+                { title: "2. ÇED ve Çevre Mevzuatı Uygunluğu", guide: "Ne İş Yapar / Açıklama: ÇED raporları, ruhsatlar ve faaliyetlerin çevre mevzuatına uygunluğunun denetimi.", template: "faaliyetlerin çevre mevzuatı açısından {input} olduğu saptanmıştır." }
             ]
         },
         deniz: {
             adi: "Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği",
             kanun: "Türk Ticaret Kanunu (Deniz Ticareti)",
             adimlar: [
-                { title: "1. Gemi Manevra, Seyir ve Çatışma Analizi", guide: "Vardiya kayıtları ve rota verileri (VDR).", template: "seyir defterleri ve radar kayıtları incelendiğinde {input} tespit edilmiştir." },
-                { title: "2. Deniz Kirliliği ve Hasar Tespiti", guide: "Gemiden atık sızması ve kirlilik oranları.", template: "deniz kazası ve kirlilik unsurları değerlendirildiğinde {input} tespit edilmiştir." }
+                { title: "1. Gemi Manevra, Seyir ve Çatışma Analizi", guide: "Ne İş Yapar / Açıklama: Vardiya kayıtları, rota verileri (VDR) ve seyir defterlerinin incelenmesi.", template: "seyir defterleri ve radar kayıtları incelendiğinde {input} tespit edilmiştir." },
+                { title: "2. Deniz Kirliliği ve Hasar Tespiti", guide: "Ne İş Yapar / Açıklama: Gemiden atık sızması ve deniz kazası hasar maliyeti tespiti.", template: "deniz kazası ve kirlilik unsurları değerlendirildiğinde {input} tespit edilmiştir." }
             ]
         },
         aktuer: {
             adi: "Sigortacılık ve Aktüeryal Tazminat Hesaplamaları",
             kanun: "Türk Borçlar Kanunu ve İş Kanunu",
             adimlar: [
-                { title: "1. Destekten Yoksun Kalma ve Gelir Tespiti", guide: "Kazanç durumu ve TRH yaşam tablosu projeksiyonu.", template: "aktüeryal yaşam tabloları esas alınarak yapılan hesaplamada {input} bulunmuştur." },
-                { title: "2. İş Göremezlik ve Kusur İndirimli Tazminat", guide: "Maluliyet oranları ve tazminat tutarları.", template: "maluliyet raporu ve kusur oranları entegre edilerek net tazminat tutarı {input} olarak hesaplanmıştır." }
+                { title: "1. Destekten Yoksun Kalma ve Gelir Tespiti", guide: "Ne İş Yapar / Açıklama: TRH (Türkiye Yaşam Tablosu) ömür projeksiyonu ve kazanç durumu üzerinden destek hesabı.", template: "aktüeryal yaşam tabloları esas alınarak yapılan hesaplamada {input} bulunmuştur." },
+                { title: "2. İş Göremezlik ve Kusur İndirimli Tazminat", guide: "Ne İş Yapar / Açıklama: Maluliyet oranları ve kusur dağılımları entegre edilerek net tazminat tutarının tespiti.", template: "maluliyet raporu ve kusur oranları entegre edilerek net tazminat tutarı {input} olarak hesaplanmıştır." }
             ]
         }
     };
@@ -354,7 +354,7 @@
             return null;
         }
 
-        const branchData = databaseLookup(selectedKey);
+        const branchData = branchDatabase[selectedKey];
         const raporBasligi = raporTuru === 'ek' ? "BİLİRKİŞİ EK RAPORU" : "BİLİRKİŞİ RAPORU";
         
         let report = `T.C. ${mahkeme.toUpperCase()}\n` +
@@ -408,10 +408,6 @@
 
         report += `\nArz olunur.\n\nBilirkişi\nUnvan / Ad Soyad`;
         return report;
-    }
-
-    function databaseLookup(key) {
-        return branchDatabase[key];
     }
 
     function generateStandardReport() {
