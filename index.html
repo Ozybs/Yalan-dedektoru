@@ -61,30 +61,51 @@
         <label>Bilirkişilik Branşını Seçin:</label>
         <select id="bransSecim" onchange="loadBranchParameters()">
             <option value="">-- Lütfen Branş Seçiniz --</option>
-            <option value="grafik">1. Grafik, Matbaa ve Görsel İletişim Tasarımı</option>
-            <option value="bilisim">2. Bilişim Teknolojileri ve Standart Yazılım</option>
-            <option value="trafik">3. Trafik Kazaları ve Kaza Tespit Uzmanlığı</option>
-            <option value="gayrimenkul">4. Gayrimenkul Değerleme, Kamulaştırma ve İmar Mevzuatı</option>
-            <option value="hesap">5. Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler</option>
-            <option value="insaat">6. İnşaat Mühendisliği, Statik, Metraj ve Keşif Hizmetleri</option>
-            <option value="sesgoruntu">7. Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi</option>
-            <option value="isguvenligi">8. İş Sağlığı ve Güvenliği (İSG) / İş Kazaları</option>
-            <option value="elektrik">9. Elektrik, Elektronik ve Mekanik Mühendisliği</option>
-            <option value="kripto">10. Kriptoloji, Siber Suçlar ve İleri Adli Bilişim</option>
-            <option value="cevre">11. Çevre Mühendisliği, Atık, ÇED ve İmar Kirliliği</option>
-            <option value="deniz">12. Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği</option>
-            <option value="aktuer">13. Sigortacılık ve Aktüeryal Tazminat Hesaplamaları</option>
-            <option value="tip">14. Adli Tıp, Maluliyet ve Tıbbi Hata (Malpraktis)</option>
-            <option value="tekstil">15. Tekstil, Kimya, Deri ve Ürün Analizi</option>
-            <option value="patent">16. Patent, Marka, Faydalı Model ve Endüstriyel Tasarım</option>
-            <option value="ziraat">17. Ziraat Mühendisliği, Tarım ve Hayvancılık</option>
-            <option value="gida">18. Gıda Mühendisliği, Güvenliği ve Hijyen Denetimi</option>
-            <option value="ihale">19. Kamu İhale Mevzuatı, Yapım ve Hizmet Sözleşmeleri</option>
-            <option value="sgk">20. Sosyal Güvenlik (SGK) ve Hizmet Tespiti Uzmanlığı</option>
-            <option value="maden">21. Madencilik, Jeoloji ve Yer Altı Kaynakları</option>
-            <option value="makine">22. Makine Mühendisliği ve Endüstriyel Tesisler</option>
-            <option value="mahalli">23. Mahalli İdareler, Belediye Mevzuatı ve Ruhsatlar</option>
-            <option value="kulturvarliklari">24. Kültür Varlıklarını Koruma ve Müze Uzmanlığı</option>
+<option value="grafik">1. Grafik, Matbaa ve Görsel İletişim Tasarımı</option>
+<option value="bilisim">2. Bilişim Teknolojileri ve Standart Yazılım</option>
+<option value="trafik">3. Trafik Kazaları ve Kaza Tespit Uzmanlığı</option>
+<option value="gayrimenkul">4. Gayrimenkul Değerleme, Kamulaştırma ve İmar Mevzuatı</option>
+<option value="hesap">5. Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler</option>
+<option value="insaat">6. İnşaat Mühendisliği, Statik, Metraj ve Keşif Hizmetleri</option>
+<option value="sesgoruntu">7. Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi</option>
+<option value="isguvenligi">8. İş Sağlığı ve Güvenliği (İSG) / İş Kazaları</option>
+<option value="elektrik">9. Elektrik, Elektronik ve Mekanik Mühendisliği</option>
+<option value="kripto">10. Kriptoloji, Siber Suçlar ve İleri Adli Bilişim</option>
+<option value="cevre">11. Çevre Mühendisliği, Atık, ÇED ve İmar Kirliliği</option>
+<option value="deniz">12. Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği</option>
+<option value="aktuer">13. Sigortacılık ve Aktüeryal Tazminat Hesaplamaları</option>
+<option value="tip">14. Adli Tıp, Maluliyet ve Tıbbi Hata (Malpraktis)</option>
+<option value="tekstil">15. Tekstil, Kimya, Deri ve Ürün Analizi</option>
+<option value="patent">16. Patent, Marka, Faydalı Model ve Endüstriyel Tasarım</option>
+<option value="ziraat">17. Ziraat Mühendisliği, Tarım ve Hayvancılık</option>
+<option value="gida">18. Gıda Mühendisliği, Güvenliği ve Hijyen Denetimi</option>
+<option value="ihale">19. Kamu İhale Mevzuatı, Yapım ve Hizmet Sözleşmeleri</option>
+<option value="sgk">20. Sosyal Güvenlik (SGK) ve Hizmet Tespiti Uzmanlığı</option>
+<option value="maden">21. Madencilik, Jeoloji ve Yer Altı Kaynakları</option>
+<option value="makine">22. Makine Mühendisliği ve Endüstriyel Tesisler</option>
+<option value="mahalli">23. Mahalli İdareler, Belediye Mevzuatı ve Ruhsatlar</option>
+<option value="kulturvarliklari">24. Kültür Varlıklarını Koruma ve Müze Uzmanlığı</option>
+<option value="psikoloji">25. Adli Psikoloji ve Çocuk İzlem Uzmanlığı</option>
+<option value="sosyoloji">26. Sosyoloji, Aile ve Sosyal Hizmetler</option>
+<option value="veteriner">27. Veteriner Hekimliği ve Hayvan Sağlığı</option>
+<option value="orman">28. Orman Mühendisliği ve Ormancılık Mevzuatı</option>
+<option value="harita">29. Harita, Kadastro ve Tapulama Mühendisliği</option>
+<option value="lojistik">30. Lojistik, Nakliyat ve Depolama Yönetimi</option>
+<option value="ekonomi">31. Ekonomi, Finans ve Piyasa Analizi</option>
+<option value="tercume">32. Yeminli Tercüme, Dil ve Çeviri İncelemesi</option>
+<option value="gemiinsaa">33. Gemi İnşaatı ve Gemi Makineleri Mühendisliği</option>
+<option value="havacilik">34. Havacılık, Uzay ve Uçuş Güvenliği</option>
+<option value="petrol">35. Petrol, Doğalgaz ve Boru Hatları Mühendisliği</option>
+<option value="metalurji">36. Metalurji, Malzeme ve Kaynak Mühendisliği</option>
+<option value="mobilya">37. Mobilya, Ahşap ve Dekorasyon Tasarımı</option>
+<option value="muzik">38. Müzik, Sanat Eserleri ve Telif İncelemesi</option>
+<option value="spor">39. Spor Hukuku, Yönetimi ve Tesis Güvenliği</option>
+<option value="turizm">40. Turizm, Otelcilik ve İşletmecilik</option>
+<option value="kutuphane">41. Arşiv, Kütüphane ve Belge Yönetimi</option>
+<option value="enerji">42. Yenilenebilir Enerji ve Elektrik Üretim Sistemleri</option>
+<option value="biyomedikal">43. Biyomedikal Cihazlar ve Sağlık Teknolojileri</option>
+<option value="kimya">44. Kimyasal Madde, Sanayi ve Endüstriyel Ürünler</option>
+<option value="halkla">45. Halkla İlişkiler, Medya ve İletişim Yönetimi</option>
         </select>
     </div>
 
@@ -112,596 +133,595 @@
     let img1 = null, img2 = null;
 
     const branchDatabase = {
-    grafik: {
-        adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
-        kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
-        isGraphic: true,
-        adimlar: [
-            { title: "1. İnternet ve Tersine Görsel Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını test eder. <br><strong>Kısayol:</strong> Tarayıcıda sağ tık + S (Google Görsel Arama)." },
-            { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini ve karakter dizilimlerini inceler. <br><strong>Kısayol:</strong> Photoshop/AI'da (T) tuşu ile yazı aracı ve karakter paneli." },
-            { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "<strong>Ne İşe Yarar:</strong> Ekran (RGB) ve baskı (CMYK) renk profillerini kıyaslar. <br><strong>Kısayol:</strong> (Ctrl + Y) Proof Colors (Baskı Önizleme)." },
-            { title: "4. Maske (Clipping) Hiyerarşisi", guide: "<strong>Ne İşe Yarar:</strong> Katmanlar arkasına gizlenmiş vektör kesim sınırlarını ortaya çıkarır. <br><strong>Kısayol:</strong> (Alt + Ctrl + G) Maskeleme kısayolu." },
-            { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder. <br><strong>Kısayol:</strong> (F7) Katmanlar paneli." },
-            { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını inceler. <br><strong>Kısayol:</strong> (A) Doğrudan Seçim Aracı." },
-            { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Saydamlık ve harmanlama modlarını denetler. <br><strong>Kısayol:</strong> Katman seçiliyken (1-0) tuşları ile opaklık ayarı." },
-            { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder. <br><strong>Kısayol:</strong> (Ctrl + ' ) Izgarayı göster/gizle." }
-        ]
-    },
-    bilisim: {
-        adi: "Bilişim Teknolojileri ve Standart Yazılım",
-        kanun: "5651 Sayılı Kanun ve FSEK (Yazılım Koruması)",
-        adimlar: [
-            { title: "1. Kaynak Kod ve Algoritma Analizi", guide: "<strong>Ne İşe Yarar:</strong> İki yazılım arasındaki kod benzerliklerini ve telif ihlalini tespit eder." },
-            { title: "2. Veritabanı (Log) ve İşlem Kayıtları İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Sunucu log kayıtlarından yetkisiz erişimleri ve veri sızıntılarını ortaya çıkarır." },
-            { title: "3. Hash (MD5 / SHA-256) Bütünlük Doğrulaması", guide: "<strong>Ne İşe Yarar:</strong> Dijital delillerin değiştirilip değiştirilmediğini matematiksel olarak kanıtlar." },
-            { title: "4. API ve Entegrasyon Trafiği Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Sistemler arası veri alışverişindeki yetkisiz istekleri inceler." },
-            { title: "5. Tersine Mühendislik (Reverse Engineering) Bulguları", guide: "<strong>Ne İşe Yarar:</strong> Derlenmiş yazılımların kaynak koduna dönüştürülme analizini yapar." },
-            { title: "6. Telif Hakları ve Lisans Sözleşmesi Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Açık kaynak kodlu kütüphane ihlallerini ve lisans şartlarını denetler." },
-            { title: "7. Sunucu Altyapısı ve Bulut Barındırma Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> Verilerin saklandığı sunucu konfigürasyonlarını inceler." }
-        ]
-    },
-    trafik: {
-        adi: "Trafik Kazaları ve Kaza Tespit Uzmanlığı",
-        kanun: "2918 Sayılı Karayolları Trafik Kanunu",
-        adimlar: [
-            { title: "1. Fren İzleri ve Skid Mark Analizi", guide: "<strong>Ne İşe Yarar:</strong> Araçların kaza öncesi hızını ve fren mesafesini hesaplar." },
-            { title: "2. Çarpışma Noktası (POI) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Araçların yoldaki konumlarına göre ilk çarpışma anını saptar." },
-            { title: "3. Sürücü Kusur Oranları ve Kusur Dağılımı", guide: "<strong>Ne İşe Yarar:</strong> Tarafların 2918 sayılı kanuna göre kusur yüzdelerini belirler." },
-            { title: "4. Yol Fiziksel Kusurları ve İşaretleme İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Yolun fiziki yapısının ve uyarı levhalarının kazaya etkisini inceler." },
-            { title: "5. Araç Hasar Boyutları ve Deformasyon Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kaporta hasarlarından çarpışma açısını ve şiddetini raporlar." },
-            { title: "6. Kamera ve MOBESE Görüntü Zaman-Hız Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Güvenlik kameralarındaki kare (frame) süreleriyle hız tespiti yapar." },
-            { title: "7. Yaya Çarpışma ve Savrulma Fizikleri", guide: "<strong>Ne İşe Yarar:</strong> Yayaya çarpan aracın hızını ve yayanın savrulma mesafesini hesaplar." }
-        ]
-    },
-    gayrimenkul: {
-        adi: "Gayrimenkul Değerleme, Kamulaştırma ve İmar Mevzuatı",
-        kanun: "2942 Sayılı Kamulaştırma Kanunu ve İmar Kanunu",
-        adimlar: [
-            { title: "1. Emsal Karşılaştırma ve Piyasa Değeri Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Bölgedeki benzer gayrimenkul satışlarını baz alarak rayiç değer belirler." },
-            { title: "2. İmar Durumu ve Parselasyon Planı İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazın imar haklarını, kat mülkiyetini ve kısıtlamalarını inceler." },
-            { title: "3. Kamulaştırma Bedel Tespiti ve Zilyetlik", guide: "<strong>Ne İşe Yarar:</strong> Kamu el koymalarında mülk sahibine ödenecek adil bedeli hesaplar." },
-            { title: "4. Yapı Maliyeti ve Aşınma Payı (Amortisman)", guide: "<strong>Ne İşe Yarar:</strong> Binanın yaşına ve malzeme kalitesine göre yıpranma düşerek değer biçer." },
-            { title: "5. Hisseli Tapu ve İzalet-i Şüyu (Ortaklığın Giderilmesi)", guide: "<strong>Ne İşe Yarar:</strong> Paylı mülkiyetlerde taksim edilebilirlik durumunu inceler." },
-            { title: "6. Kira Kaybı ve Ecrimisil (Haksız İşgal) Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazın haksız kullanım süreleri için tazminat tutarını hesaplar." },
-            { title: "7. Konum, Cephe ve Şerefiye Faktörleri", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazın manzarası, katı ve cephesinin değere etkisini oranlar." }
-        ]
-    },
-    hesap: {
-        adi: "Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler",
-        kanun: "Türk Ticaret Kanunu (TTK) ve Vergi Usul Kanunu (VUK)",
-        adimlar: [
-            { title: "1. Ticari Defter ve Yasal Kayıt İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Yevmiye, defteri kebir ve envanter defterlerinin tutulma usulünü denetler." },
-            { title: "2. Cari Hesap Mutabakatı ve Bakiye Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Alacak ve borç ilişkilerindeki uyuşmazlıkları hesaplar." },
-            { title: "3. Şirket Bilanço ve Gelir Tablosu Analizi", guide: "<strong>Ne İşe Yarar:</strong> İşletmenin mali yapısını ve kârlılık durumunu inceler." },
-            { title: "4. Muvazaalı (Danışıklı) İşlem ve Fatura Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Gerçek olmayan (naylon) fatura ve mal hareketlerini ortaya çıkarır." },
-            { title: "5. Kâr Mahrumiyeti ve Ticari Kazanç Kaybı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Haksız fiiller veya sözleşme fesihleri nedeniyle oluşan kazanç kaybını hesaplar." },
-            { title: "6. Ortaklar Arası Kar Payı (Temettü) Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Şirket ortaklarının kar dağıtım haklarını inceler." },
-            { title: "7. Çek, Senet ve Kıymetli Evrak Ödeme İtirazları", guide: "<strong>Ne İşe Yarar:</strong> Ticari senetlerin geçerliliğini ve vade hesaplamalarını denetler." },
-            { title: "8. Enflasyon Düzeltmesi ve Değerleme Farkları", guide: "<strong>Ne İşe Yarar:</strong> Paranın zaman içindeki değer değişimlerini mali tablolara yansıtır." },
-            { title: "9. Likidite ve Borca Batıklık (İflas) Durumu", guide: "<strong>Ne İşe Yarar:</strong> Şirketin borçlarını ödeyemez duruma gelip gelmediğini saptar." }
-        ]
-    },
-    insaat: {
-        adi: "İnşaat Mühendisliği, Statik, Metraj ve Keşif Hizmetleri",
-        kanun: "İmar Kanunu ve Yapı Malzemeleri Yönetmeliği",
-        adimlar: [
-            { title: "1. Statik Proje ve Taşıyıcı Sistem Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Kolon, kiriş ve temel donatılarının projeye uygunluğunu inceler." },
-            { title: "2. Metraj ve Keşif Özeti Çıkarma", guide: "<strong>Ne İşe Yarar:</strong> Yapılan veya eksik kalan imalatların miktar ve maliyet hesabını yapar." },
-            { title: "3. Yapı Malzemesi Kalitesi ve Beton Dayanımı", guide: "<strong>Ne İşe Yarar:</strong> Karot örnekleri ve test sonuçlarına göre malzeme kalitesini denetler." },
-            { title: "4. Gizli Ayıp ve İmalat Kusurları Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Binadaki çökme, çatlak ve yalıtım hatalarının kaynağını belirler." },
-            { title: "5. İş Programı ve Gecikme Tazminatı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Taahhüt edilen sürede tamamlanmayan inşaatlar için gecikme bedeli çıkarır." },
-            { title: "6. Zemin Etüdü ve Heyelan/Oturma Riskleri", guide: "<strong>Ne İşe Yarar:</strong> Arazi yapısının yapı yükünü taşıma kapasitesini inceler." },
-            { title: "7. İSG ve Şantiye Güvenliği Uygunluk Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Şantiye sahasındaki yapı denetim ve güvenlik önlemlerini raporlar." }
-        ]
-    },
-    sesgoruntu: {
-        adi: "Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi",
-        kanun: "CMK Madde 67 (Uzman İncelemesi)",
-        adimlar: [
-            { title: "1. İmza Karşılaştırma ve Orijinallik Tespiti", guide: "<strong>Ne İşe Yarar:</strong> İmzaların atılış hiyerarşisini, baskı izlerini ve eli ürünü olup olmadığını inceler." },
-            { title: "2. El Yazısı ve Metin Karakter Analizi", guide: "<strong>Ne İşe Yarar:</strong> Yazı karakterlerinin eğim, kaligrafi ve refleks özelliklerini kıyaslar." },
-            { title: "3. Ses Kaydı Gürültü Temizleme (Audio Filtering)", guide: "<strong>Ne İşe Yarar:</strong> Kayıtlardaki arka plan gürültülerini filtreleyerek konuşmaları netleştirir." },
-            { title: "4. Ses Frekans ve Konuşmacı Teşhisi (Voice Print)", guide: "<strong>Ne İşe Yarar:</strong> Sesin frekans dalgalarından konuşmacının kimlik eşleşmesini araştırır." },
-            { title: "5. Video Görüntü İyileştirme ve Plaka Okuma", guide: "<strong>Ne İşe Yarar:</strong> Düşük kaliteli kameralardaki detayları piksel düzeyinde netleştirir." },
-            { title: "6. Montaj, Kesinti ve Manipülasyon Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ses veya video dosyalarında kesme-ekleme (deepfake/montaj) olup olmadığını inceler." },
-            { title: "7. Mürekkep ve Kağıt Yaş Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Belgedeki imzanın veya yazının atılış tarihini kimyasal olarak analiz eder." }
-        ]
-    },
-    isguvenligi: {
-        adi: "İş Sağlığı ve Güvenliği (İSG) / İş Kazaları",
-        kanun: "6331 Sayılı İş Sağlığı ve Güvenliği Kanunu",
-        adimlar: [
-            { title: "1. Risk Değerlendirmesi ve Alınmayan Tedbirler", guide: "<strong>Ne İşe Yarar:</strong> İş yerinde yapılması gereken risk analizlerinin eksikliklerini inceler." },
-            { title: "2. KKD (Kişisel Koruyucu Donanım) Uyumu", guide: "<strong>Ne İşe Yarar:</strong> İşçinin baret, emniyet kemeri vb. ekipmanları kullanıp kullanmadığını saptar." },
-            { title: "3. Makine Koruyucuları ve Acil Durdurma Testi", guide: "<strong>Ne İşe Yarar:</strong> Makinelerdeki emniyet swich ve muhafazalarının çalışıp çalışmadığını denetler." },
-            { title: "4. İş Güvenliği Eğitimi ve Özlük Dosyası İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Kazazedenin yasal eğitimleri alıp almadığını evrak üzerinden kontrol eder." },
-            { title: "5. İş Kazası Kök Neden Analizi (Root Cause)", guide: "<strong>Ne İşe Yarar:</strong> Kazanın zincirleme olarak hangi ihmaller sonucunda gerçekleştiğini çözer." },
-            { title: "6. Çalışma Süreleri ve Yorgunluk Faktörü", guide: "<strong>Ne İşe Yarar:</strong> Fazla mesai ve gece vardiyalarının kazaya etkisini inceler." },
-            { title: "7. İşveren ve Alt İşveren Sorumluluk Dağılımı", guide: "<strong>Ne İşe Yarar:</strong> Alt müteahhitlik zincirindeki asıl işveren kusur oranlarını belirler." }
-        ]
-    },
-    elektrik: {
-        adi: "Elektrik, Elektronik ve Mekanik Mühendisliği",
-        kanun: "Elektrik İç Tesisleri Yönetmeliği",
-        adimlar: [
-            { title: "1. Kaçak Akım ve Topraklama Ölçüm Analizi", guide: "<strong>Ne İşe Yarar:</strong> Elektrik panolarındaki koruma rölelerinin ve topraklamanın etkinliğini inceler." },
-            { title: "2. Kısa Devre ve Elektrik Yangını Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Yangının elektrik kontağından çıkıp çıkmadığını ark izleriyle inceler." },
-            { title: "3. Zayıf Akım, Kamera ve Yangın İhbar Sistemleri", guide: "<strong>Ne İşe Yarar:</strong> Otomasyon ve güvenlik sistemlerinin çalışabilirliğini test eder." },
-            { title: "4. Mekanik Tesisat ve Havalandırma Basınç Testi", guide: "<strong>Ne İşe Yarar:</strong> HVAC ve sıhhi tesisat projelerinin uygunluğunu denetler." },
-            { title: "5. Asansör ve Kaldırma Ekipmanları Emniyet Testi", guide: "<strong>Ne İşe Yarar:</strong> Halat, fren ve regülatör sistemlerinin güvenlik standartlarını inceler." },
-            { title: "6. Enerji Tüketim Faturaları ve Kaçak Elektrik", guide: "<strong>Ne İşe Yarar:</strong> Sayaç müdahalelerini ve endeks tutarsızlıklarını saptar." },
-            { title: "7. Jeneratör ve Kesintisiz Güç Kaynağı (UPS) Arızaları", guide: "<strong>Ne İşe Yarar:</strong> Kritik tesislerdeki enerji kesinti yönetimini inceler." }
-        ]
-    },
-    kripto: {
-        adi: "Kriptoloji, Siber Suçlar ve İleri Adli Bilişim",
-        kanun: "5237 Sayılı TCK (Bilişim Alanındaki Suçlar)",
-        adimlar: [
-            { title: "1. Kripto Para ve Blokzincir (Blockchain) Takibi", guide: "<strong>Ne İşe Yarar:</strong> Cüzdan hareketlerini ve transfer zincirlerini analiz eder." },
-            { title: "2. Zararlı Yazılım (Malware / Ransomware) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Fidye yazılımlarının çalışma mekanizmasını ve bulaşma vektörünü çözer." },
-            { title: "3. Sabit Disk ve SSD Veri Kurtarma (Carving)", guide: "<strong>Ne İşe Yarar:</strong> Silinmiş veya formatlanmış disklerden veri kalıntılarını kurtarır." },
-            { title: "4. Ağ Paket Analizi (Wireshark / Traffic Logs)", guide: "<strong>Ne İşe Yarar:</strong> Siber saldırı anındaki ağ trafiğini ve IP hareketlerini inceler." },
-            { title: "5. Mobil Cihaz (Android/iOS) İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Telefonlardaki silinen mesajları, konum geçmişini ve uygulamaları çıkarır." },
-            { title: "6. Phishing (Oltalama) ve Sosyal Mühendislik Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Sahte web siteleri ve dolandırıcılık altyapılarını inceler." },
-            { title: "7. Şifreli Arşiv ve Parola Kırma (Brute-force) Raporu", guide: "<strong>Ne İşe Yarar:</strong> Kilitli dosyaların şifre çözme süreçlerini yönetir." }
-        ]
-    },
-    cevre: {
-        adi: "Çevre Mühendisliği, Atık, ÇED ve İmar Kirliliği",
-        kanun: "2872 Sayılı Çevre Kanunu",
-        adimlar: [
-            { title: "1. Endüstriyel Atıksu Deşarj Analizi", guide: "<strong>Ne İşe Yarar:</strong> Fabrika atıklarının arıtma tesisinden geçmeden verilip verilmediğini inceler." },
-            { title: "2. Hava Kirliliği, Baca Gazı ve Emisyon Raporları", guide: "<strong>Ne İşe Yarar:</strong> Sanayi tesislerinin çevreye saldığı gazların yasal sınırları aşmasını denetler." },
-            { title: "3. Tehlikeli Atık Bertaraf ve Depolama Zinciri", guide: "<strong>Ne İşe Yarar:</strong> Kimyasal ve tıbbi atıkların mevzuata uygun imha edilip edilmediğine bakar." },
-            { title: "4. ÇED (Çevresel Etki Değerlendirmesi) Rapor Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Projelerin çevreye vereceği zararların önceden doğru raporlanıp raporlanmadığını inceler." },
-            { title: "5. Gürültü Kirliliği ve Desibel Ölçüm Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> İşyeri veya tesislerin çevreye yaydığı gürültü sınırlarını denetler." },
-            { title: "6. Hafriyat ve İnşaat Atığı Döküm Sahası İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Moloz ve hafriyatların yasadışı dökülme durumlarını tespit eder." },
-            { title: "7. Toprak Kirliliği ve Kimyasal Sızıntı Analizi", guide: "<strong>Ne İşe Yarar:</strong> Toprağa karışan petrol veya ağır metallerin etkisini inceler." }
-        ]
-    },
-    deniz: {
-        adi: "Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği",
-        kanun: "Türk Ticaret Kanunu (Deniz Ticareti) ve COLREG",
-        adimlar: [
-            { title: "1. Deniz Kazası ve Çatışma (Collision) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Gemilerin seyir rotalarını ve deniz kurallarına (COLREG) uyumunu inceler." },
-            { title: "2. Gemi Makine ve Sevk Sistemi Arızaları", guide: "<strong>Ne İşe Yarar:</strong> Ana makine ve pervane arızalarının kök nedenini araştırır." },
-            { title: "3. Yük Hasarı, İstifleme ve Ambar Nem Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Taşınan kargonun deniz yolculuğunda zarar görme nedenlerini saptar." },
-            { title: "4. VTS (Gemi Trafik Hizmetleri) ve Radar Kayıtları", guide: "<strong>Ne İşe Yarar:</strong> Liman yaklaşmasındaki gemi hareketlerini ve radar izlerini inceler." },
-            { title: "5. Çevre Kirliliği (Marine Pollution / MARPOL)", guide: "<strong>Ne İşe Yarar:</strong> Gemilerden denize sintine veya akaryakıt bırakılmasını denetler." },
-            { title: "6. Gemi Değerleme ve Klas Kuruluşu Raporları", guide: "<strong>Ne İşe Yarar:</strong> Deniz araçlarının piyasa değerini ve sörvey durumunu raporlar." },
-            { title: "7. Liman Yanaşma ve Manevra Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> Kılavuz kaptan ve rıhtım operasyonlarındaki kusurları inceler." }
-        ]
-    },
-    aktuer: {
-        adi: "Sigortacılık ve Aktüeryal Tazminat Hesaplamaları",
-        kanun: "Türk Borçlar Kanunu ve Sigortacılık Kanunu",
-        adimlar: [
-            { title: "1. Destekten Yoksun Kalma Tazminatı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Ölüm hallerinde geride kalanların ekonomik kayıplarını hesaplar." },
-            { title: "2. Sürekli İş Görmezlik ve Maluliyet Tazminatı", guide: "<strong>Ne İşe Yarar:</strong> Yaralanma ve sakatlık durumlarında işgücü kaybı bedelini çıkarır." },
-            { title: "3. Aktüeryal Yaşam Tablosu (TRH 2010) Uygulaması", guide: "<strong>Ne İşe Yarar:</strong> Bireylerin kalan ömür sürelerini ve iskonto oranlarını uygular." },
-            { title: "4. Geçici İş Görmezlik ve Bakıcı Gideri Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Tedavi süresindeki gelir kayıplarını ve bakım masraflarını hesaplar." },
-            { title: "5. Trafik ve Kasko Sigorta Poliçe Teminatları", guide: "<strong>Ne İşe Yarar:</strong> Sigorta şirketlerinin tazminat ödeme yükümlülük sınırlarını inceler." },
-            { title: "6. Hayat Sigortası Birikim ve Vefat Ödemeleri", guide: "<strong>Ne İşe Yarar:</strong> Hayat sigortası sözleşmelerindeki aktüeryal karşılıkları hesaplar." },
-            { title: "7. Bedeni Zarar ve Enflasyon Güncelleme Farkları", guide: "<strong>Ne İşe Yarar:</strong> Yıllara sari tazminat artış oranlarını denetler." }
-        ]
-    },
-    tip: {
-        adi: "Adli Tıp, Maluliyet ve Tıbbi Hata (Malpraktis)",
-        kanun: "1219 Sayılı Kanun ve Tıbbi Deontoloji Nizamnamesi",
-        adimlar: [
-            { title: "1. Tıbbi Müdahale ve Komplikasyon Ayrımı", guide: "<strong>Ne İşe Yarar:</strong> Oluşan zararın doktor hatası mı yoksa kaçınılmaz risk mi olduğunu inceler." },
-            { title: "2. Maluliyet Oranı ve Çalışma Gücü Kaybı", guide: "<strong>Ne İşe Yarar:</strong> Vücut genel çalışma gücü kayıp oranlarını adli tıp kurallarına göre belirler." },
-            { title: "3. Otopsi Raporu ve Ölüm Nedeni Analizi", guide: "<strong>Ne İşe Yarar:</strong> Ölüm vakalarında toksikolojik ve patolojik bulguları değerlendirir." },
-            { title: "4. Aydınlatılmış Onam (Consent) Formu Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Hastaya operasyon öncesi risklerin usulüne uygun anlatılıp anlatılmadığını inceler." },
-            { title: "5. İlaç Dozajı ve Reçete Uygunluk Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Yanlış ilaç veya hatalı doz uygulamalarını doktor kayıtlarından saptar." },
-            { title: "6. Hastane Enfeksiyonu ve Hijyen Koşulları", guide: "<strong>Ne İşe Yarar:</strong> Ameliyat sonrasında gelişen septik vakaların kaynağını araştırır." },
-            { title: "7. Epikriz ve Tıbbi Dosya Kronoloji İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Hastanın tedavi sürecindeki tüm evrakların saat ve işlem sırasını çözer." }
-        ]
-    },
-    tekstil: {
-        adi: "Tekstil, Kimya, Deri ve Ürün Analizi",
-        kanun: "Ürün Güvenliği ve Teknik Düzenlemeler Kanunu",
-        adimlar: [
-            { title: "1. Kumaş Kalitesi ve Elyaf Karışım Oranı", guide: "<strong>Ne İşe Yarar:</strong> İplikteki pamuk, polyester vb. hammadde oranlarını laboratuvar verileriyle test eder." },
-            { title: "2. Boya Haslığı ve Kimyasal Kalıntı (Azo Boyar)", guide: "<strong>Ne İşe Yarar:</strong> İnsan sağlığına zararlı kanserojen kimyasalların varlığını inceler." },
-            { title: "3. Deri Tabaklama ve Kusur Analizi", guide: "<strong>Ne İşe Yarar:</strong> Deri ürünlerindeki çatlama, soyulma ve işçilik hatalarını saptar." },
-            { title: "4. Dikiş Mukavemeti ve Yıkama Direnci", guide: "<strong>Ne İşe Yarar:</strong> Ürünlerin dayanıklılık ve çekme test sonuçlarını değerlendirir." },
-            { title: "5. Endüstriyel Kimyasal Formülasyon Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Kimyasal maddelerin üretim reçetelerine uygunluğunu inceler." },
-            { title: "6. Taklit ve Tağşiş (Orijinal vs Yan Sanayi) Ürün", guide: "<strong>Ne İşe Yarar:</strong> Markalı tekstil ürünlerinin orijinal olup olmadığını malzeme kalitesiyle test eder." },
-            { title: "7. İş Elbiseleri ve Koruyucu Tekstil Normları", guide: "<strong>Ne İşe Yarar:</strong> Yangına veya aside dayanıklı özel kıyafetlerin standartlara uygunluğunu denetler." }
-        ]
-    },
-    patent: {
-        adi: "Patent, Marka, Faydalı Model ve Endüstriyel Tasarım",
-        kanun: "6769 Sayılı Sınai Mülkiyet Kanunu",
-        adimlar: [
-            { title: "1. Marka Benzeşmesi ve İltibas (Karıştırılma) Analizi", guide: "<strong>Ne İşe Yarar:</strong> İki markanın görsel, işitsel ve anlamsal olarak tüketiciyi yanıltıp yanıltmadığını inceler." },
-            { title: "2. Patent Önceki Sanat (Prior Art) Taraması", guide: "<strong>Ne İşe Yarar:</strong> Buluşun dünyada daha önce bilinip bilinmediğini patent veritabanlarından tarar." },
-            { title: "3. Tasarımın Yenilik ve Ayırt Edici Nitelik Testi", guide: "<strong>Ne İşe Yarar:</strong> Endüstriyel tasarımın benzerlerinden farkını ve özgünlüğünü saptar." },
-            { title: "4. Taklit Ürün ve Marka Hakkına Tecavüz Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Piyasadaki sahte ürünlerin hak sahibinin patentini ihlal edip etmediğini raporlar." },
-            { title: "5. Lisans Sözleşmesi ve Royalti (Telifi) Gelir Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Sınai mülkiyet haklarının izinsiz kullanımından doğan tazminatı hesaplar." },
-            { title: "6. Faydalı Model Teknik Gelişme Kriteri", guide: "<strong>Ne İşe Yarar:</strong> Buluşun teknikteki yenilik basamağını teknik açıdan değerlendirir." },
-            { title: "7. Coğrafi İşaret ve Menşe Adı Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Yöresel ürünlerin üretim metotlarına sadık kalınıp kalınmadığını denetler." }
-        ]
-    },
-    ziraat: {
-        adi: "Ziraat Mühendisliği, Tarım ve Hayvancılık",
-        kanun: "Toprak Koruma ve Arazi Kullanımı Kanunu",
-        adimlar: [
-            { title: "1. Tarım Arazisi Verim ve Gelir Kaybı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Zarar gören tarım arazisinin ürün verim kaybını ve gelir düşüşünü hesaplar." },
-            { title: "2. Bitki Hastalığı, Zararlı ve Zirai İlaç Hasarı", guide: "<strong>Ne İşe Yarar:</strong> Yanlış ilaç kullanımı veya zirai hastalıkların mahsule etkisini inceler." },
-            { title: "3. Toprak Analizi ve Sulama Altyapı Kusurları", guide: "<strong>Ne İşe Yarar:</strong> Toprağın tuzluluk, pH ve drenaj sorunlarını inceleyerek ekime elverişliliğini saptar." },
-            { title: "4. Sera Yatırımları ve İklimlendirme Sistemleri", guide: "<strong>Ne İşe Yarar:</strong> Modern seralardaki ısıtma ve sulama arızalarının ürüne zararını raporlar." },
-            { title: "5. Hayvan Değerleme ve Irk Özellikleri Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Büyükbaş/küçükbaş hayvanların piyasa değerini ve ırk vasıflarını inceler." },
-            { title: "6. Yem Kalitesi ve Besleme Hataları", guide: "<strong>Ne İşe Yarar:</strong> Hayvancılıkta kullanılan yemlerin verim düşüşüne etkisini araştırır." },
-            { title: "7. Meyve Bahçesi Değer Tespiti ve Ağaç Yaşı", guide: "<strong>Ne İşe Yarar:</strong> Kesilen veya zarar gören meyve ağaçlarının yaş ve verim değerini biçer." }
-        ]
-    },
-    gida: {
-        adi: "Gıda Mühendisliği, Güvenliği ve Hijyen Denetimi",
-        kanun: "5996 Sayılı Veteriner Hizmetleri, Bitki Sağlığı, Gıda ve Yem Kanunu",
-        adimlar: [
-            { title: "1. Gıda Güvenliği ve HACCP İlkeleri Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Üretim tesisindeki kritik kontrol noktalarının hijyen standartlarına uygunluğunu inceler." },
-            { title: "2. Laboratuvar Analizi ve Katkı Maddesi Oranları", guide: "<strong>Ne İşe Yarar:</strong> Gıdalarda izin verilmeyen kimyasal veya koruyucu madde kullanımını saptar." },
-            { title: "3. Taklit, Tağşiş ve Gıdada Hile Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ürüne ucuz hammadde karıştırılıp karıştırılmadığını laboratuvar verileriyle inceler." },
-            { title: "4. Soğuk Zincir ve Depolama Koşulları", guide: "<strong>Ne İşe Yarar:</strong> Bozulabilir gıdaların sevkiyat ve saklama sıcaklığı geçmişini denetler." },
-            { title: "5. Ambalaj Bütünlüğü ve Son Kullanma Tarihi", guide: "<strong>Ne İşe Yarar:</strong> Ambalaj sızıntılarını ve etiketleme yönetmeliği ihlallerini inceler." },
-            { title: "6. Gıda Kaynaklı Zehirlenme ve Kök Neden Analizi", guide: "<strong>Ne İşe Yarar:</strong> Toplu tüketim zehirlenmelerinde şüpheli numunelerin analizini yapar." },
-            { title: "7. Üretim Tesisi Altyapı ve Haşere Mücadelesi", guide: "<strong>Ne İşe Yarar:</strong> Gıda işletmesinin fiziki koşullarının sanitasyona uygunluğunu raporlar." }
-        ]
-    },
-    ihale: {
-        adi: "Kamu İhale Mevzuatı, Yapım ve Hizmet Sözleşmeleri",
-        kanun: "4734 ve 4736 Sayılı Kamu İhale Kanunları",
-        adimlar: [
-            { title: "1. İhale Dosyası ve Şartname Uygunluk İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> İhale dokümanlarındaki kısıtlayıcı veya hukuka aykırı maddeleri inceler." },
-            { title: "2. Aşırı Düşük Teklif (ADT) Açıklama Analizi", guide: "<strong>Ne İşe Yarar:</strong> Yüklenicinin düşük teklif gerekçelerinin ve maliyet analizlerinin doğruluğunu denetler." },
-            { title: "3. Hak ediş Hesapları ve Metraj Karşılaştırması", guide: "<strong>Ne İşe Yarar:</strong> Kamu projelerinde yapılan işlerin hak ediş tutarlarını hesaplar." },
-            { title: "4. İş Artışı, Eksilişi ve Ek Süre Talepleri", guide: "<strong>Ne İşe Yarar:</strong> Projedeki zorunlu değişikliklerin mali ve süre etkilerini inceler." },
-            { title: "5. İhaleye Fesat Karıştırma ve Rekabet Engeli", guide: "<strong>Ne İşe Yarar:</strong> Teklif veren firmalar arasındaki danışıklı hareketleri ve ihale kırımlarını saptar." },
-            { title: "6. Teminat Mektupları ve İrat Kaydı İşlemleri", guide: "<strong>Ne İşe Yarar:</strong> Sözleşme fesihlerinde geçici/kesin teminatların durumunu inceler." },
-            { title: "7. Kamu Zararı ve Haksız Fiyat Farkı Hesaplamaları", guide: "<strong>Ne İşe Yarar:</strong> İdareye çıkarılan fazladan maliyetleri ve fiyat farkı kararnamelerini denetler." }
-        ]
-    },
-    sgk: {
-        adi: "Sosyal Güvenlik (SGK) ve Hizmet Tespiti Uzmanlığı",
-        kanun: "5510 Sayılı Sosyal Sigortalar ve Genel Sağlık Sigortası Kanunu",
-        adimlar: [
-            { title: "1. Hizmet Tespiti ve Sigorta Başlangıç Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sigortasız çalıştırılan günlerin ve hizmet sürelerinin gerçekliğini kanıtlar." },
-            { title: "2. Eksik Gün Bildirimi ve Bordro İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Çalışanların aylık prim ve hizmet belgelerindeki eksik gün nedenlerini inceler." },
-            { title: "3. İş Kazası ve Meslek Hastalığı SGK Rücu Davaları", guide: "<strong>Ne İşe Yarar:</strong> Kurumun işverene rücu edeceği tazminat miktarını ve kusur oranını hesaplar." },
-            { title: "4. Sahte Sigortalılık (Naylon Sigorta) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Fiilen çalışılmadığı halde prim yatırılan sahte işyeri kayıtlarını açığa çıkarır." },
-            { title: "5. Kıdem ve İhbar Tazminatı Matrahı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> İşten ayrılan çalışanın brüt ücretine eklenen menfaatleri hesaplar." },
-            { title: "6. Emeklilik Şartları ve Prim Gün Sayısı Hesaplama", guide: "<strong>Ne İşe Yarar:</strong> Sigortalının yaş, prim günü ve sigortalılık süresi koşullarını denetler." },
-            { title: "7. Prime Esas Kazanç (PEK) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Eksik bildirilen ücretlerin prim matrahı farklarını hesaplar." }
-        ]
-    },
-    maden: {
-        adi: "Madencilik, Jeoloji ve Yer Altı Kaynakları",
-        kanun: "3213 Sayılı Maden Kanunu",
-        adimlar: [
-            { title: "1. Rezerv Miktar ve Tenör (Kalite) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sahadaki maden rezervinin ekonomik miktarını jeolojik raporlarla inceler." },
-            { title: "2. Ruhsat Sahası Sınır İhlali (Tecavüzlü Üretim)", guide: "<strong>Ne İşe Yarar:</strong> Başkasının ruhsatlı sahasından yasadışı maden çıkarılıp çıkarılmadığını saptar." },
-            { title: "3. Cevher Zenginleştirme ve Üretim Maliyetleri", guide: "<strong>Ne İşe Yarar:</strong> Madenin işlenme süreçlerindeki kayıpları ve maliyetleri hesaplar." },
-            { title: "4. Maden Ocağı İş Güvenliği ve Tahkimat Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Yeraltı ocaklarındaki göçük risklerini ve havalandırma sistemlerini inceler." },
-            { title: "5. Çevresel Etki ve Hafriyat Depolama (Pasa) Sahası", guide: "<strong>Ne İşe Yarar:</strong> Atık kayaların çevreye ve akarsulara etkisini denetler." },
-            { title: "6. Madencilik Faaliyet Durdurma ve Zarar Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Mahkeme kararıyla durdurulan ocakların kazanç kaybını hesaplar." },
-            { title: "7. Jeolojik Formasyon ve Heyelan Risk Değerlendirmesi", guide: "<strong>Ne İşe Yarar:</strong> Açık işletmelerdeki şev kayması tehlikelerini inceler." }
-        ]
-    },
-    makine: {
-        adi: "Makine Mühendisliği ve Endüstriyel Tesisler",
-        kanun: "Makine Emniyeti Yönetmeliği",
-        adimlar: [
-            { title: "1. Endüstriyel Üretim Hattı ve Verimlilik Analizi", guide: "<strong>Ne İşe Yarar:</strong> Fabrika makinelerinin kapasite ve performans kayıplarını inceler." },
-            { title: "2. Basınçlı Kaplar, Kazanlar ve Kompresör Testi", guide: "<strong>Ne İşe Yarar:</strong> Buhar kazanlarının ve tankların güvenlik ve basınç testlerini denetler." },
-            { title: "3. İş Ekipmanları Arıza ve Kök Neden Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Kırılan veya patlayan mekanik parçaların metalurjik kırılma analizini yapar." },
-            { title: "4. İmalat Hataları ve Gizli Ayıp İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Satın alınan makinelerin şartnameye uygun imal edilip edilmediğini saptar." },
-            { title: "5. Fikri Mülkiyet ve Makine Tasarım Taklit Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Özgün mekanik tasarımların çalınma durumunu teknik olarak kıyaslar." },
-            { title: "6. İş Kazası Makine Güvenlik Tertibatı İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Pres ve kesici makinelerdeki çift el kumanda vb. emniyetleri denetler." },
-            { title: "7. Hurda Değeri ve Makine Değerleme Raporu", guide: "<strong>Ne İşe Yarar:</strong> İkinci el veya hasarlı endüstriyel makinelerin piyasa değerini hesaplar." }
-        ]
-    },
-    metalurji: {
-        adi: "Metalurji, Malzeme Bilimi ve Kaynak Teknolojileri",
-        kanun: "Basınçlı Ekipmanlar Yönetmeliği",
-        adimlar: [
-            { title: "1. Kaynak Dikişi NDT (Tahribatsız Muayene) Raporu", guide: "<strong>Ne İşe Yarar:</strong> Çelik yapılardaki kaynakların ultrasonik veya rontgenle sağlamlığını inceler." },
-            { title: "2. Malzeme Sertliği ve Çekme Dayanımı Testi", guide: "<strong>Ne İşe Yarar:</strong> Metallerin alaşım kalitesini ve mukavemet değerlerini laboratuvarda test eder." },
-            { title: "3. Korozyon, Paslanma ve Malzeme Yorulması", guide: "<strong>Ne İşe Yarar:</strong> Metal yapıların zamansal aşınma ve çürüme nedenlerini araştırır." },
-            { title: "4. Döküm Hataları ve Metal İç Yapı (Mikroyapı) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Metal dökümlerdeki boşluk ve kalıntı hatalarını mikroskopla inceler." },
-            { title: "5. Çelik Konstrüksiyon Taşıyıcı Kapasite Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Çelik binaların profil kesitlerinin yüke dayanımını hesaplar." },
-            { title: "6. Metal Hurdası ve Metalurjik Kalite Tespiti", guide: "<strong>Ne İşe Yarar:</strong> İthalat/ihracat metal kargolarının hammadde standartlarını denetler." },
-            { title: "7. Metal Kırılması ve Hasar Analizi (Fractography)", guide: "<strong>Ne İşe Yarar:</strong> Parçaların kırılma yüzeylerindeki izlerden yüklenme yönünü çözer." }
-        ]
-    },
-    harita: {
-        adi: "Harita ve Kadastro Mühendisliği (Aplikasyon/Ölçüm)",
-        kanun: "3402 Sayılı Kadastro Kanunu",
-        adimlar: [
-            { title: "1. Aplikasyon ve Sınır (Parsel) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Tapu sınırlarının araziye hatasız vaziyette uygulanmasını GPS/Tachymeter ile inceler." },
-            { title: "2. Haksız İşgal (El Atma / Tecavüz) Ölçümü", guide: "<strong>Ne İşe Yarar:</strong> Komşu parselin binaya veya araziye ne kadar taçkınlık yaptığını hesaplar." },
-            { title: "3. İmar Parselasyon ve Yola Terk İşlemleri", guide: "<strong>Ne İşe Yarar:</strong> Parsel oluşturma süreçlerindeki yüzölçümü kesintilerini denetler." },
-            { title: "4. Kot ve Yükseklik Farkı (Hacim / Küraj) Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Kazılan veya doldurulan hafriyat miktarını harita mühendisliği metotlarıyla ölçer." },
-            { title: "5. Pafta, Zemin ve Tapu Alanı Uyumsuzluğu", guide: "<strong>Ne İşe Yarar:</strong> Kadastro paftalarındaki eski ölçüm kaymalarını ve uyumsuzlukları çözer." },
-            { title: "6. Kamulaştırma Haritası ve Güzergah Projesi", guide: "<strong>Ne İşe Yarar:</strong> Yol veya enerji nakil hatlarının mülkiyet sınırlarını haritalandırır." },
-            { title: "7. İrtifak Hakkı (Geçit/Hat) Koridor Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Taşınmaz üzerindeki geçit haklarının koordinat sınırlarını belirler." }
-        ]
-    },
-    orman: {
-        adi: "Orman Mühendisliği, 2B Arazileri ve Ahşap Eserler",
-        kanun: "6831 Sayılı Orman Kanunu",
-        adimlar: [
-            { title: "1. Orman Kadastrosu ve 2B Arazi Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Araziye ait kadastro tutanaklarının orman sınırları içinde kalıp kalmadığını inceler." },
-            { title: "2. Ağaç Kesimi, Kaçak Emval ve Nakil Suçları", guide: "<strong>Ne İşe Yarar:</strong> İzinsiz kesilen orman emvallerinin miktar ve piyasa değerini hesaplar." },
-            { title: "3. Ahşap Yapı ve Tarihi Eser Malzeme Analizi", guide: "<strong>Ne İşe Yarar:</strong> Tarihi konak ve eserlerde kullanılan ahşap türünü ve çürüme derecesini inceler." },
-            { title: "4. Orman Yangını Saha Tespiti ve Hasar Raporu", guide: "<strong>Ne İşe Yarar:</strong> Yangın sonrasında zarar gören ağaç miktarını ve ekolojik kaybı hesaplar." },
-            { title: "5. Ağaçlandırma Sahası ve Fidan Tutma Oranı", guide: "<strong>Ne İşe Yarar:</strong> Taahhüt edilen orman bakım ve dikim çalışmalarının başarısını denetler." },
-            { title: "6. Kereste ve Odun Ürünleri Kalite Sınıflandırması", guide: "<strong>Ne İşe Yarar:</strong> Ticari ahşap malzemelerin boy, çap ve kalite normlarını inceler." },
-            { title: "7. İrtifak ve İzinli Orman Kullanım Sözleşmeleri", guide: "<strong>Ne İşe Yarar:</strong> Ormanlık alanlardaki maden veya tesis izinlerinin yasal sınırlarını denetler." }
-        ]
-    },
-    veteriner: {
-        adi: "Veteriner Hekimliği, Hayvan Değerleme ve Veba/Zarar",
-        kanun: "5199 Sayılı Hayvanları Koruma Kanunu",
-        adimlar: [
-            { title: "1. Hayvan Ölümü ve Sürü Zararı Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Hastalık, zehirlenme veya kaza sonucu ölen hayvanların tazminat değerini hesaplar." },
-            { title: "2. Et ve Hayvansal Gıda Hijyen / Bozulma Analizi", guide: "<strong>Ne İşe Yarar:</strong> Mezbaha ve karkas etlerdeki hastalık ve sakınca durumlarını inceler." },
-            { title: "3. Evcil Hayvan Satış ve Sorumluluk Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Safkan hayvan alım-satımındaki gizli kusur ve sağlık sorunlarını raporlar." },
-            { title: "4. Zoonoz Hastalıklar ve Salgın Risk Yönetimi", guide: "<strong>Ne İşe Yarar:</strong> Hayvandan insana geçen hastalıkların yayılma ihmallerini inceler." },
-            { title: "5. Hayvan Refahı ve Taşıma Koşulları Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Nakil araçlarındaki hayvan sıkışıklığı ve bakım ihlallerini saptar." },
-            { title: "6. Veteriner Hekimliği Malpraktis (Hatalı Tedavi)", guide: "<strong>Ne İşe Yarar:</strong> Yanlış teşhis veya hatalı cerrahi müdahale iddialarını inceler." },
-            { title: "7. Pet Hayvanı Değerleme ve Irk Standartları", guide: "<strong>Ne İşe Yarar:</strong> Kedi, köpek gibi evcil hayvanların yaş, şecere ve piyasa değerini biçer." }
-        ]
-    },
-    ecza: {
-        adi: "Eczacılık, İlaç, Tıbbi Cihaz ve Kimyevi Maddeler",
-        kanun: "1262 Sayılı İspençiyari ve Tıbbi Müstahzarlar Kanunu",
-        adimlar: [
-            { title: "1. İlaç Etken Madde ve Dozaj Laboratuvar Analizi", guide: "<strong>Ne İşe Yarar:</strong> İlaçların içerisindeki etken madde oranlarının prospektüse uygunluğunu inceler." },
-            { title: "2. Sahte, Kaçak ve Son Kullanma Tarihi Geçmiş İlaç", guide: "<strong>Ne İşe Yarar:</strong> Piyasaya sürülen yasadışı veya merdiven altı ilaçları saptar." },
-            { title: "3. Tıbbi Cihaz Kalibrasyon ve Güvenlik Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Hastanelerde kullanılan cihazların hata paylarını ve teknik uygunluğunu denetler." },
-            { title: "4. Eczane Depolama ve Soğuk Zincir İlaç Koşulları", guide: "<strong>Ne İşe Yarar:</strong> Aşı ve soğuk zincir gerektiren ilaçların saklanma ısılarını inceler." },
-            { title: "5. İlaç Yan Etkileri ve Etkileşim (Pharmacovigilance)", guide: "<strong>Ne İşe Yarar:</strong> Birden fazla ilacın aynı anda kullanımından doğan zararları analiz eder." },
-            { title: "6. Eczacılık Mevzuatı ve Ruhsatlandırma İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> İlaç satış ruhsatlarının ve eczane mesul müdürlük kurallarını denetler." },
-            { title: "7. Kimyevi Maddelerin İthalat ve Güvenlik Bilgi Formu", guide: "<strong>Ne İşe Yarar:</strong> MSDS belgelerine göre kimyasalların tehlike sınıflarını inceler." }
-        ]
-    },
-    psikoloji: {
-        adi: "Adli Psikoloji, Psikiyatri ve Ruh Sağlığı Raporlaması",
-        kanun: "5395 Sayılı Çocuk Koruma Kanunu ve TCK",
-        adimlar: [
-            { title: "1. Akıl Sağlığı ve Cezai Ehliyet (Madde 32) Raporu", guide: "<strong>Ne İşe Yarar:</strong> Suç işleyen kişinin işlediği fiilin hukuki anlam ve sonuçlarını algılama yeteneğini inceler." },
-            { title: "2. Travma Sonrası Stres Bozukluğu (TSSB) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Kaza, şiddet veya istismar mağdurlarında oluşan psikolojik çöküntüyü test eder." },
-            { title: "3. Tanık ve Mağdur Beyan Güvenilirliği Analizi", guide: "<strong>Ne İşe Yarar:</strong> İfade veren kişilerin hafıza yanılgılarını, yönlendirilme durumlarını inceler." },
-            { title: "4. Ebeveyn Yatkınlık ve Psikolojik Durum Değerlendirmesi", guide: "<strong>Ne İşe Yarar:</strong> Velayet davalarında anne/babanın ruh sağlığının çocuğa etkisini raporlar." },
-            { title: "5. Madde ve Alkol Bağımlılığı Psikolojik Değerlendirme", guide: "<strong>Ne İşe Yarar:</strong> Şahsın bağımlılık düzeyini ve irade yeteneği üzerindeki etkisini inceler." },
-            { title: "6. Mobbing (İşyerinde Psikolojik Taciz) Raporu", guide: "<strong>Ne İşe Yarar:</strong> Çalışanın maruz kaldığı sistemli baskının ruhsal etkilerini belgeler." },
-            { title: "7. Vesayet ve Kısıtlılık (Akıl Hastalığı) Durumu", guide: "<strong>Ne İşe Yarar:</strong> Kişinin kendi işlerini görebilecek akli melekeye sahip olup olmadığını saptar." }
-        ]
-    },
-    pedagoji: {
-        adi: "Çocuk İzleme, Pedagoji ve Velayet Uzmanlığı",
-        kanun: "5395 Sayılı Çocuk Koruma Kanunu",
-        adimlar: [
-            { title: "1. Çocuk Görüşme Odası (ÇGÖ) İnceleme Raporu", guide: "<strong>Ne İşe Yarar:</strong> Suğ mağduru veya tanığı çocukların uzman eşliğinde beyanını alır." },
-            { title: "2. Velayet ve Çocuk Teslimi Uyuşmazlık Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çocuk için en yüksek yararın hangi ebeveynin yanında olacağını saptar." },
-            { title: "3. Çocuk İstismarı ve İhmali Psikolojik Bulguları", guide: "<strong>Ne İşe Yarar:</strong> Çocuktaki davranış bozukluklarından ihmal veya istismar bulgularını inceler." },
-            { title: "4. Evlat Edinme ve Koruyucu Aile Uyumluluk Raporu", guide: "<strong>Ne İşe Yarar:</strong> Aile ortamının çocuğun psiko-sosyal gelişimine uygunluğunu denetler." },
-            { title: "5. Akran Zorbalığı ve Okul İçi Uyum Sorunları", guide: "<strong>Ne İşe Yarar:</strong> Eğitim kurumlarında çocukların yaşadığı psikolojik baskıları inceler." },
-            { title: "6. Suça Sürüklenen Çocuk (SSÇ) Sosyal İnceleme", guide: "<strong>Ne İşe Yarar:</strong> Suça karışan çocuğun gelişim özelliklerini ve çevresel etkenlerini raporlar." },
-            { title: "7. Kişisel İlişki Kurma Haklarının Düzenlenmesi", guide: "<strong>Ne İşe Yarar:</strong> Boşanan ebeveynlerin çocukla görüş günlerinin çocuk psikolojisine etkisini inceler." }
-        ]
-    },
-    bankacilik: {
-        adi: "Bankacilik, Finansal Piyasalar ve Kredi Sözleşmeleri",
-        kanun: "5411 Sayılı Bankacılık Kanunu",
-        adimlar: [
-            { title: "1. Kredi Sözleşmesi ve Faiz/Komisyon Hesaplamaları", guide: "<strong>Ne İşe Yarar:</strong> Banka kredilerinde uygulanan faiz, BSMV ve masrafların yasalığını denetler." },
-            { title: "2. Kredi Kartı Ekstresi ve Bileşik Faiz İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Kart borçlarındaki temerrüt faizi ve hesap kesim uyuşmazlıklarını çözer." },
-            { title: "3. İpotek, Rehin ve Teminat Mektubu Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Kredi karşılığı verilen teminatların paraya çevrilme şartlarını inceler." },
-            { title: "4. Bankacılık İşlemlerinde Yetkisiz Havale ve Dolandırıcılık", guide: "<strong>Ne İşe Yarar:</strong> İnternet bankacılığı üzerinden yapılan hukuka aykırı transferleri inceler." },
-            { title: "5. Yapılandırma ve Kredi Ödeme Güçlüğü (Temerrüt)", guide: "<strong>Ne İşe Yarar:</strong> Borçlunun yapılandırma sözleşmelerindeki haklarını ve ödeme planını denetler." },
-            { title: "6. Faktoring ve Finansal Kiralama (Leasing) İşlemleri", guide: "<strong>Ne İşe Yarar:</strong> Ticari finansman sözleşmelerindeki alacak devirlerini ve iskonto oranlarını inceler." },
-            { title: "7. Hesap İşletim Ücreti ve Haksız Kesinti İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Bankaların müşterilerinden tahsil ettiği hukuka aykırı masrafları hesaplar." }
-        ]
-    },
-    sermaye: {
-        adi: "Sermaye Piyasaları, Borsa ve Yatırım Analizi",
-        kanun: "6362 Sayılı Sermaye Piyasası Kanunu",
-        adimlar: [
-            { title: "1. Piyasa Dolandırıcılığı (Manipülasyon / Insider Trading)", guide: "<strong>Ne İşe Yarar:</strong> Borsa hisselerinde suni fiyat oluşturma ve içerideki bilgileri kullanma fiillerini inceler." },
-            { title: "2. Aracı Kurum Sözleşmeleri ve Portföy Yönetim Hataları", guide: "<strong>Ne İşe Yarar:</strong> Yatırım danışmanlığı sözleşmelerindeki zarar sorumluluklarını denetler." },
-            { title: "3. Halka Arz, İzahname ve Şeffaflık İlkesi Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Şirketlerin halka arz sürecinde yatırımcıya sunduğu mali bilgilerin doğruluğunu saptar." },
-            { title: "4. Yatırım Fonu ve Türev Araç (Vadeli İşlem) Zararları", guide: "<strong>Ne İşe Yarar:</strong> VİOP ve kaldıraçlı işlemlerdeki teminat çağrısı ve tasfiye süreçlerini inceler." },
-            { title: "5. Pay Sahipliği Hakları ve Genel Kurul Kararları", guide: "<strong>Ne İşe Yarar:</strong> Azınlık pay sahiplerinin haklarının ihlal edilip edilmediğini denetler." },
-            { title: "6. Kurumsal Yönetim İlkeleri ve Şirket Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Halka açık şirketlerin yönetim kurulu işlemlerinin yasaya uygunluğunu inceler." },
-            { title: "7. Sermaye Artırımı ve Rüçhan Hakkı Kullanımı", guide: "<strong>Ne İşe Yarar:</strong> Bedelli/bedelsiz sermaye artırımlarındaki ortaklık payı hesaplarını yapar." }
-        ]
-    },
-    gumruk: {
-        adi: "Gümrük, Dış Ticaret, Kaçakçılık ve Rejim Mevzuatı",
-        kanun: "4458 Sayılı Gümrük Kanunu ve 5607 Sayılı Kaçakçılıkla Mücadele Kanunu",
-        adimlar: [
-            { title: "1. Gümrük Tarife İstatistik Pozisyonu (GTİP) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> İthal edilen eşyanın doğru gümrük kodunda beyan edilip edilmediğini inceler." },
-            { title: "2. Menşe Şahadetnamesi ve Gümrük Kıymeti Analizi", guide: "<strong>Ne İşe Yarar:</strong> Eşyanın gerçek alım değerinin fatura ve navlun belgeleriyle uyumunu denetler." },
-            { title: "3. Kaçakçılık, Beyana Aykırılık ve Gizli Eşya", guide: "<strong>Ne İşe Yarar:</strong> Gümrük vergilerinden kaçınmak için yapılan sahte beyanları ve gizlemeleri ortaya çıkarır." },
-            { title: "4. Dahilde / Hariçte İşleme Rejimi ve Teminat İadesi", guide: "<strong>Ne İşe Yarar:</strong> İthal edilen hammaddenin mamul olarak ihraç edilme şartlarını denetler." },
-            { title: "5. Antrepo ve Serbest Bölge İşlemleri Uyuşmazlığı", guide: "<strong>Ne İşe Yarar:</strong> Serbest bölgelerdeki stok ve eşya hareketlerinin yasalara uygunluğunu inceler." },
-            { title: "6. İthalat Yasakları ve Ticaret Politikası Önlemleri", guide: "<strong>Ne İşe Yarar:</strong> Ülkeye girişi izne tabi ürünlerin denetim belgelerini inceler." },
-            { title: "7. Gümrük Vergisi, Vergi Kaybı ve Cezai Hesaplama", guide: "<strong>Ne İşe Yarar:</strong> Eksik ödenen gümrük vergilerini ve kesilecek para cezalarını hesaplar." }
-        ]
-    },
-    enerji: {
-        adi: "Enerji Piyasaları, Doğalgaz ve Petrol Dağıtım Sistemleri",
-        kanun: "4646 Sayılı Doğalgaz Piyasası Kanunu ve 6446 Sayılı Elektrik Piyasası Kanunu",
-        adimlar: [
-            { title: "1. Elektrik ve Doğalgaz Kaçak Kullanım Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Sayaçlara müdahale edilerek yapılan enerjisiz tüketimleri ve cezaları hesaplar." },
-            { title: "2. Akaryakıt Dağıtım ve İstasyon Sözleşme İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> Dağıtıcı bayilik anlaşmalarındaki intifa hakkı ve rekabet uyuşmazlıklarını inceler." },
-            { title: "3. Enerji Nakil Hattı Kamulaştırma ve Geçit Hakkı", guide: "<strong>Ne İşe Yarar:</strong> Yüksek gerilim hatlarının mülkler üzerinden geçiş bedellerini hesaplar." },
-            { title: "4. Yenilenebilir Enerji (GES/RES) Üretim Kaybı", guide: "<strong>Ne İşe Yarar:</strong> Güneş ve rüzgar santrallerinin arıza veya gölgelenme nedeniyle gelir kaybını saptar." },
-            { title: "5. Petrol Boru Hattı Güvenliği ve Sızıntı Analizi", guide: "<strong>Ne İşe Yarar:</strong> Ham petrol iletim hatlarındaki çevre ve mülk zararını inceler." },
-            { title: "6. Enerji Piyasası Düzenleme (EPDK) Lisans Uyuşmazlığı", guide: "<strong>Ne İşe Yarar:</strong> Enerji üretim/dağıtım şirketlerinin lisans şartlarına uyumunu denetler." },
-            { title: "7. Doğalgaz Dağıtım Şebekesi Arıza ve Patlama Analizi", guide: "<strong>Ne İşe Yarar:</strong> Gaz kaçağı ve patlama vakalarındaki teknik kusur oranlarını belirler." }
-        ]
-    },
-    havacilik: {
-        adi: "Havacılık, Sivil Ulaştırma ve Uçuş Güvenliği",
-        kanun: "2920 Sayılı Türk Sivil Havacılık Kanunu",
-        adimlar: [
-            { title: "1. Uçak Kazası ve Kırım Kök Neden (Blackbox) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kara kutu (FDR/CVR) verilerine göre hava aracı kaza nedenini çözer." },
-            { title: "2. Uçuş Ekibi (Pilot) Hata ve Yorgunluk Analizi", guide: "<strong>Ne İşe Yarar:</strong> CRM (Cockpit Resource Management) kurallarına uyumu ve mesai sürelerini inceler." },
-            { title: "3. Havaalanı Yer Hizmetleri ve Güvenlik İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> Apron içi kazaları, bagaj kayıpları ve pist güvenliği ihlallerini denetler." },
-            { title: "4. Uçak Bakım, Onarım (MRO) ve Parça Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Hava aracının periyodik bakım kayıtlarının uluslararası kurallara uygunluğunu inceler." },
-            { title: "5. Yolcu Hakları, Rötar ve Uçuş İptal Tazminatları", guide: "<strong>Ne İşe Yarar:</strong> SSHY yönetmeliğine göre yolcuların tazminat haklarını hesaplar." },
-            { title: "6. İHA (Dron) Kazaları ve Hava Sahası İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> İzinsiz uçuş yapılan bölgelerdeki dron kazalarını ve riskleri inceler." },
-            { title: "7. Meteorolojik Şartlar ve Windshear (Rüzgar Kırılması)", guide: "<strong>Ne İşe Yarar:</strong> Hava koşullarının uçuş emniyetine etkisini raporlar." }
-        ]
-    },
-    mimarlik: {
-        adi: "Mimarlık, Restorasyon, Tarihi Eser ve İç Mimari",
-        kanun: "2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanunu",
-        adimlar: [
-            { title: "1. Tarihi Eser ve Restorasyon Proje Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Tescilli yapılarda yapılan onarımların orijinal dokuya uygunluğunu denetler." },
-            { title: "2. İç Mimari Metraj, Malzeme ve İşçilik Kalitesi", guide: "<strong>Ne İşe Yarar:</strong> İç mekan tasarımlarındaki imalat kusurlarını ve maliyetleri hesaplar." },
-            { title: "3. İmar Planı Estetik ve Siluet İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> Yapıların çevre dokusuna, gabari ve yükseklik kurallarına uyumunu inceler." },
-            { title: "4. Mimari Proje Telif Hakları (FSEK) İhlali", guide: "<strong>Ne İşe Yarar:</strong> Özgün mimari çizimlerin izinsiz kopyalanıp kopyalanmadığını saptar." },
-            { title: "5. Yapı Ruhsatı, Vaziyet Planı ve Cephe Analizi", guide: "<strong>Ne İşe Yarar:</strong> Binaların ruhsat projesindeki cephe ve yerleşim uygunluğunu denetler." },
-            { title: "6. Isı, Ses Yalıtımı ve Mimari Konfor Şartları", guide: "<strong>Ne İşe Yarar:</strong> Yapıların akustik ve yalıtım standartlarına uyumunu inceler." },
-            { title: "7. Kültür Varlığı Yıkım veya Hasar Tazminatı", guide: "<strong>Ne İşe Yarar:</strong> Tarihi yapılara verilen zararların onarım maliyetini hesaplar." }
-        ]
-    },
-    kuyumculuk: {
-        adi: "Kuyumculuk, Kıymetli Madenler ve Mücevherat Değerleme",
-        kanun: "Özel Kanunlar ve Ayar Evleri Yönetmeliği",
-        adimlar: [
-            { title: "1. Altın, Gümüş ve Platin Ayar (Milyem) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Takı ve külçelerin saflık derecesini (ayarını) asit veya spektrometre ile inceler." },
-            { title: "2. Pırlanta, Elmas ve Kıymetli Taş Değerleme", guide: "<strong>Ne İşe Yarar:</strong> Taşların 4C kuralı (Karat, Berraklık, Renk, Kesim) ile piyasa değerini biçer." },
-            { title: "3. Mücevherat İşçiliği ve Tasarım Taklit Analizi", guide: "<strong>Ne İşe Yarar:</strong> Özel tasarım takıların işçilik maliyetini ve benzerlik durumunu saptar." },
-            { title: "4. Has ve Hurda Altın Ticareti Hesaplamaları", guide: "<strong>Ne İşe Yarar:</strong> Kuyum ticareti uyuşmazlıklarındaki gram ve borsa değer farklarını hesaplar." },
-            { title: "5. Saat, Antika Mücevher ve Marka Orijinalliği", guide: "<strong>Ne İşe Yarar:</strong> Lüks saat ve mücevherlerin orijinal olup olmadığını mekanik detaylarla inceler." },
-            { title: "6. Kuyumcu Atölye Kayıpları ve Fire Oranları", guide: "<strong>Ne İşe Yarar:</strong> İmalat sırasında hammadde kullanımında yasal fire oranlarını denetler." },
-            { title: "7. Emniyet Kasası ve Kıymetli Eşya Hırsızlık Zararı", guide: "<strong>Ne İşe Yarar:</strong> Çalınan veya kaybolan mücevherlerin piyasa rayiç bedelini tespit eder." }
-        ]
-    },
-    sigaraalkol: {
-        adi: "Tütün, Alkol ve Piyasaya Arz Edilen Özel Ürünler",
-        kanun: "4733 Sayılı Tütün, Tütün Mamulleri ve Alkollü İçkiler Piyasası Kanunu",
-        adimlar: [
-            { title: "1. Kaçak ve Sahte Alkol (Metil Alkol) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> El yapımı veya sahte içkilerdeki ölümcül kimyasal oranlarını laboratuvarda inceler." },
-            { title: "2. Bandrol, Hologram ve Tütün Ekstrem Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Sigara ve alkol ürünlerindeki bandrollerin sahte olup olmadığını saptar." },
-            { title: "3. Tütün Mamulleri Nem, Katran ve Nikotin Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sigaraların yasal standartlara ve bildirimlere uygunluğunu denetler." },
-            { title: "4. Kaçak Tütün ve Makaron Doldurma Tesisleri", guide: "<strong>Ne İşe Yarar:</strong> Yasal izni olmadan merdiven altı tütün saran makinelerin kapasitesini inceler." },
-            { title: "5. Alkol ve Tütün Ürünleri Dağıtım Sözleşmeleri", guide: "<strong>Ne İşe Yarar:</strong> Bayilik ve dağıtım haklarındaki TAPDK mevzuatı ihlallerini raporlar." },
-            { title: "6. Özel Tüketim Vergisi (ÖTV) Matrah Farkı", guide: "<strong>Ne İşe Yarar:</strong> Bu ürünlerden eksik ödenen ÖTV ve KDV tutarlarını hesaplar." },
-            { title: "7. Piyasaya Arz Yasakları ve Ambalaj Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Uyarı yazılarının ve paketleme standartlarının mevzuata uygunluğunu denetler." }
-        ]
-    },
-    nakliyat: {
-        adi: "Lojistik, Nakliyat, Depolama ve Hasar Yönetimi",
-        kanun: "Türk Ticaret Kanununun Taşıma İşleri Hükümleri",
-        adimlar: [
-            { title: "1. Eşya Taşıma Hasarı ve İstifleme Kusuru", guide: "<strong>Ne İşe Yarar:</strong> Nakliye sırasında kırılan veya bozulan kargonun yükleme hatasından kaynaklanıp kaynaklanmadığını inceler." },
-            { title: "2. CMR (Uluslararası Karayolu Taşımacılığı) Belge Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Sınır ötesi taşımacılıktaki sevk irsaliyesi ve sorumluluk sınırlarını denetler." },
-            { title: "3. Konteyner Mühür ve Ağırlık Tutarsızlıkları", guide: "<strong>Ne İşe Yarar:</strong> Liman veya depolardaki konteyner eksikliklerini ve ağırlık farklarını saptar." },
-            { title: "4. Depo Yangını, Su Basması ve Muhafaza İhmali", guide: "<strong>Ne İşe Yarar:</strong> Lojistik depolarında depolanan malların zarar görme sorumluluğunu inceler." },
-            { title: "5. Nakliyat Sigortası (Emtea Nakliyat) Poliçeleri", guide: "<strong>Ne İşe Yarar:</strong> Seyahat sigortası teminat kapsamındaki hasar ödeme oranlarını hesaplar." },
-            { title: "6. Gecikmeli Teslimat ve Ticari Zarar Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Zamanında teslim edilmeyen malların ticari alıcıya verdiği zararı hesaplar." },
-            { title: "7. Soğuk Zincir Lojistik Isı Kaybı İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Frigo tırlardaki ısı kayıt cihazı (data logger) verilerini analiz eder." }
-        ]
-    },
-    temizlikakaryakit: {
-        adi: "Akaryakıt İstasyonları, LPG ve Tehlikeli Akışkanlar",
-        kanun: "5015 Sayılı Petrol Piyasası Kanunu",
-        adimlar: [
-            { title: "1. Akaryakıt Kaçakçılığı ve Otomasyon Sistemi", guide: "<strong>Ne İşe Yarar:</strong> İstasyonlardaki dolum ve satış otomasyon verilerindeki uyuşmazlıkları inceler." },
-            { title: "2. Yeraltı Yakıt Tankları Sızıntı ve Topraklama Testi", guide: "<strong>Ne İşe Yarar:</strong> Yakıt sızdıran tankların çevreye ve yeraltı sularına etkisini denetler." },
-            { title: "3. LPG / LNG Dolum Tesisleri Emniyet Mesafeleri", guide: "<strong>Ne İşe Yarar:</strong> Akaryakıt istasyonlarının binalara ve yola olan yasal güvenlik mesafelerini ölçer." },
-            { title: "4. Akaryakıt Kalitesi ve Yakıt Hilesi Analizi", guide: "<strong>Ne İşe Yarar:</strong> Pompadan alınan numunelerin oktan ve parlayıcılık testlerini laboratuvarda inceler." },
-            { title: "5. İstasyon Kurulumu ve Mühendislik Proje Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Akaryakıt tesislerinin elektrik, mekanik ve yangın projelerini denetler." },
-            { title: "6. Tehlikeli Akışkan Nakliyat Tanker Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> ADR kurallarına göre yakıt taşıyan tankerlerin donanımını inceler." },
-            { title: "7. Akaryakıt İstasyonu İşletme Ruhsatı İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> Lisans iptali gerektiren mevzuat aykırılıklarını raporlar." }
-        ]
-    },
-    basin: {
-        adi: "Basın, Yayın, Medya, Telif Hakları ve Basın Suçları",
-        kanun: "5187 Sayılı Basın Kanunu ve FSEK",
-        adimlar: [
-            { title: "1. Basın Yoluyla Hakaret, İsnat ve İtibar Zedeleme", guide: "<strong>Ne İşe Yarar:</strong> Haber veya köşe yazılarındaki eleştiri sınırının aşılıp aşılmadığını inceler." },
-            { title: "2. Tekzip (Düzeltme ve Cevap) Hakkı Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Gazete, TV veya internet sitelerinin yasal süre içinde tekzip yayınlayıp yayınlamadığını denetler." },
-            { title: "3. Medya İçeriklerinde Telif ve Alıntı Hakları", guide: "<strong>Ne İşe Yarar:</strong> Haber metinlerinin veya görsellerinin izinsiz kullanımını FSEK'e göre inceler." },
-            { title: "4. Sosyal Medya ve İnternet Haberciliği Sorumluluğu", guide: "<strong>Ne İşe Yarar:</strong> İnternet sitelerindeki içerik kaldırma ve erişim engeli kararlarını denetler." },
-            { title: "5. Gizliliğin İhlali ve Kişisel Verilerin Yayınlanması", guide: "<strong>Ne İşe Yarar:</strong> Özel hayatın gizliliğini ihlal eden yayın unsurlarını hukuki açıdan inceler." },
-            { title: "6. TV Yayınlarında Reklam ve Örtülü Reklam İhlali", guide: "<strong>Ne İşe Yarar:</strong> RTÜK mevzuatına aykırı ürün yerleştirme ve reklamları raporlar." },
-            { title: "7. Basın Kartı, Eser Sahipliği ve Gazetecilik Hakları", guide: "<strong>Ne İşe Yarar:</strong> Basın çalışanlarının mesleki statü ve telif sözleşmelerini inceler." }
-        ]
-    },
-    spor: {
-        adi: "Spor Hukuku, Tesisleri ve Sporcu Tazminatları",
-        kanun: "3289 Sayılı Gençlik ve Spor Hizmetleri Kanunu ve TFF Talimatları",
-        adimlar: [
-            { title: "1. Sporcu Sözleşmesi Feshi ve Tazminat Hesaplama", guide: "<strong>Ne İşe Yarar:</strong> Futbolcu, basketbolcu gibi profesyonel sporcuların haksız fesih tazminatını hesaplar." },
-            { title: "2. Spor Tesisleri Güvenliği ve Seyirci Kazaları", guide: "<strong>Ne İşe Yarar:</strong> Stadyum ve spor salonlarındaki tribün veya yapı kusurlarından doğan kazaları inceler." },
-            { title: "3. Dopingle Mücadele ve Yasaklı Madde Raporları", guide: "<strong>Ne İşe Yarar:</strong> Sporcuların kan/idrar testlerindeki yasaklı madde sonuçlarını değerlendirir." },
-            { title: "4. Kulüp Mali Yapısı ve Lisans Lisanslama Kriterleri", guide: "<strong>Ne İşe Yarar:</strong> Spor kulüplerinin finansal fair-play ve borç yapılandırma durumunu inceler." },
-            { title: "5. Sporcu Bonservis, Transfer ve Yetiştirme Bedeli", guide: "<strong>Ne İşe Yarar:</strong> Kulüpler arası oyuncu transfer sözleşmelerindeki hak edişleri hesaplar." },
-            { title: "6. Müsabaka Güvenliği ve Şiddet Olayları (6222 Sayılı Kanun)", guide: "<strong>Ne İşe Yarar:</strong> Spor alanlarında güvenlik zafiyetlerini ve olayların sorumluluğunu inceler." },
-            { title: "7. Antrenör ve Teknik Direktör Sözleşme Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Teknik adamların tek taraflı sözleşme fesih bedellerini hesaplar." }
-        ]
-    },
-    tercume: {
-        adi: "Yeminli Tercüme, Adli Dilbilim ve Tercüme Hataları",
-        kanun: "Noterlik Kanunu ve Adli Yargı Adalet Komisyonları Yönetmeliği",
-        adimlar: [
-            { title: "1. Sözleşme ve Resmi Belge Çeviri Doğruluk Analizi", guide: "<strong>Ne İşe Yarar:</strong> Yabancı dildeki mahkeme evrakının veya sözleşmenin çeviri hatalarını inceler." },
-            { title: "2. Adli Dilbilim (Forensic Linguistics) Yazar Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Tehdit mektupları veya mesajlardaki dilbilgisi reflekslerinden yazarın imzasını arar." },
-            { title: "3. Yeminli Tercüman Yetki ve Sadakat Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Tercümanın belgedeki terimleri eksik veya yanıltıcı çevirip çevirmediğini saptar." },
-            { title: "4. Çok Dilli Ticari Sözleşmelerde Anlam Çelişkisi", guide: "<strong>Ne İşe Yarar:</strong> İngilizce ve Türkçe metinler arasındaki yorum farklarını ve hak kayıplarını çözer." },
-            { title: "5. Ses Kaydı Deşifre ve Tercüme Tutarlılığı", guide: "<strong>Ne İşe Yarar:</strong> Yabancı dildeki dinleme kayıtlarının yazılı metne tam çevrilip çevrilmediğini inceler." },
-            { title: "6. Apostil ve Uluslararası Belge Tasdik Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Yurt dışından gelen belgelerin tercüme ve tasdik zincirini denetler." },
-            { title: "7. Patent ve Teknik Şartname Çeviri Hataları", guide: "<strong>Ne İşe Yarar:</strong> Teknik terimlerin yanlış çevrilmesinden doğan patent ihlallerini inceler." }
-        ]
-    },
-    konutkoop: {
-        adi: "Kooperatifçilik, Yapı Kooperatifleri ve Tasfiye",
-        kanun: "1163 Sayılı Kooperatifler Kanunu",
-        adimlar: [
-            { title: "1. Yapı Kooperatifi Genel Kurul Kararları ve İptali", guide: "<strong>Ne İşe Yarar:</strong> Ortaklar kurulu toplantılarındaki usulsüzlükleri ve oy hakkı ihlallerini inceler." },
-            { title: "2. Aidat Borçları, Gecikme Cezası ve Ortaklıktan Çıkarma", guide: "<strong>Ne İşe Yarar:</strong> Ödenmeyen aidat borçları nedeniyle yapılan ihraç kararlarının yasalığını denetler." },
-            { title: "3. Kooperatif İnşaat Maliyeti ve Şerefiye Dağılımı", guide: "<strong>Ne İşe Yarar:</strong> Dairelerin kura çekimi öncesi şerefiye ve maliyet farkı hesaplarını yapar." },
-            { title: "4. Yönetim Kurulu Yolsuzluk ve Denetim Raporları", guide: "<strong>Ne İşe Yarar:</strong> Kooperatif varlıklarının usulsüz harcanması iddialarını mali olarak inceler." },
-            { title: "5. Tasfiye Süreci ve Ortakların Alacak Paylaşımı", guide: "<strong>Ne İşe Yarar:</strong> Kapanan kooperatiflerin tasfiye memurluğu işlemlerini ve bakiye dağıtımını yapar." },
-            { title: "6. Arsa Tapu Devirleri ve Kat Mülkiyeti Kurulumu", guide: "<strong>Ne İşe Yarar:</strong> Ülke genelindeki konutların tapularının ortaklara devir süreçlerini denetler." },
-            { title: "7. Yüklenici (Müteahhit) Sözleşme Feshi ve Gecikme", guide: "<strong>Ne İşe Yarar:</strong> Kooperatif ile inşaat firması arasındaki sözleşme uyuşmazlıklarını raporlar." }
-        ]
-    },
-    belediye: {
-        adi: "Mahalli İdareler, Belediye Mevzuatı ve Ruhsatlar",
-        kanun: "5393 Sayılı Belediye Kanunu ve İmar Kanunu",
-        adimlar: [
-            { title: "1. Belediye Ruhsat, İskan ve Yapı Kullanma İzinleri", guide: "<strong>Ne İşe Yarar:</strong> İşyeri açma ve yapı kullanma izinlerinin yasal şartlara uygunluğunu inceler." },
-            { title: "2. İmar Planı Tadilatı ve Hak İhlali İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin yaptığı kişiye özel imar değişikliklerinin hukuki dayanağını denetler." },
-            { title: "3. Kamulaştırmasız El Atma ve Belediye Projeleri", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin şahıs arsalarını yol veya park yapması durumundaki tazminatı hesaplar." },
-            { title: "4. İhale, Doğrudan Temin ve Belediye Alımları", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin 4734 sayılı kanuna göre yaptığı harcamaları ve hizmet alımlarını inceler." },
-            { title: "5. Zabıta Tutanakları ve Encümen Para Cezaları", guide: "<strong>Ne İşe Yarar:</strong> Belediyenin kestiği idari para cezalarının ve yıkım kararlarının yasallığını denetler." },
-            { title: "6. Kentsel Dönüşüm ve Riskli Yapı Yıkım Süreçleri", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin kentsel dönüşüm alanlarındaki tebligat ve uzlaşma süreçlerini inceler." },
-            { title: "7. Belediye Taşınmaz Satışı, Kiralama ve Trampa", guide: "<strong>Ne İşe Yarar:</strong> Belediyeye ait gayrimenkul satış ihalelerindeki rayiç bedel uyumunu saptar." }
-        ]
-    },
-    kulturvarliklari: {
-        adi: "Kültür Varlıklarını Koruma ve Müze Uzmanlığı",
-        kanun: "2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanunu",
-        adimlar: [
-            { title: "1. Tarihi Eser, Antika ve Etnografik Ürün Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ele geçirilen eserlerin 2863 sayılı kanun kapsamında kültür varlığı olup olmadığını inceler." },
-            { title: "2. Kaçak Kazı, Define Arama ve Sit Alanı İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> Sit alanlarında yapılan izinsiz kazıların tahribat derecesini ve zararını saptar." },
-            { title: "3. Müze Envanter Kayıtları ve Eser Eksikliği", guide: "<strong>Ne İşe Yarar:</strong> Müzelerden kaybolan veya çalınan tarihi eserlerin katalog kayıtlarını inceler." },
-            { title: "4. Tescilli Yapıların İzinsiz Müdahale ve Yıkımı", guide: "<strong>Ne İşe Yarar:</strong> Koruma altındaki tarihi binalara yapılan kaçak kat veya tadilatları denetler." },
-            { title: "5. Kültür Varlığı Eser Değerleme ve Rayiç Bedel", guide: "<strong>Ne İşe Yarar:</strong> Piyasada yasadışı ticareti yapılan tarihi objelerin sanatsal ve tarihi değerini biçer." },
-            { title: "6. Restorasyon Proje İzni ve Koruma Kurulu Kararları", guide: "<strong>Ne İşe Yarar:</strong> Kültür Varlıklarını Koruma Bölge Kurulu kararlarına uyumu denetler." },
-            { title: "7. Numismatik (Sikke ve Eski Para) Orijinallik Analizi", guide: "<strong>Ne İşe Yarar:</strong> Tarihi sikkelerin dönem, maden ve darp yeri analizini yapar." }
-        ]
-    }
-};
+        grafik: {
+            adi: "Grafik, Matbaa ve Görsel İletişim Tasarımı",
+            kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
+            adimlar: [
+                { title: "1. İnternet ve Tersine Görsel Taraması", guide: "<strong>Ne İşe Yarar:</strong> Eserin daha önce internette yayınlanıp yayınlanmadığını test eder." },
+                { title: "2. Tipografi ve Font Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kullanılan yazı tiplerini ve karakter dizilimlerini inceler." },
+                { title: "3. Renk Uzayı ve CMYK/RGB Değerleri", guide: "<strong>Ne İşe Yarar:</strong> Ekran (RGB) ve baskı (CMYK) renk profillerini kıyaslar." },
+                { title: "4. Maske (Clipping) Hiyerarşisi", guide: "<strong>Ne İşe Yarar:</strong> Katmanlar arkasına gizlenmiş vektör kesim sınırlarını ortaya çıkarır." },
+                { title: "5. Katman Yapısı ve Gizli İzler", guide: "<strong>Ne İşe Yarar:</strong> Dosya geçmişindeki gizlenmiş eski grafikleri tespit eder." },
+                { title: "6. Vektörel Düğüm (Path / Anchor Point) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Çizimi oluşturan bağlantı noktalarının koordinatlarını inceler." },
+                { title: "7. Opaklık ve Harmanlama (Blending Modes) Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Saydamlık ve harmanlama modlarını denetler." },
+                { title: "8. Izgara (Grid) ve Geometrik Hizalama", guide: "<strong>Ne İşe Yarar:</strong> Tasarımın kılavuz hatlarına göre konumunu test eder." }
+            ]
+        },
+        bilisim: {
+            adi: "Bilişim Teknolojileri ve Standart Yazılım",
+            kanun: "5651 Sayılı Kanun ve FSEK (Yazılım Koruması)",
+            adimlar: [
+                { title: "1. Kaynak Kod ve Algoritma Analizi", guide: "<strong>Ne İşe Yarar:</strong> İki yazılım arasındaki kod benzerliklerini ve telif ihlalini tespit eder." },
+                { title: "2. Veritabanı (Log) ve İşlem Kayıtları İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Sunucu log kayıtlarından yetkisiz erişimleri ve veri sızıntılarını ortaya çıkarır." },
+                { title: "3. Hash (MD5 / SHA-256) Bütünlük Doğrulaması", guide: "<strong>Ne İşe Yarar:</strong> Dijital delillerin değiştirilip değiştirilmediğini matematiksel olarak kanıtlar." },
+                { title: "4. API ve Entegrasyon Trafiği Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Sistemler arası veri alışverişindeki yetkisiz istekleri inceler." },
+                { title: "5. Tersine Mühendislik (Reverse Engineering) Bulguları", guide: "<strong>Ne İşe Yarar:</strong> Derlenmiş yazılımların kaynak koduna dönüştürülme analizini yapar." },
+                { title: "6. Telif Hakları ve Lisans Sözleşmesi Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Açık kaynak kodlu kütüphane ihlallerini ve lisans şartlarını denetler." },
+                { title: "7. Sunucu Altyapısı ve Bulut Barındırma Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> Verilerin saklandığı sunucu konfigürasyonlarını inceler." }
+            ]
+        },
+        trafik: {
+            adi: "Trafik Kazaları ve Kaza Tespit Uzmanlığı",
+            kanun: "2918 Sayılı Karayolları Trafik Kanunu",
+            adimlar: [
+                { title: "1. Fren İzleri ve Skid Mark Analizi", guide: "<strong>Ne İşe Yarar:</strong> Araçların kaza öncesi hızını ve fren mesafesini hesaplar." },
+                { title: "2. Çarpışma Noktası (POI) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Araçların yoldaki konumlarına göre ilk çarpışma anını saptar." },
+                { title: "3. Sürücü Kusur Oranları ve Kusur Dağılımı", guide: "<strong>Ne İşe Yarar:</strong> Tarafların 2918 sayılı kanuna göre kusur yüzdelerini belirler." },
+                { title: "4. Yol Fiziksel Kusurları ve İşaretleme İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Yolun fiziki yapısının ve uyarı levhalarının kazaya etkisini inceler." },
+                { title: "5. Araç Hasar Boyutları ve Deformasyon Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kaporta hasarlarından çarpışma açısını ve şiddetini raporlar." },
+                { title: "6. Kamera ve MOBESE Görüntü Zaman-Hız Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Güvenlik kameralarındaki kare (frame) süreleriyle hız tespiti yapar." },
+                { title: "7. Yaya Çarpışma ve Savrulma Fizikleri", guide: "<strong>Ne İşe Yarar:</strong> Yayaya çarpan aracın hızını ve yayanın savrulma mesafesini hesaplar." }
+            ]
+        },
+        gayrimenkul: {
+            adi: "Gayrimenkul Değerleme, Kamulaştırma ve İmar Mevzuatı",
+            kanun: "2942 Sayılı Kamulaştırma Kanunu ve İmar Kanunu",
+            adimlar: [
+                { title: "1. Emsal Karşılaştırma ve Piyasa Değeri Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Bölgedeki benzer gayrimenkul satışlarını baz alarak rayiç değer belirler." },
+                { title: "2. İmar Durumu ve Parselasyon Planı İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazın imar haklarını, kat mülkiyetini ve kısıtlamalarını inceler." },
+                { title: "3. Kamulaştırma Bedel Tespiti ve Zilyetlik", guide: "<strong>Ne İşe Yarar:</strong> Kamu el koymalarında mülk sahibine ödenecek adil bedeli hesaplar." },
+                { title: "4. Yapı Maliyeti ve Aşınma Payı (Amortisman)", guide: "<strong>Ne İşe Yarar:</strong> Binanın yaşına ve malzeme kalitesine göre yıpranma düşerek değer biçer." },
+                { title: "5. Hisseli Tapu ve İzalet-i Şüyu (Ortaklığın Giderilmesi)", guide: "<strong>Ne İşe Yarar:</strong> Paylı mülkiyetlerde taksim edilebilirlik durumunu inceler." },
+                { title: "6. Kira Kaybı ve Ecrimisil (Haksız İşgal) Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazın haksız kullanım süreleri için tazminat tutarını hesaplar." },
+                { title: "7. Konum, Cephe ve Şerefiye Faktörleri", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazın manzarası, katı ve cephesinin değere etkisini oranlar." }
+            ]
+        },
+        hesap: {
+            adi: "Hesaplama, Maliye, Muhasebe ve Ticari İşletmeler",
+            kanun: "Türk Ticaret Kanunu (TTK) ve Vergi Usul Kanunu (VUK)",
+            adimlar: [
+                { title: "1. Ticari Defter ve Yasal Kayıt İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Yevmiye, defteri kebir ve envanter defterlerinin tutulma usulünü denetler." },
+                { title: "2. Cari Hesap Mutabakatı ve Bakiye Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Alacak ve borç ilişkilerindeki uyuşmazlıkları hesaplar." },
+                { title: "3. Şirket Bilanço ve Gelir Tablosu Analizi", guide: "<strong>Ne İşe Yarar:</strong> İşletmenin mali yapısını ve kârlılık durumunu inceler." },
+                { title: "4. Muvazaalı (Danışıklı) İşlem ve Fatura Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Gerçek olmayan (naylon) fatura ve mal hareketlerini ortaya çıkarır." },
+                { title: "5. Kâr Mahrumiyeti ve Ticari Kazanç Kaybı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Haksız fiiller veya sözleşme fesihleri nedeniyle oluşan kazanç kaybını hesaplar." },
+                { title: "6. Ortaklar Arası Kar Payı (Temettü) Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Şirket ortaklarının kar dağıtım haklarını inceler." },
+                { title: "7. Çek, Senet ve Kıymetli Evrak Ödeme İtirazları", guide: "<strong>Ne İşe Yarar:</strong> Ticari senetlerin geçerliliğini ve vade hesaplamalarını denetler." },
+                { title: "8. Enflasyon Düzeltmesi ve Değerleme Farkları", guide: "<strong>Ne İşe Yarar:</strong> Paranın zaman içindeki değer değişimlerini mali tablolara yansıtır." },
+                { title: "9. Likidite ve Borca Batıklık (İflas) Durumu", guide: "<strong>Ne İşe Yarar:</strong> Şirketin borçlarını ödeyemez duruma gelip gelmediğini saptar." }
+            ]
+        },
+        insaat: {
+            adi: "İnşaat Mühendisliği, Statik, Metraj ve Keşif Hizmetleri",
+            kanun: "İmar Kanunu ve Yapı Malzemeleri Yönetmeliği",
+            adimlar: [
+                { title: "1. Statik Proje ve Taşıyıcı Sistem Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Kolon, kiriş ve temel donatılarının projeye uygunluğunu inceler." },
+                { title: "2. Metraj ve Keşif Özeti Çıkarma", guide: "<strong>Ne İşe Yarar:</strong> Yapılan veya eksik kalan imalatların miktar ve maliyet hesabını yapar." },
+                { title: "3. Yapı Malzemesi Kalitesi ve Beton Dayanımı", guide: "<strong>Ne İşe Yarar:</strong> Karot örnekleri ve test sonuçlarına göre malzeme kalitesini denetler." },
+                { title: "4. Gizli Ayıp ve İmalat Kusurları Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Binadaki çökme, çatlak ve yalıtım hatalarının kaynağını belirler." },
+                { title: "5. İş Programı ve Gecikme Tazminatı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Taahhüt edilen sürede tamamlanmayan inşaatlar için gecikme bedeli çıkarır." },
+                { title: "6. Zemin Etüdü ve Heyelan/Oturma Riskleri", guide: "<strong>Ne İşe Yarar:</strong> Arazi yapısının yapı yükünü taşıma kapasitesini inceler." },
+                { title: "7. İSG ve Şantiye Güvenliği Uygunluk Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Şantiye sahasındaki yapı denetim ve güvenlik önlemlerini raporlar." }
+            ]
+        },
+        sesgoruntu: {
+            adi: "Ses, Görüntü ve Adli Belge (İmza/Yazı) İncelemesi",
+            kanun: "CMK Madde 67 (Uzman İncelemesi)",
+            adimlar: [
+                { title: "1. İmza Karşılaştırma ve Orijinallik Tespiti", guide: "<strong>Ne İşe Yarar:</strong> İmzaların atılış hiyerarşisini, baskı izlerini ve eli ürünü olup olmadığını inceler." },
+                { title: "2. El Yazısı ve Metin Karakter Analizi", guide: "<strong>Ne İşe Yarar:</strong> Yazı karakterlerinin eğim, kaligrafi ve refleks özelliklerini kıyaslar." },
+                { title: "3. Ses Kaydı Gürültü Temizleme (Audio Filtering)", guide: "<strong>Ne İşe Yarar:</strong> Kayıtlardaki arka plan gürültülerini filtreleyerek konuşmaları netleştirir." },
+                { title: "4. Ses Frekans ve Konuşmacı Teşhisi (Voice Print)", guide: "<strong>Ne İşe Yarar:</strong> Sesin frekans dalgalarından konuşmacının kimlik eşleşmesini araştırır." },
+                { title: "5. Video Görüntü İyileştirme ve Plaka Okuma", guide: "<strong>Ne İşe Yarar:</strong> Düşük kaliteli kameralardaki detayları piksel düzeyinde netleştirir." },
+                { title: "6. Montaj, Kesinti ve Manipülasyon Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ses veya video dosyalarında kesme-ekleme (deepfake/montaj) olup olmadığını inceler." },
+                { title: "7. Mürekkep ve Kağıt Yaş Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Belgedeki imzanın veya yazının atılış tarihini kimyasal olarak analiz eder." }
+            ]
+        },
+        isguvenligi: {
+            adi: "İş Sağlığı ve Güvenliği (İSG) / İş Kazaları",
+            kanun: "6331 Sayılı İş Sağlığı ve Güvenliği Kanunu",
+            adimlar: [
+                { title: "1. Risk Değerlendirmesi ve Alınmayan Tedbirler", guide: "<strong>Ne İşe Yarar:</strong> İş yerinde yapılması gereken risk analizlerinin eksikliklerini inceler." },
+                { title: "2. KKD (Kişisel Koruyucu Donanım) Uyumu", guide: "<strong>Ne İşe Yarar:</strong> İşçinin baret, emniyet kemeri vb. ekipmanları kullanıp kullanmadığını saptar." },
+                { title: "3. Makine Koruyucuları ve Acil Durdurma Testi", guide: "<strong>Ne İşe Yarar:</strong> Makinelerdeki emniyet swich ve muhafazalarının çalışıp çalışmadığını denetler." },
+                { title: "4. İş Güvenliği Eğitimi ve Özlük Dosyası İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Kazazedenin yasal eğitimleri alıp almadığını evrak üzerinden kontrol eder." },
+                { title: "5. İş Kazası Kök Neden Analizi (Root Cause)", guide: "<strong>Ne İşe Yarar:</strong> Kazanın zincirleme olarak hangi ihmaller sonucunda gerçekleştiğini çözer." },
+                { title: "6. Çalışma Süreleri ve Yorgunluk Faktörü", guide: "<strong>Ne İşe Yarar:</strong> Fazla mesai ve gece vardiyalarının kazaya etkisini inceler." },
+                { title: "7. İşveren ve Alt İşveren Sorumluluk Dağılımı", guide: "<strong>Ne İşe Yarar:</strong> Alt müteahhitlik zincirindeki asıl işveren kusur oranlarını belirler." }
+            ]
+        },
+        elektrik: {
+            adi: "Elektrik, Elektronik ve Mekanik Mühendisliği",
+            kanun: "Elektrik İç Tesisleri Yönetmeliği",
+            adimlar: [
+                { title: "1. Kaçak Akım ve Topraklama Ölçüm Analizi", guide: "<strong>Ne İşe Yarar:</strong> Elektrik panolarındaki koruma rölelerinin ve topraklamanın etkinliğini inceler." },
+                { title: "2. Kısa Devre ve Elektrik Yangını Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Yangının elektrik kontağından çıkıp çıkmadığını ark izleriyle inceler." },
+                { title: "3. Zayıf Akım, Kamera ve Yangın İhbar Sistemleri", guide: "<strong>Ne İşe Yarar:</strong> Otomasyon ve güvenlik sistemlerinin çalışabilirliğini test eder." },
+                { title: "4. Mekanik Tesisat ve Havalandırma Basınç Testi", guide: "<strong>Ne İşe Yarar:</strong> HVAC ve sıhhi tesisat projelerinin uygunluğunu denetler." },
+                { title: "5. Asansör ve Kaldırma Ekipmanları Emniyet Testi", guide: "<strong>Ne İşe Yarar:</strong> Halat, fren ve regülatör sistemlerinin güvenlik standartlarını inceler." },
+                { title: "6. Enerji Tüketim Faturaları ve Kaçak Elektrik", guide: "<strong>Ne İşe Yarar:</strong> Sayaç müdahalelerini ve endeks tutarsızlıklarını saptar." },
+                { title: "7. Jeneratör ve Kesintisiz Güç Kaynağı (UPS) Arızaları", guide: "<strong>Ne İşe Yarar:</strong> Kritik tesislerdeki enerji kesinti yönetimini inceler." }
+            ]
+        },
+        kripto: {
+            adi: "Kriptoloji, Siber Suçlar ve İleri Adli Bilişim",
+            kanun: "5237 Sayılı TCK (Bilişim Alanındaki Suçlar)",
+            adimlar: [
+                { title: "1. Kripto Para ve Blokzincir (Blockchain) Takibi", guide: "<strong>Ne İşe Yarar:</strong> Cüzdan hareketlerini ve transfer zincirlerini analiz eder." },
+                { title: "2. Zararlı Yazılım (Malware / Ransomware) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Fidye yazılımlarının çalışma mekanizmasını ve bulaşma vektörünü çözer." },
+                { title: "3. Sabit Disk ve SSD Veri Kurtarma (Carving)", guide: "<strong>Ne İşe Yarar:</strong> Silinmiş veya formatlanmış disklerden veri kalıntılarını kurtarır." },
+                { title: "4. Ağ Paket Analizi (Wireshark / Traffic Logs)", guide: "<strong>Ne İşe Yarar:</strong> Siber saldırı anındaki ağ trafiğini ve IP hareketlerini inceler." },
+                { title: "5. Mobil Cihaz (Android/iOS) İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Telefonlardaki silinen mesajları, konum geçmişini ve uygulamaları çıkarır." },
+                { title: "6. Phishing (Oltalama) ve Sosyal Mühendislik Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Sahte web siteleri ve dolandırıcılık altyapılarını inceler." },
+                { title: "7. Şifreli Arşiv ve Parola Kırma (Brute-force) Raporu", guide: "<strong>Ne İşe Yarar:</strong> Kilitli dosyaların şifre çözme süreçlerini yönetir." }
+            ]
+        },
+        cevre: {
+            adi: "Çevre Mühendisliği, Atık, ÇED ve İmar Kirliliği",
+            kanun: "2872 Sayılı Çevre Kanunu",
+            adimlar: [
+                { title: "1. Endüstriyel Atıksu Deşarj Analizi", guide: "<strong>Ne İşe Yarar:</strong> Fabrika atıklarının arıtma tesisinden geçmeden verilip verilmediğini inceler." },
+                { title: "2. Hava Kirliliği, Baca Gazı ve Emisyon Raporları", guide: "<strong>Ne İşe Yarar:</strong> Sanayi tesislerinin çevreye saldığı gazların yasal sınırları aşmasını denetler." },
+                { title: "3. Tehlikeli Atık Bertaraf ve Depolama Zinciri", guide: "<strong>Ne İşe Yarar:</strong> Kimyasal ve tıbbi atıkların mevzuata uygun imha edilip edilmediğine bakar." },
+                { title: "4. ÇED (Çevresel Etki Değerlendirmesi) Rapor Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Projelerin çevreye vereceği zararların önceden doğru raporlanıp raporlanmadığını inceler." },
+                { title: "5. Gürültü Kirliliği ve Desibel Ölçüm Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> İşyeri veya tesislerin çevreye yaydığı gürültü sınırlarını denetler." },
+                { title: "6. Hafriyat ve İnşaat Atığı Döküm Sahası İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Moloz ve hafriyatların yasadışı dökülme durumlarını tespit eder." },
+                { title: "7. Toprak Kirliliği ve Kimyasal Sızıntı Analizi", guide: "<strong>Ne İşe Yarar:</strong> Toprağa karışan petrol veya ağır metallerin etkisini inceler." }
+            ]
+        },
+        deniz: {
+            adi: "Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği",
+            kanun: "Türk Ticaret Kanunu (Deniz Ticareti) ve COLREG",
+            adimlar: [
+                { title: "1. Deniz Kazası ve Çatışma (Collision) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Gemilerin seyir rotalarını ve deniz kurallarına (COLREG) uyumunu inceler." },
+                { title: "2. Gemi Makine ve Sevk Sistemi Arızaları", guide: "<strong>Ne İşe Yarar:</strong> Ana makine ve pervane arızalarının kök nedenini araştırır." },
+                { title: "3. Yük Hasarı, İstifleme ve Ambar Nem Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Taşınan kargonun deniz yolculuğunda zarar görme nedenlerini saptar." },
+                { title: "4. VTS (Gemi Trafik Hizmetleri) ve Radar Kayıtları", guide: "<strong>Ne İşe Yarar:</strong> Liman yaklaşmasındaki gemi hareketlerini ve radar izlerini inceler." },
+                { title: "5. Çevre Kirliliği (Marine Pollution / MARPOL)", guide: "<strong>Ne İşe Yarar:</strong> Gemlerden denize sintine veya akaryakıt bırakılmasını denetler." },
+                { title: "6. Gemi Değerleme ve Klas Kuruluşu Raporları", guide: "<strong>Ne İşe Yarar:</strong> Deniz araçlarının piyasa değerini ve sörvey durumunu raporlar." },
+                { title: "7. Liman Yanaşma ve Manevra Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> Kılavuz kaptan ve rıhtım operasyonlarındaki kusurları inceler." }
+            ]
+        },
+        aktuer: {
+            adi: "Sigortacılık ve Aktüeryal Tazminat Hesaplamaları",
+            kanun: "Türk Borçlar Kanunu ve Sigortacılık Kanunu",
+            adimlar: [
+                { title: "1. Destekten Yoksun Kalma Tazminatı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Ölüm hallerinde geride kalanların ekonomik kayıplarını hesaplar." },
+                { title: "2. Sürekli İş Görmezlik ve Maluliyet Tazminatı", guide: "<strong>Ne İşe Yarar:</strong> Yaralanma ve sakatlık durumlarında işgücü kaybı bedelini çıkarır." },
+                { title: "3. Aktüeryal Yaşam Tablosu (TRH 2010) Uygulaması", guide: "<strong>Ne İşe Yarar:</strong> Bireylerin kalan ömür sürelerini ve iskonto oranlarını uygular." },
+                { title: "4. Geçici İş Görmezlik ve Bakıcı Gideri Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Tedavi süresindeki gelir kayıplarını ve bakım masraflarını hesaplar." },
+                { title: "5. Trafik ve Kasko Sigorta Poliçe Teminatları", guide: "<strong>Ne İşe Yarar:</strong> Sigorta şirketlerinin tazminat ödeme yükümlülük sınırlarını inceler." },
+                { title: "6. Hayat Sigortası Birikim ve Vefat Ödemeleri", guide: "<strong>Ne İşe Yarar:</strong> Hayat sigortası sözleşmelerindeki aktüeryal karşılıkları hesaplar." },
+                { title: "7. Bedeni Zarar ve Enflasyon Güncelleme Farkları", guide: "<strong>Ne İşe Yarar:</strong> Yıllara sari tazminat artış oranlarını denetler." }
+            ]
+        },
+        tip: {
+            adi: "Adli Tıp, Maluliyet ve Tıbbi Hata (Malpraktis)",
+            kanun: "1219 Sayılı Kanun ve Tıbbi Deontoloji Nizamnamesi",
+            adimlar: [
+                { title: "1. Tıbbi Müdahale ve Komplikasyon Ayrımı", guide: "<strong>Ne İşe Yarar:</strong> Oluşan zararın doktor hatası mı yoksa kaçınılmaz risk mi olduğunu inceler." },
+                { title: "2. Maluliyet Oranı ve Çalışma Gücü Kaybı", guide: "<strong>Ne İşe Yarar:</strong> Vücut genel çalışma gücü kayıp oranlarını adli tıp kurallarına göre belirler." },
+                { title: "3. Otopsi Raporu ve Ölüm Nedeni Analizi", guide: "<strong>Ne İşe Yarar:</strong> Ölüm vakalarında toksikolojik ve patolojik bulguları değerlendirir." },
+                { title: "4. Aydınlatılmış Onam (Consent) Formu Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Hastaya operasyon öncesi risklerin usulüne uygun anlatılıp anlatılmadığını inceler." },
+                { title: "5. İlaç Dozajı ve Reçete Uygunluk Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Yanlış ilaç veya hatalı doz uygulamalarını doktor kayıtlarından saptar." },
+                { title: "6. Hastane Enfeksiyonu ve Hijyen Koşulları", guide: "<strong>Ne İşe Yarar:</strong> Ameliyat sonrasında gelişen septik vakaların kaynağını araştırır." },
+                { title: "7. Epikriz ve Tıbbi Dosya Kronoloji İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Hastanın tedavi sürecindeki tüm evrakların saat ve işlem sırasını çözer." }
+            ]
+        },
+        tekstil: {
+            adi: "Tekstil, Kimya, Deri ve Ürün Analizi",
+            kanun: "Ürün Güvenliği ve Teknik Düzenlemeler Kanunu",
+            adimlar: [
+                { title: "1. Kumaş Kalitesi ve Elyaf Karışım Oranı", guide: "<strong>Ne İşe Yarar:</strong> İplikteki pamuk, polyester vb. hammadde oranlarını laboratuvar verileriyle test eder." },
+                { title: "2. Boya Haslığı ve Kimyasal Kalıntı (Azo Boyar)", guide: "<strong>Ne İşe Yarar:</strong> İnsan sağlığına zararlı kanserojen kimyasalların varlığını inceler." },
+                { title: "3. Deri Tabaklama ve Kusur Analizi", guide: "<strong>Ne İşe Yarar:</strong> Deri ürünlerindeki çatlama, soyulma ve işçilik hatalarını saptar." },
+                { title: "4. Dikiş Mukavemeti ve Yıkama Direnci", guide: "<strong>Ne İşe Yarar:</strong> Ürünlerin dayanıklılık ve çekme test sonuçlarını değerlendirir." },
+                { title: "5. Endüstriyel Kimyasal Formülasyon Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Kimyasal maddelerin üretim reçetelerine uygunluğunu inceler." },
+                { title: "6. Taklit ve Tağşiş (Orijinal vs Yan Sanayi) Ürün", guide: "<strong>Ne İşe Yarar:</strong> Markalı tekstil ürünlerinin orijinal olup olmadığını malzeme kalitesiyle test eder." },
+                { title: "7. İş Elbiseleri ve Koruyucu Tekstil Normları", guide: "<strong>Ne İşe Yarar:</strong> Yangına veya aside dayanıklı özel kıyafetlerin standartlara uygunluğunu denetler." }
+            ]
+        },
+        patent: {
+            adi: "Patent, Marka, Faydalı Model ve Endüstriyel Tasarım",
+            kanun: "6769 Sayılı Sınai Mülkiyet Kanunu",
+            adimlar: [
+                { title: "1. Marka Benzeşmesi ve İltibas (Karıştırılma) Analizi", guide: "<strong>Ne İşe Yarar:</strong> İki markanın görsel, işitsel ve anlamsal olarak tüketiciyi yanıltıp yanıltmadığını inceler." },
+                { title: "2. Patent Önceki Sanat (Prior Art) Taraması", guide: "<strong>Ne İşe Yarar:</strong> Buluşun dünyada daha önce bilinip bilinmediğini patent veritabanlarından tarar." },
+                { title: "3. Tasarımın Yenilik ve Ayırt Edici Nitelik Testi", guide: "<strong>Ne İşe Yarar:</strong> Endüstriyel tasarımın benzerlerinden farkını ve özgünlüğünü saptar." },
+                { title: "4. Taklit Ürün ve Marka Hakkına Tecavüz Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Piyasadaki sahte ürünlerin hak sahibinin patentini ihlal edip etmediğini raporlar." },
+                { title: "5. Lisans Sözleşmesi ve Royalti (Telifi) Gelir Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Sınai mülkiyet haklarının izinsiz kullanımından doğan tazminatı hesaplar." },
+                { title: "6. Faydalı Model Teknik Gelişme Kriteri", guide: "<strong>Ne İşe Yarar:</strong> Buluşun teknikteki yenilik basamağını teknik açıdan değerlendirir." },
+                { title: "7. Coğrafi İşaret ve Menşe Adı Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Yöresel ürünlerin üretim metotlarına sadık kalınıp kalınmadığını denetler." }
+            ]
+        },
+        ziraat: {
+            adi: "Ziraat Mühendisliği, Tarım ve Hayvancılık",
+            kanun: "Toprak Koruma ve Arazi Kullanımı Kanunu",
+            adimlar: [
+                { title: "1. Tarım Arazisi Verim ve Gelir Kaybı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Zarar gören tarım arazisinin ürün verim kaybını ve gelir düşüşünü hesaplar." },
+                { title: "2. Bitki Hastalığı, Zararlı ve Zirai İlaç Hasarı", guide: "<strong>Ne İşe Yarar:</strong> Yanlış ilaç kullanımı veya zirai hastalıkların mahsule etkisini inceler." },
+                { title: "3. Toprak Analizi ve Sulama Altyapı Kusurları", guide: "<strong>Ne İşe Yarar:</strong> Toprağın tuzluluk, pH ve drenaj sorunlarını inceleyerek ekime elverişliliğini saptar." },
+                { title: "4. Sera Yatırımları ve İklimlendirme Sistemleri", guide: "<strong>Ne İşe Yarar:</strong> Modern seralardaki ısıtma ve sulama arızalarının ürüne zararını raporlar." },
+                { title: "5. Hayvan Değerleme ve Irk Özellikleri Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Büyükbaş/küçükbaş hayvanların piyasa değerini ve ırk vasıflarını inceler." },
+                { title: "6. Yem Kalitesi ve Besleme Hataları", guide: "<strong>Ne İşe Yarar:</strong> Hayvancılıkta kullanılan yemlerin verim düşüşüne etkisini araştırır." },
+                { title: "7. Meyve Bahçesi Değer Tespiti ve Ağaç Yaşı", guide: "<strong>Ne İşe Yarar:</strong> Kesilen veya zarar gören meyve ağaçlarının yaş ve verim değerini biçer." }
+            ]
+        },
+        gida: {
+            adi: "Gıda Mühendisliği, Güvenliği ve Hijyen Denetimi",
+            kanun: "5996 Sayılı Kanun",
+            adimlar: [
+                { title: "1. Gıda Güvenliği ve HACCP İlkeleri Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Üretim tesisindeki kritik kontrol noktalarının hijyen standartlarına uygunluğunu inceler." },
+                { title: "2. Laboratuvar Analizi ve Katkı Maddesi Oranları", guide: "<strong>Ne İşe Yarar:</strong> Gıdalarda izin verilmeyen kimyasal veya koruyucu madde kullanımını saptar." },
+                { title: "3. Taklit, Tağşiş ve Gıdada Hile Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ürüne ucuz hammadde karıştırılıp karıştırılmadığını inceler." },
+                { title: "4. Soğuk Zincir ve Depolama Koşulları", guide: "<strong>Ne İşe Yarar:</strong> Bozulabilir gıdaların sevkiyat ve saklama sıcaklığı geçmişini denetler." },
+                { title: "5. Ambalaj Bütünlüğü ve Son Kullanma Tarihi", guide: "<strong>Ne İşe Yarar:</strong> Ambalaj sızıntılarını ve etiketleme yönetmeliği ihlallerini inceler." },
+                { title: "6. Gıda Kaynaklı Zehirlenme ve Kök Neden Analizi", guide: "<strong>Ne İşe Yarar:</strong> Toplu tüketim zehirlenmelerinde şüpheli numunelerin analizini yapar." },
+                { title: "7. Üretim Tesisi Altyapı ve Haşere Mücadelesi", guide: "<strong>Ne İşe Yarar:</strong> Gıda işletmesinin fiziki koşullarının sanitasyona uygunluğunu raporlar." }
+            ]
+        },
+        ihale: {
+            adi: "Kamu İhale Mevzuatı, Yapım ve Hizmet Sözleşmeleri",
+            kanun: "4734 ve 4736 Sayılı Kamu İhale Kanunları",
+            adimlar: [
+                { title: "1. İhale Dosyası ve Şartname Uygunluk İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> İhale dokümanlarındaki kısıtlayıcı veya hukuka aykırı maddeleri inceler." },
+                { title: "2. Aşırı Düşük Teklif (ADT) Açıklama Analizi", guide: "<strong>Ne İşe Yarar:</strong> Yüklenicinin düşük teklif gerekçelerinin doğruluğunu denetler." },
+                { title: "3. Hak ediş Hesapları ve Metraj Karşılaştırması", guide: "<strong>Ne İşe Yarar:</strong> Kamu projelerinde yapılan işlerin hak ediş tutarlarını hesaplar." },
+                { title: "4. İş Artışı, Eksilişi ve Ek Süre Talepleri", guide: "<strong>Ne İşe Yarar:</strong> Projedeki zorunlu değişikliklerin mali ve süre etkilerini inceler." },
+                { title: "5. İhaleye Fesat Karıştırma ve Rekabet Engeli", guide: "<strong>Ne İşe Yarar:</strong> Teklif veren firmalar arasındaki danışıklı hareketleri saptar." },
+                { title: "6. Teminat Mektupları ve İrat Kaydı İşlemleri", guide: "<strong>Ne İşe Yarar:</strong> Sözleşme fesihlerinde geçici/kesin teminatların durumunu inceler." },
+                { title: "7. Kamu Zararı ve Haksız Fiyat Farkı Hesaplamaları", guide: "<strong>Ne İşe Yarar:</strong> İdareye çıkarılan fazladan maliyetleri ve fiyat farklarını denetler." }
+            ]
+        },
+        sgk: {
+            adi: "Sosyal Güvenlik (SGK) ve Hizmet Tespiti Uzmanlığı",
+            kanun: "5510 Sayılı Kanun",
+            adimlar: [
+                { title: "1. Hizmet Tespiti ve Sigorta Başlangıç Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sigortasız çalıştırılan günlerin gerçekliğini kanıtlar." },
+                { title: "2. Eksik Gün Bildirimi ve Bordro İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Çalışanların aylık prim belgelerindeki eksik gün nedenlerini inceler." },
+                { title: "3. İş Kazası ve Meslek Hastalığı Rücu Davaları", guide: "<strong>Ne İşe Yarar:</strong> Kurumun işverene rücu edeceği tazminat miktarını hesaplar." },
+                { title: "4. Sahte Sigortalılık (Naylon Sigorta) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Fiilen çalışılmadığı halde prim yatırılan kayıtları açığa çıkarır." },
+                { title: "5. Kıdem ve İhbar Tazminatı Matrahı Hesabı", guide: "<strong>Ne İşe Yarar:</strong> İşten ayrılan çalışanın brüt ücret ek menfaatlerini hesaplar." },
+                { title: "6. Emeklilik Şartları ve Prim Gün Sayısı", guide: "<strong>Ne İşe Yarar:</strong> Sigortalının yaş, prim günü ve süre koşullarını denetler." },
+                { title: "7. Prime Esas Kazanç (PEK) Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Eksik bildirilen ücretlerin prim matrahı farklarını hesaplar." }
+            ]
+        },
+        maden: {
+            adi: "Madencilik, Jeoloji ve Yer Altı Kaynakları",
+            kanun: "3213 Sayılı Maden Kanunu",
+            adimlar: [
+                { title: "1. Rezerv Miktar ve Tenör (Kalite) Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sahadaki maden rezervinin ekonomik miktarını inceler." },
+                { title: "2. Ruhsat Sahası Sınır İhlali (Tecavüzlü Üretim)", guide: "<strong>Ne İşe Yarar:</strong> Başkasının ruhsatlı sahasından yasadışı maden çıkarılıp çıkarılmadığını saptar." },
+                { title: "3. Cevher Zenginleştirme ve Üretim Maliyetleri", guide: "<strong>Ne İşe Yarar:</strong> Madenin işlenme süreçlerindeki kayıpları ve maliyetleri hesaplar." },
+                { title: "4. Maden Ocağı İş Güvenliği ve Tahkimat Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Yeraltı ocaklarındaki göçük risklerini ve havalandırmayı inceler." },
+                { title: "5. Çevresel Etki ve Hafriyat Depolama (Pasa) Sahası", guide: "<strong>Ne İşe Yarar:</strong> Atık kayaların çevreye ve akarsulara etkisini denetler." },
+                { title: "6. Madencilik Faaliyet Durdurma ve Zarar Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Mahkeme kararıyla durdurulan ocakların kazanç kaybını hesaplar." },
+                { title: "7. Jeolojik Formasyon ve Heyelan Risk Değerlendirmesi", guide: "<strong>Ne İşe Yarar:</strong> Açık işletmelerdeki şev kayması tehlikelerini inceler." }
+            ]
+        },
+        makine: {
+            adi: "Makine Mühendisliği ve Endüstriyel Tesisler",
+            kanun: "Makine Emniyeti Yönetmeliği",
+            adimlar: [
+                { title: "1. Endüstriyel Üretim Hattı ve Verimlilik", guide: "<strong>Ne İşe Yarar:</strong> Fabrika makinelerinin kapasite ve performans kayıplarını inceler." },
+                { title: "2. Basınçlı Kaplar, Kazanlar ve Kompresör Testi", guide: "<strong>Ne İşe Yarar:</strong> Basınçlı ekipmanların güvenlik ve test raporlarını denetler." },
+                { title: "3. Mekanik Parça Yorulması ve Malzeme Hatası", guide: "<strong>Ne İşe Yarar:</strong> Kırılan veya arızalanan metal parçaların kırılma nedenlerini araştırır." },
+                { title: "4. İş Ekipmanlarının Periyodik Kontrol Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Kaldırma ve iletme makinelerinin güvenlik testlerini denetler." },
+                { title: "5. Fabrika Montaj ve Kurulum Kusurları", guide: "<strong>Ne İşe Yarar:</strong> Tesisat ve makine yerleşimlerindeki hataları raporlar." },
+                { title: "6. Enerji Verimliliği ve Yakıt Tüketim Analizi", guide: "<strong>Ne İşe Yarar:</strong> Motor ve kazanların harcadığı enerji miktarını hesaplar." },
+                { title: "7. İş Kazası Makine Güvenlik Kusurları", guide: "<strong>Ne İşe Yarar:</strong> İş kazasına sebebiyet veren mekanik koruyucu eksikliklerini saptar." }
+            ]
+        },
+        mahalli: {
+            adi: "Mahalli İdareler, Belediye Mevzuatı ve Ruhsatlar",
+            kanun: "5393 Sayılı Belediye Kanunu",
+            adimlar: [
+                { title: "1. Belediye Ruhsat, İskan ve Yapı Kullanma", guide: "<strong>Ne İşe Yarar:</strong> İşyeri açma ve yapı kullanma izinlerinin yasallığını inceler." },
+                { title: "2. İmar Planı Tadilatı ve Hak İhlali İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin imar değişikliklerinin hukuki dayanağını denetler." },
+                { title: "3. Kamulaştırmasız El Atma ve Belediye Projeleri", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin şahıs arsalarına el koyması durumundaki tazminatı hesaplar." },
+                { title: "4. İhale, Doğrudan Temin ve Belediye Alımları", guide: "<strong>Ne İşe Yarar:</strong> Belediyelerin harcama ve hizmet alımlarını denetler." },
+                { title: "5. Zabıta Tutanakları ve Encümen Para Cezaları", guide: "<strong>Ne İşe Yarar:</strong> Kesilen idari para cezalarının yasallığını denetler." },
+                { title: "6. Kentsel Dönüşüm ve Riskli Yapı Süreçleri", guide: "<strong>Ne İşe Yarar:</strong> Kentsel dönüşüm alanlarındaki tebligat ve uzlaşmaları inceler." },
+                { title: "7. Belediye Taşınmaz Satışı ve Trampa İşlemleri", guide: "<strong>Ne İşe Yarar:</strong> Gayrimenkul satış ihalelerindeki rayiç bedel uyumunu saptar." }
+            ]
+        },
+        kulturvarliklari: {
+            adi: "Kültür Varlıklarını Koruma ve Müze Uzmanlığı",
+            kanun: "2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanunu",
+            adimlar: [
+                { title: "1. Tarihi Eser, Antika ve Etnografik Ürün Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ele geçirilen eserlerin kültür varlığı olup olmadığını inceler." },
+                { title: "2. Kaçak Kazı, Define Arama ve Sit Alanı İhlalleri", guide: "<strong>Ne İşe Yarar:</strong> Sit alanlarındaki izinsiz kazıların tahribat derecesini saptar." },
+                { title: "3. Müze Envanter Kayıtları ve Eser Eksikliği", guide: "<strong>Ne İşe Yarar:</strong> Müzelerden kaybolan tarihi eserlerin katalog kayıtlarını inceler." },
+                { title: "4. Tescilli Yapıların İzinsiz Müdahale ve Yıkımı", guide: "<strong>Ne İşe Yarar:</strong> Koruma altındaki binalara yapılan kaçak tadilatları denetler." },
+                { title: "5. Kültür Varlığı Eser Değerleme ve Rayiç Bedel", guide: "<strong>Ne İşe Yarar:</strong> Yasadışı ticareti yapılan objelerin tarihi değerini biçer." },
+                { title: "6. Restorasyon Proje İzni ve Koruma Kurulu", guide: "<strong>Ne İşe Yarar:</strong> Koruma Bölge Kurulu kararlarına uyumu denetler." },
+                { title: "7. Numismatik (Sikke ve Eski Para) Orijinallik", guide: "<strong>Ne İşe Yarar:</strong> Tarihi sikkelerin dönem ve darp yeri analizini yapar." }
+            ]
+        },
+        psikoloji: {
+            adi: "Adli Psikoloji ve Çocuk İzlem Uzmanlığı",
+            kanun: "5395 Sayılı Çocuk Koruma Kanunu",
+            adimlar: [
+                { title: "1. Çocuk Görüşme ve Dinleme Teknikleri", guide: "<strong>Ne İşe Yarar:</strong> Çocukların adli görüşmelerde yönlendirmeden beyan vermesini sağlar." },
+                { title: "2. Sanık/Tanık Güvenilirlik ve Algı Değerlendirmesi", guide: "<strong>Ne İşe Yarar:</strong> İfadelerdeki tutarlılığı ve psikolojik durumu inceler." },
+                { title: "3. Ebeveyn Yetersizliği ve Velayet Psikolojisi", guide: "<strong>Ne İşe Yarar:</strong> Çocuk için en uygun ebeveyn ortamını psikolojik testlerle raporlar." },
+                { title: "4. Travma Sonrası Stres Bozukluğu Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Suç mağdurlarında oluşan psikolojik travmanın derecesini ölçer." },
+                { title: "5. Pişmanlık, Kusur Yeteneği ve Akıl Sağlığı", guide: "<strong>Ne İşe Yarar:</strong> Failin suç anındaki ruhsal yetkinliğini değerlendirir." },
+                { title: "6. Madde Bağımlılığı ve Davranış Bozuklukları", guide: "<strong>Ne İşe Yarar:</strong> Bağımlılık süreçlerinin iradeyi etkileme düzeyini inceler." },
+                { title: "7. Aile İçi Şiddet ve Baskı Dinamikleri", guide: "<strong>Ne İşe Yarar:</strong> Mağdurun maruz kaldığı psikolojik baskı unsurlarını ortaya çıkarır." }
+            ]
+        },
+        sosyoloji: {
+            adi: "Sosyoloji, Aile ve Sosyal Hizmetler",
+            kanun: "6284 Sayılı Ailenin Korunması ve Kadına Karşı Şiddetin Önlenmesi",
+            adimlar: [
+                { title: "1. Sosyo-Ekonomik Durum ve Çevre Araştırması", guide: "<strong>Ne İşe Yarar:</strong> Ailenin ve tarafların toplumsal yaşam koşullarını yerinde inceler." },
+                { title: "2. Toplumsal Rol ve Aile İçi İletişim Analizi", guide: "<strong>Ne İşe Yarar:</strong> Aile içi dinamiklerin uyuşmazlığa etkisini değerlendirir." },
+                { title: "3. Çocuk Koruma ve Sosyal Uyum Raporlaması", guide: "<strong>Ne İşe Yarar:</strong> Çocuğun sosyal refahı için gereken koruyucu tedbirleri saptar." },
+                { title: "4. Göç, Uyum ve Kültürel Çatışma İncelemeleri", guide: "<strong>Ne İşe Yarar:</strong> Farklı kültürel yapıların toplumsal uyuşmazlıklara etkisini inceler." },
+                { title: "5. Yaşlı ve Engelli Bakım Koşulları Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Bakım hizmeti alan bireylerin sosyal haklarının karşılanma durumunu inceler." },
+                { title: "6. Toplumsal Olaylar ve Kitle Davranışları", guide: "<strong>Ne İşe Yarar:</strong> Toplumsal olaylardaki grup psikolojisi ve sosyolojik etkenleri inceler." },
+                { title: "7. Yoksulluk Nafakası ve Sosyo-Ekonomik Kriterler", guide: "<strong>Ne İşe Yarar:</strong> Tarafların sosyal yardıma ve nafaka desteğine olan ihtiyacını saptar." }
+            ]
+        },
+        veteriner: {
+            adi: "Veteriner Hekimliği ve Hayvan Sağlığı",
+            kanun: "5996 Sayılı Kanun ve Hayvanları Koruma Kanunu",
+            adimlar: [
+                { title: "1. Hayvan Hastalığı, Ölüm Nedeni ve Otopsi", guide: "<strong>Ne İşe Yarar:</strong> Hayvan ölümlerinde bulaşıcı hastalık veya zehirlenme tespiti yapar." },
+                { title: "2. Hayvan Hakları İhlali ve Kötü Muamele", guide: "<strong>Ne İşe Yarar:</strong> Fiziksel şiddet veya ihmal edilen hayvanların durumunu raporlar." },
+                { title: "3. Zayiat, Irk ve Piyasa Değeri Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ticari veya sahipli hayvanların yaş, ırk ve maddi değerini belirler." },
+                { title: "4. Gıda Zinciri Hayvansal Ürün Hijyen Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Kesimhane ve et ürünlerinin veterinerlik normlarına uygunluğunu denetler." },
+                { title: "5. İlaç, Aşı ve Hormon Kalıntı Analizi", guide: "<strong>Ne İşe Yarar:</strong> Hayvanlara yasaklı madde verilip verilmediğini inceler." },
+                { title: "6. Hayvan Saldırısı ve Isırık Vakası İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Köpek vb. hayvan saldırılarında sahiplerinin kusur oranını saptar." },
+                { title: "7. Barınak Koşulları ve Hayvan Refahı Standartları", guide: "<strong>Ne İşe Yarar:</strong> Barınakların fiziki ve sağlık şartlarının yeterliliğini denetler." }
+            ]
+        },
+        orman: {
+            adi: "Orman Mühendisliği ve Ormancılık Mevzuatı",
+            kanun: "6831 Sayılı Orman Kanunu",
+            adimlar: [
+                { title: "1. Orman Kadastrosu ve Sınır Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Özel mülk ile devlet ormanı arasındaki sınır çizgilerini inceler." },
+                { title: "2. İzinsiz Ağaç Kesimi ve Orman Suçları", guide: "<strong>Ne İşe Yarar:</strong> Yasadışı kesilen ağaç miktarını, türünü ve tazminatını hesaplar." },
+                { title: "3. Orman Yangını Çıkış Nedeni ve Alan Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Yangının başlama noktasını ve ormana verdiği zararı raporlar." },
+                { title: "4. Ağaçlandırma, İmar İzni ve 2B Sahaları", guide: "<strong>Ne İşe Yarar:</strong> Orman vasfını yitirmiş arazilerin hukuki durumunu inceler." },
+                { title: "5. Odun Serveti ve Kereste Değerleme Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Kesilen veya el konulan tomrukların piyasa değerini çıkarır." },
+                { title: "6. Heyelan ve Erozyon Risk Analizi", guide: "<strong>Ne İşe Yarar:</strong> Orman örtüsü tahrip edilen yamaçlardaki toprak kayma riskini inceler." },
+                { title: "7. Maden Sahası Orman İzinleri ve Bedelleri", guide: "<strong>Ne İşe Yarar:</strong> Orman içinde faaliyet gösteren madenlerin yasal bedel uyumunu denetler." }
+            ]
+        },
+        harita: {
+            adi: "Harita, Kadastro ve Tapulama Mühendisliği",
+            kanun: "3402 Sayılı Kadastro Kanunu",
+            adimlar: [
+                { title: "1. GPS, Nirengi ve Ölçüm Koordinat Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Parsel sınırlarının paftasına ve gerçek koordinatlarına uyumunu test eder." },
+                { title: "2. Kadastro Paftası ve Fiili Durum Kıyaslaması", guide: "<strong>Ne İşe Yarar:</strong> Tapu haritasındaki sınırlar ile arazideki çit/duvar uyuşmazlıklarını çözer." },
+                { title: "3. Yola, Suya veya Komşu Parsele Tecavüz Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Taşınmazların tecavüzlü alan miktarını ve metrekare değerini hesaplar." },
+                { title: "4. İrtifak Hakkı ve Geçit Hakkı Haritalandırma", guide: "<strong>Ne İşe Yarar:</strong> Başka bir parsele geçiş yollarının güzergah ölçümlerini yapar." },
+                { title: "5. Kamulaştırma Haritası ve İfraz/Tevhid İşlemleri", guide: "<strong>Ne İşe Yarar:</strong> Parsellerin bölünme veya birleştirme işlemlerini harita üzerinde inceler." },
+                { title: "6. Kot Alımı ve Yapı Konum Aplikasyon İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Binanın arsa üzerindeki oturum kotlarının doğruluğunu denetler." },
+                { title: "7. Akarsu Yatağı Değişimi ve Tapu Kayması", guide: "<strong>Ne İşe Yarar:</strong> Nehir kenarlarındaki arazi kayıplarını ve tapu dönüşümlerini inceler." }
+            ]
+        },
+        lojistik: {
+            adi: "Lojistik, Nakliyat ve Depolama Yönetimi",
+            kanun: "Türk Ticaret Kanununun Taşıma İşleri Hükümleri",
+            adimlar: [
+                { title: "1. CMR Konşimento ve Taşıma Evrakı İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Uluslararası veya yurt içi taşıma sözleşmelerindeki sorumlulukları inceler." },
+                { title: "2. Nakliye Sırasında Kargo Hasar ve Zıya Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Taşınan malların depolama veya nakil esnasındaki hasar nedenini bulur." },
+                { title: "3. Soğuk Zincir Taşımacılığı ve Isı Logları", guide: "<strong>Ne İşe Yarar:</strong> Gabari dışı veya ısı hassasiyeti olan yüklerin taşıma kayıtlarını denetler." },
+                { title: "4. Depo Stok Envanter ve Zayiat Mutabakatı", guide: "<strong>Ne İşe Yarar:</strong> Antrepo ve lojistik depolarındaki eksilen veya kaybolan malları hesaplar." },
+                { title: "5. Gecikme Tazminatı ve Teslim Süresi Analizi", guide: "<strong>Ne İşe Yarar:</strong> Taahhüt edilen sürede teslim edilmeyen yüklerin ticari kaybını hesaplar." },
+                { title: "6. İstifleme, Yükleme ve Sabitleme (Lashing) Kusuru", guide: "<strong>Ne İşe Yarar:</strong> Kötü bağlanan yüklerin devrilme veya kaza yapma nedenlerini inceler." },
+                { title: "7. Lojistik Maliyetleri ve Navlun Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Taşıma ücretleri ve sözleşme dışı ek masraf taleplerini denetler." }
+            ]
+        },
+        ekonomi: {
+            adi: "Ekonomi, Finans ve Piyasa Analizi",
+            kanun: "6362 Sayılı Sermaye Piyasası Kanunu",
+            adimlar: [
+                { title: "1. Enflasyon, Kur ve Satın Alma Gücü Analizi", guide: "<strong>Ne İşe Yarar:</strong> Paranın zaman içindeki alım gücü değişimlerini hesaplar." },
+                { title: "2. Piyasa Rayici ve Fiyat Manipülasyon Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Hisselerin veya ürünlerin piyasadaki suni fiyat hareketlerini inceler." },
+                { title: "3. Şirket Finansal Sağlık ve Likidite Değerlendirmesi", guide: "<strong>Ne İşe Yarar:</strong> İşletmenin ekonomik krizlere dayanıklılık oranlarını raporlar." },
+                { title: "4. Yatırım Projeleri Fizibilite ve Kârlılık Raporu", guide: "<strong>Ne İşe Yarar:</strong> Planlanan yatırımların geri dönüş sürelerini ve fizibilitesini denetler." },
+                { title: "5. Kredi Sözleşmeleri ve Faiz Oranı Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Banka kredilerindeki bileşik faiz ve masraf kesintilerini hesaplar." },
+                { title: "6. Portföy Yönetimi ve Yatırım Zararı Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Fon veya hisse yatırımlarındaki hatalı yönetim kayıplarını inceler." },
+                { title: "7. Küresel Ticaret ve Damping Uygulama Analizi", guide: "<strong>Ne İşe Yarar:</strong> İthalat ve ihracattaki haksız fiyat rekabeti iddialarını inceler." }
+            ]
+        },
+        tercume: {
+            adi: "Yeminli Tercüme, Dil ve Çeviri İncelemesi",
+            kanun: "Noterlik Kanunu ve Tercümanlık Mevzuatı",
+            adimlar: [
+                { title: "1. Kaynak ve Hedef Metin Anlamsal Eşdeğerliği", guide: "<strong>Ne İşe Yarar:</strong> Çevirinin orijinal metne kelime ve anlam bakımından uygunluğunu inceler." },
+                { title: "2. Hukuki ve Teknik Terim Doğruluk Analizi", guide: "<strong>Ne İşe Yarar:</strong> Belgedeki özel mesleki terimlerin doğru dile aktarılıp aktarılmadığını denetler." },
+                { title: "3. Eksik, Hatalı veya Yanıltıcı Çeviri Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Metinde anlamı değiştiren veya eksik bırakılan bölümleri ortaya çıkarır." },
+                { title: "4. Yeminli Tercüman Mühür ve İmza Doğrulama", guide: "<strong>Ne İşe Yarar:</strong> Çeviri yapan kişinin yasal yetkisini ve noter onayını kontrol eder." },
+                { title: "5. Çok Dilli Sözleşmelerde Çelişki Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Farklı dillerde yazılmış sözleşme maddeleri arasındaki uyumsuzlukları inceler." },
+                { title: "6. Ses Kaydı Deşifre ve Çeviri Tutarlılığı", guide: "<strong>Ne İşe Yarar:</strong> Yabancı dildeki ses kayıtlarının metne döküm doğruluğunu denetler." },
+                { title: "7. Apostil ve Uluslararası Belge Tasdiki", guide: "<strong>Ne İşe Yarar:</strong> Yabancı resmi belgelerin tasdik süreçlerinin yasallığını inceler." }
+            ]
+        },
+        gemiinsaa: {
+            adi: "Gemi İnşaatı ve Gemi Makineleri Mühendisliği",
+            kanun: "Türk Ticaret Kanunu (Gemi Sicili ve İnşası)",
+            adimlar: [
+                { title: "1. Gemi Gövde (Hull) ve Statik Dayanım Analizi", guide: "<strong>Ne İşe Yarar:</strong> Deniz aracının sac kalınlığını ve yapısal dayanımını inceler." },
+                { title: "2. Tersane İnşaat Sözleşmesi ve Gecikme Analizi", guide: "<strong>Ne İşe Yarar:</strong> Geminin zamanında teslim edilmeme nedenlerini ve maliyetini hesaplar." },
+                { title: "3. Ana Makine, Sevk ve Pervane Performans Testi", guide: "<strong>Ne İşe Yarar:</strong> Gemi motorlarının güç ve yakıt sarfiyatı verimliliğini denetler." },
+                { title: "4. Stabilite (Denge) ve Yüzerlilik Hesapları", guide: "<strong>Ne İşe Yarar:</strong> Geminin yük altında alabora olma risklerini matematiksel olarak hesaplar." },
+                { title: "5. Gemi Tadilat, Donatım ve Klas Sörvey Kusurları", guide: "<strong>Ne İşe Yarar:</strong> Yapılan bakım ve onarımların uluslararası kurallara uygunluğunu inceler." },
+                { title: "6. Yangın Söndürme ve Can Kurtarma Donanımları", guide: "<strong>Ne İşe Yarar:</strong> Gemideki güvenlik sistemlerinin tamlık derecesini denetler." },
+                { title: "7. Gemi Hurda ve Çözülüm Değer Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ekonomik ömrünü dolduran gemilerin hurda değerini biçer." }
+            ]
+        },
+        havacilik: {
+            adi: "Havacılık, Uzay ve Uçuş Güvenliği",
+            kanun: "2920 Sayılı Türk Sivil Havacılık Kanunu",
+            adimlar: [
+                { title: "1. Uçak Kaza Kırım ve Kara Kutu (FDR/CVR) İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Uçuş verilerini ve kokpit seslerini analiz ederek kazanın nedenini çözer." },
+                { title: "2. Pilotaj Hatası ve CRM (Kokpit Kaynak Yönetimi)", guide: "<strong>Ne İşe Yarar:</strong> Uçuş ekibinin acil durum prosedürlerine uyumunu inceler." },
+                { title: "3. Hava Aracı Bakım Kayıtları ve Logbook Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Uçağın periyodik parça değişimlerinin ve bakım geçmişinin doğruluğunu denetler." },
+                { title: "4. Meteorolojik Koşullar ve Windshear Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Kaza anındaki hava muhalefeti, rüzgar kesmesi ve buzlanma etkisini inceler." },
+                { title: "5. Hava Trafik Kontrol (ATC) Telsiz Kayıtları", guide: "<strong>Ne İşe Yarar:</strong> Kule ile pilot arasındaki komut ve talimat akışını zaman çizelgesiyle inceler." },
+                { title: "6. İHA / Drone Kazaları ve Uçuş Yasak Bölge İhlali", guide: "<strong>Ne İşe Yarar:</strong> İnsansız hava araçlarının yasal irtifa ve bölge ihlallerini raporlar." },
+                { title: "7. Havalimanı Yer Emniyeti ve Pist Aydınlatma", guide: "<strong>Ne İşe Yarar:</strong> Pist üzerindeki fiziki kusurların ve yerli manevra hatalarının etkisini inceler." }
+            ]
+        },
+        petrol: {
+            adi: "Petrol, Doğalgaz ve Boru Hatları Mühendisliği",
+            kanun: "6491 Sayılı Türk Petrol Kanunu",
+            adimlar: [
+                { title: "1. Sondaj Kuyusu Üretim ve Rezerv Raporları", guide: "<strong>Ne İşe Yarar:</strong> Yeraltı petrol ve gaz sahalarının üretim kapasitesini inceler." },
+                { title: "2. Boru Hattı Sızıntı, Korozyon ve Kaçak Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Hatlardaki basınç düşüşlerinin ve patlamaların nedenini araştırır." },
+                { title: "3. Rafineri İşletme ve Akaryakıt Kalite Analizi", guide: "<strong>Ne İşe Yarar:</strong> Yakıtların oktan ve standartlara uygunluk derecesini test eder." },
+                { title: "4. Akaryakıt Kaçakçılığı ve Sayaç Müdahaleleri", guide: "<strong>Ne İşe Yarar:</strong> İstasyonlardaki otomasyon ve pompa hilelerini ortaya çıkarır." },
+                { title: "5. Kamulaştırma ve Petrol Geçit Hakkı Bedelleri", guide: "<strong>Ne İşe Yarar:</strong> Boru hatlarının geçtiği arazilerin mülkiyet tazminatını hesaplar." },
+                { title: "6. Petrol Sahası Çevre Sızıntı ve Kirlilik Zararı", guide: "<strong>Ne İşe Yarar:</strong> Toprağa ve suya karışan ham petrolün temizlik maliyetini çıkarır." },
+                { title: "7. Sondaj Platformu İş Güvenliği Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Açık deniz veya karasal sondajlardaki patlama önleyici sistemleri inceler." }
+            ]
+        },
+        metalurji: {
+            adi: "Metalurji, Malzeme ve Kaynak Mühendisliği",
+            kanun: "Ürün Güvenliği ve Teknik Düzenlemeler Kanunu",
+            adimlar: [
+                { title: "1. Metal Malzeme Çekme ve Akma Dayanımı Testi", guide: "<strong>Ne İşe Yarar:</strong> İnşaat veya makine demirlerinin kopma ve direnç sınırlarını inceler." },
+                { title: "2. Kaynak Dikişi Tahribatlı / Tahribatsız Muayene", guide: "<strong>Ne İşe Yarar:</strong> Çelik yapılardaki kaynak hatalarını ultrasonik veya x-ray ile denetler." },
+                { title: "3. Metal Korozyon, Paslanma ve Ömür Analizi", guide: "<strong>Ne İşe Yarar:</strong> Metal aksamların zamanla çürüme nedenlerini ve hızını raporlar." },
+                { title: "4. Döküm Hataları, Gözenek ve Metal Yorgunluğu", guide: "<strong>Ne İşe Yarar:</strong> Metal parçalardaki iç yapı kusurlarını mikroskop altında inceler." },
+                { title: "5. Alaşım Kompozisyonu ve Kimyasal Spektrometri", guide: "<strong>Ne İşe Yarar:</strong> Metalin içinde bulunan element oranlarının standartlara uygunluğunu test eder." },
+                { title: "6. Haddehane ve Üretim Hataları Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Çelik ürünlerin üretim esnasındaki kalibre sapmalarını inceler." },
+                { title: "7. Hurda Metal ve Geri Dönüşüm Kalite Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Geri dönüştürülmüş metallerin kalitesini ve saflık derecesini saptar." }
+            ]
+        },
+        mobilya: {
+            adi: "Mobilya, Ahşap ve Dekorasyon Tasarımı",
+            kanun: "Tüketicinin Korunması Hakkında Kanun",
+            adimlar: [
+                { title: "1. Ahşap Malzeme Kalitesi ve Suntalam/MDF Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Mobilyada kullanılan malzemenin sözleşmeye uygunluğunu inceler." },
+                { title: "2. Özel Tasarım ve Proje Mimari Uygunluk", guide: "<strong>Ne İşe Yarar:</strong> Ölçüye göre yapılan mutfak, dolap gibi imalatların hatalarını saptar." },
+                { title: "3. Cilalama, Boya Kusurları ve Kabarma Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Ahşap yüzeylerdeki vernik ve boya işçiliği kusurlarını inceler." },
+                { title: "4. Mekanizma, Ray ve Menteşe Dayanıklılığı", guide: "<strong>Ne İşe Yarar:</strong> Çekmece rayları ve kapaklardaki erken bozulma nedenlerini test eder." },
+                { title: "5. Mobilya Montaj ve Nakliye Hasarı Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Taşıma sırasında kırılan veya çizilen parçaların kusurunu belirler." },
+                { title: "6. Antika ve Masif Ahşap Eser Ekspertizi", guide: "<strong>Ne İşe Yarar:</strong> Eski el yapımı mobilyaların dönemsel değerini ve orijinalliğini inceler." },
+                { title: "7. İç Mekan Dekorasyon Metraj ve Maliyet Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Yapılan dekorasyon işlerinin hak ediş ve piyasa fiyatını çıkarır." }
+            ]
+        },
+        muzik: {
+            adi: "Müzik, Sanat Eserleri ve Telif İncelemesi",
+            kanun: "5846 Sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
+            adimlar: [
+                { title: "1. Melodi, Armoni ve Nota Benzeşme Analizi", guide: "<strong>Ne İşe Yarar:</strong> İki şarkı arasındaki nota dizilimi ve intihal (çalıntı) oranını inceler." },
+                { title: "2. Eser Sahipliği ve Hak İhlali Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Müzik eserlerinin yaysız ve izinsiz kullanımını saptar." },
+                { title: "3. Dijital Platform Telif Dağılımı ve Gelir Hesabı", guide: "<strong>Ne İşe Yarar:</strong> YouTube, Spotify gibi mecralardaki dinlenme gelirlerini hesaplar." },
+                { title: "4. Sanat Eseri (Tablo/Heykel) Orijinallik İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Tabloların imza, tuval ve boya yaşından sahte olup olmadığını inceler." },
+                { title: "5. Konser ve Organizasyon Sözleşme Uyuşmazlıkları", guide: "<strong>Ne İşe Yarar:</strong> Müzik organizasyonlarındaki iptal ve maddi zarar iddialarını çözer." },
+                { title: "6. Ses Stüdyo Kayıt ve Aranjman Hakları", guide: "<strong>Ne İşe Yarar:</strong> Aranjör ve icracı sanatçıların yasal pay oranlarını inceler." },
+                { title: "7. Enstrüman Kalite ve Piyasa Değer Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Özel yapım veya antik müzik aletlerinin rayiç değerini belirler." }
+            ]
+        },
+        spor: {
+            adi: "Spor Hukuku, Yönetimi ve Tesis Güvenliği",
+            kanun: "6222 Sayılı Sporda Şiddet ve Düzensizliğin Önlenmesine Dair Kanun",
+            adimlar: [
+                { title: "1. Stadyum ve Spor Tesis Güvenlik Standartları", guide: "<strong>Ne İşe Yarar:</strong> Tribün, acil çıkış ve kamera sistemlerinin yeterliliğini denetler." },
+                { title: "2. Sporcu Sözleşmesi ve Transfer Tazminatları", guide: "<strong>Ne İşe Yarar:</strong> Kulüp ile sporcu arasındaki sözleşme fesih bedellerini hesaplar." },
+                { title: "3. Müsabaka Güvenliği ve Organizasyon Kusurları", guide: "<strong>Ne İşe Yarar:</strong> Maç esnasında alınan güvenlik önlemlerinin eksikliklerini inceler." },
+                { title: "4. Dopingle Mücadele ve Laboratuvar Raporları", guide: "<strong>Ne İşe Yarar:</strong> Sporcuların numunelerindeki yasaklı madde sonuçlarını değerlendirir." },
+                { title: "5. Spor Kulübü Mali Yapı ve Yönetim Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Kulüplerin bütçe ve harcama usulsüzlüklerini inceler." },
+                { title: "6. Saha Zemini ve Sporcu Yaralanma İlişkisi", guide: "<strong>Ne İşe Yarar:</strong> Kötü çim veya salon zeminlerinin sakatlanmalara etkisini araştırır." },
+                { title: "7. Federasyon Tahkim ve Disiplin Kuralları", guide: "<strong>Ne İşe Yarar:</strong> Spor disiplin cezalarının hukuki dayanaklarını inceler." }
+            ]
+        },
+        turizm: {
+            adi: "Turizm, Otelcilik ve İşletmecilik",
+            kanun: "2634 Sayılı Turizm Teşvik Kanunu",
+            adimlar: [
+                { title: "1. Otel Sınıflandırma ve Yıldız Standartları", guide: "<strong>Ne İşe Yarar:</strong> Konaklama tesislerinin hizmet ve fiziki kalitesini denetler." },
+                { title: "2. Seyahat Acentası Sözleşme ve Tur Kusurları", guide: "<strong>Ne İşe Yarar:</strong> Eksik ya da ayıplı verilen turizm hizmetlerinin tazminatını hesaplar." },
+                { title: "3. Otel İşletme Gelir-Gider ve Kârlılık Analizi", guide: "<strong>Ne İşe Yarar:</strong> Turizm tesislerinin ticari defterlerine göre kazanç kayıplarını inceler." },
+                { title: "4. Rezervasyon İptali ve Cayma Bedeli Hesaplama", guide: "<strong>Ne İşe Yarar:</strong> Sezonluk rezervasyon iptallerindeki iade tutarlarını düzenler." },
+                { title: "5. Turist Rehberliği ve Mevzuat Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Rehberlik faaliyetlerinin yasal belgelere uygunluğunu denetler." },
+                { title: "6. Yiyecek-İçecek Hijyen ve Mutfak Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Otellerin gıda güvenliği ve restoran yönetimini inceler." },
+                { title: "7. Turizm Yatırımları Tahsis ve İmar Durumu", guide: "<strong>Ne İşe Yarar:</strong> Turizm bölgelerindeki arsa tahsis sözleşmelerini inceler." }
+            ]
+        },
+        kutuphane: {
+            adi: "Arşiv, Kütüphane ve Belge Yönetimi",
+            kanun: "3473 Sayılı Muhafazasına Lüzum Kalmayan Evrakın Ayıklanması Hakkında Kanun",
+            adimlar: [
+                { title: "1. Arşiv Belge Envanter ve Tasnif İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Kurum arşivindeki evrakların düzenlenme ve saklama usulünü denetler." },
+                { title: "2. Kayıp, Çalınan veya İmha Edilen Evrak Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Arşivden eksilen resmi evrakların sorumluluğunu ve izini sürer." },
+                { title: "3. Tarihi Yazma Eser ve Nadir Kitap Ekspertizi", guide: "<strong>Ne İşe Yarar:</strong> Kütüphanelerdeki eski nadir eserlerin piyasa değerini belirler." },
+                { title: "4. Dijital Arşivleme ve Belge Bütünlük Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Fiziksel belgelerin dijital ortama aktarılma kalitesini inceler." },
+                { title: "5. Saklama Süresi Dolan Evrak İmha Usulleri", guide: "<strong>Ne İşe Yarar:</strong> Yasal saklama süresi bittiği söylenen evrakların imha yasallığını denetler." },
+                { title: "6. Kütüphane Kitap Envanter ve Zayi Oranı", guide: "<strong>Ne İşe Yarar:</strong> Kütüphanelerden ödünç alınıp iade edilmeyen kitapların miktarını çıkarır." },
+                { title: "7. Resmi Yazışma Usulleri (EBYS) Denetimi", guide: "<strong>Ne İşe Yarar:</strong> Elektronik belge yönetim sistemlerindeki log ve imza akışını inceler." }
+            ]
+        },
+        enerji: {
+            adi: "Yenilenebilir Enerji ve Elektrik Üretim Sistemleri",
+            kanun: "5346 Sayılı Yenilenebilir Enerji Kanunu",
+            adimlar: [
+                { title: "1. GES (Güneş Enerjisi) Verim ve Üretim Analizi", guide: "<strong>Ne İşe Yarar:</strong> Panellerin elektrik üretim kapasitesini ve kayıplarını hesaplar." },
+                { title: "2. RES (Rüzgar Enerjisi) Türbin ve Rüzgar Verileri", guide: "<strong>Ne İşe Yarar:</strong> Rüzgar santrallerinin fizibilite ve elektrik üretim performansını inceler." },
+                { title: "3. HES (Hidroelektrik) Su Debisi ve Enerji Hesabı", guide: "<strong>Ne İşe Yarar:</strong> Nehir sularının enerjiye dönüştürülme verimliliğini denetler." },
+                { title: "4. YEKDEM Alım Garantisi ve Fiyat Hesaplamaları", guide: "<strong>Ne İşe Yarar:</strong> Yenilenebilir enerji destek mekanizması gelirlerini hesaplar." },
+                { title: "5. Elektrik Şebeke Bağlantı ve Trafo Kapasitesi", guide: "<strong>Ne İşe Yarar:</strong> Üretim tesisinin dağıtım şebekesine uyumunu inceler." },
+                { title: "6. Enerji Depolama ve Batarya Sistemleri Testi", guide: "<strong>Ne İşe Yarar:</strong> Lityum batarya veya depolama ünitelerinin kapasitesini denetler." },
+                { title: "7. Güneş/Rüzgar Santrali Yatırım Maliyet Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kurulum maliyetleri ile arıza kaynaklı üretim kayıplarını raporlar." }
+            ]
+        },
+        biyomedikal: {
+            adi: "Biyomedikal Cihazlar ve Sağlık Teknolojileri",
+            kanun: "Tıbbi Cihaz Yönetmeliği",
+            adimlar: [
+                { title: "1. Hastane Cihazları Kalibrasyon ve Test Raporu", guide: "<strong>Ne İşe Yarar:</strong> MR, Tomografi veya EKG cihazlarının ölçüm doğruluğunu inceler." },
+                { title: "2. Tıbbi Cihaz Arızası ve Malpraktis İlişkisi", guide: "<strong>Ne İşe Yarar:</strong> Cihaz arızasının hastaya verilen zararla bağını araştırır." },
+                { title: "3. Yoğun Bakım ve Yaşam Destek Ünitesi Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> Solunum cihazı ve monitörlerin alarm sistemlerini test eder." },
+                { title: "4. Biyomedikal Sarf Malzeme ve Orijinallik", guide: "<strong>Ne İşe Yarar:</strong> Cihazlarda kullanılan implant ve parçaların kalitesini inceler." },
+                { title: "5. Tıbbi Cihaz İhale Şartnamesi Uygunluk Analizi", guide: "<strong>Ne İşe Yarar:</strong> Hastanelerin satın aldığı teknolojik cihazların teknik şartlara uyumunu denetler." },
+                { title: "6. Radyasyon Güvenliği ve X-Ray Cihaz Ölçümleri", guide: "<strong>Ne İşe Yarar:</strong> Röntgen ve radyoterapi cihazlarının yaydığı ışın güvenliğini denetler." },
+                { title: "7. Biyomedikal Bakım Sözleşmesi ve Gecikmeler", guide: "<strong>Ne İşe Yarar:</strong> Cihaz bakım servislerinin sözleşme ihlallerini ve zararlarını hesaplar." }
+            ]
+        },
+        kimya: {
+            adi: "Kimyasal Madde, Sanayi ve Endüstriyel Ürünler",
+            kanun: "REACH Tüzüğü ve Kimyasallar Yönetmeliği",
+            adimlar: [
+                { title: "1. Kimyasal Madde Formülasyon ve Saflık Testi", guide: "<strong>Ne İşe Yarar:</strong> Sanayi kimyasallarının içerik oranlarını laboratuvar verileriyle inceler." },
+                { title: "2. Boya, Deterjan ve Kozmetik Ürün Güvenliği", guide: "<strong>Ne İşe Yarar:</strong> İnsan sağlığına zararlı yasaklı kimyasal bileşenleri saptar." },
+                { title: "3. Endüstriyel Patlama ve Kimyasal Yangın Analizi", guide: "<strong>Ne İşe Yarar:</strong> Kimya fabrikalarındaki patlamaların tepkime nedenini çözer." },
+                { title: "4. Tehlikeli Madde Depolama ve Etiketleme Uyumu", guide: "<strong>Ne İşe Yarar:</strong> Kimyasalların yasal saklama ve ambalaj kurallarına uygunluğunu denetler." },
+                { title: "5. Plastik, Polimer ve Kauçuk Malzeme Analizi", guide: "<strong>Ne İşe Yarar:</strong> Sanayi ürünlerinde kullanılan plastiklerin hammadde kalitesini test eder." },
+                { title: "6. Atık Kimyasal ve Arıtma Çökelme Testleri", guide: "<strong>Ne İşe Yarar:</strong> Kimyasal atıkların suya salınım öncesi nötralizasyonunu inceler." },
+                { title: "7. Zirai Gübre ve Tarım İlaçları Kalite Kontrolü", guide: "<strong>Ne İşe Yarar:</strong> Tarımda kullanılan kimyasalların bakanlık izinlerine uyumunu denetler." }
+            ]
+        },
+        halkla: {
+            adi: "Halkla İlişkiler, Medya ve İletişim Yönetimi",
+            kanun: "Basın Kanunu ve Reklam Kanunu",
+            adimlar: [
+                { title: "1. Kurumsal İtibar ve Marka Değeri Analizi", guide: "<strong>Ne İşe Yarar:</strong> Haksız fiillerin veya haberlerin kurum imajına verdiği zararı inceler." },
+                { title: "2. Reklam Kurulu ve Aldatıcı Ticari Reklam Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Tüketiciyi yanıltıcı reklam kampanyalarının yasaya uyumunu denetler." },
+                { title: "3. Medya Yansımaları ve Kamuoyu Algı Raporu", guide: "<strong>Ne İşe Yarar:</strong> Basın ve sosyal medyada çıkan haberlerin yayılım etkisini ölçer." },
+                { title: "4. Kriz İletişimi ve Yönetim Kusurları İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Şirketlerin kriz anındaki halkla ilişkiler stratejilerinin doğruluğunu inceler." },
+                { title: "5. Sponsorluk Sözleşmeleri ve Edim Yükümlülüğü", guide: "<strong>Ne İşe Yarar:</strong> Sponsorluk anlaşmalarındaki reklam ve tanıtım yükümlülüklerini denetler." },
+                { title: "6. Sosyal Medya İletişim Stratejisi ve Dijital İtibar", guide: "<strong>Ne İşe Yarar:</strong> Dijital mecralardaki kampanya ve paylaşımların yasal sınırlarını inceler." },
+                { title: "7. Basın Açıklaması ve Tekzip (Düzeltme) Metinleri", guide: "<strong>Ne İşe Yarar:</strong> Cevap ve düzeltme hakkı metinlerinin hukuki yeterliliğini denetler." }
+            ]
+        }
+    };
 
     function toggleEkRaporAlani() {
         let tur = document.getElementById('raporTuru').value;
