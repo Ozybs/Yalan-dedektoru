@@ -23,6 +23,8 @@
         button:hover { background: #1a252f; }
         .btn-word { background: #0284c7; }
         .btn-word:hover { background: #0369a1; }
+        .btn-pdf { background: #dc2626; }
+        .btn-pdf:hover { background: #b91c1c; }
         #output { margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; padding: 25px; border: 1px solid #ddd; font-size: 1rem; }
     </style>
 </head>
@@ -124,6 +126,7 @@
     <div class="btn-group">
         <button onclick="generateStandardReport()">RAPORU OLUŞTUR VE KOPYALA</button>
         <button class="btn-word" onclick="downloadWordDoc()">WORD DOSYASI İNDİR (.doc)</button>
+        <button class="btn-pdf" onclick="downloadPdf()">PDF DOSYASI İNDİR (.pdf)</button>
     </div>
     
     <div id="output"></div>
@@ -945,6 +948,53 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
+
+    function downloadPdf() {
+        let report = compileReportText();
+        if (!report) return;
+
+        const reportHtml = report
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\n/g, '<br>');
+
+        const win = window.open('', '_blank');
+        if (!win) {
+            alert("PDF oluşturma penceresi açılamadı. Tarayıcınızın açılır pencere engelini kontrol edin.");
+            return;
+        }
+
+        win.document.write(`
+            <!DOCTYPE html>
+            <html lang="tr">
+            <head>
+                <meta charset="UTF-8">
+                <title>Bilirkişi Raporu</title>
+                <style>
+                    @page { size: A4; margin: 20mm; }
+                    body {
+                        font-family: "Times New Roman", serif;
+                        font-size: 12pt;
+                        line-height: 1.5;
+                        color: #111;
+                    }
+                    .report { white-space: normal; }
+                </style>
+            </head>
+            <body>
+                <div class="report">${reportHtml}</div>
+            </body>
+            </html>
+        `);
+        win.document.close();
+        win.focus();
+
+        setTimeout(() => {
+            win.print();
+        }, 300);
+    }
+
 </script>
 </body>
 </html>
