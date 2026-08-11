@@ -26,7 +26,18 @@
         .btn-pdf { background: #dc2626; }
         .btn-pdf:hover { background: #b91c1c; }
         #output { margin-top: 20px; white-space: pre-wrap; background: #f9f9f9; padding: 25px; border: 1px solid #ddd; font-size: 1rem; }
-    </style>
+    
+/* AI Bilirkişi Asistanı */
+.ai-assistant-box{margin-top:10px;padding:14px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px}
+.ai-buttons{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.ai-btn{width:auto!important;margin:0!important;padding:8px 11px!important;font-size:.82rem!important;background:#475569!important}
+.ai-btn.primary{background:#7c3aed!important}
+.ai-result{display:none;margin-top:10px;padding:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;white-space:pre-wrap}
+.ai-warning{margin-top:8px;padding:9px;background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;font-size:.84rem}
+.ai-apply{background:#15803d!important;width:auto!important;margin-top:8px!important}
+.ai-regenerate{background:#2563eb!important;width:auto!important;margin-top:8px!important}
+
+</style>
 </head>
 <body>
 
@@ -134,6 +145,16 @@
     <div class="form-group">
         <label>9 adımın tamamı değerlendirildikten sonra tek ve toplu teknik sonucu yazınız:</label>
         <textarea id="technicalConclusion" placeholder="İnceleme bulgularının toplu teknik sonucu; varsa kusur, uygunsuzluk, değer, hesap, benzerlik veya diğer teknik kanaatleri kısa ve somut şekilde yazınız."></textarea>
+        <div class="ai-assistant-box">
+            <b>✦ YAPAY ZEKA BİLİRKİŞİ ASİSTANI – TOPLU TEKNİK SONUÇ</b>
+            <div class="ai-buttons">
+                <button type="button" class="ai-btn primary" onclick="aiGenerateConclusion()">✦ 9 Bulguyu Birlikte Değerlendir</button>
+                <button type="button" class="ai-btn" onclick="aiImproveConclusion('objective')">Objektifleştir</button>
+                <button type="button" class="ai-btn" onclick="aiImproveConclusion('short')">Kısalt</button>
+            </div>
+            <div id="ai_conclusion_result" class="ai-result"></div>
+            <div id="ai_conclusion_warning" class="ai-warning" style="display:none;"></div>
+        </div>
     </div>
 
 <div class="section-title">8. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
@@ -847,7 +868,20 @@
                 <div class="step">
                     <b>${s.title}</b>
                     <div class="guide-box">${s.guide}</div>
+                    <label style="font-weight:bold;margin-top:8px;display:block;">Sizin Ham Tespitiniz:</label>
                     <textarea id="step_input_${i}" placeholder="${placeholderText}"></textarea>
+                    <div class="ai-assistant-box">
+                        <b>✦ YAPAY ZEKA BİLİRKİŞİ ASİSTANI</b>
+                        <div class="ai-buttons">
+                            <button type="button" class="ai-btn primary" onclick="aiRewriteStep(${i},'official')">✦ Resmî Dile Dönüştür</button>
+                            <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'technical')">Teknikleştir</button>
+                            <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'detailed')">Detaylandır</button>
+                            <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'objective')">Objektifleştir</button>
+                            <button type="button" class="ai-btn" onclick="aiRewriteStep(${i},'short')">Kısalt</button>
+                        </div>
+                        <div id="ai_result_${i}" class="ai-result"></div>
+                        <div id="ai_warning_${i}" class="ai-warning" style="display:none;"></div>
+                    </div>
                 </div>
             `;
         });
@@ -912,6 +946,216 @@
         let computedDifferenceRate = `görseller arasında %${similarity} oranında sayısal ve geometrik örtüşme/benzerlik olduğu`;
         document.getElementById('step_input_8').value = computedDifferenceRate;
         document.getElementById('diffResult').innerText = `Piksel Analizi Tamamlandı: %${similarity} Benzerlik Saptandı (9. Adıma işlendi).`;
+    }
+
+
+    /*
+     * AI BİLİRKİŞİ ASİSTANI
+     * Bu sürüm, harici bir AI API anahtarı gerektirmeden "AI benzeri"
+     * yerel düzenleme/analiz akışı sağlar. Gerçek LLM bağlantısı için
+     * generateAIText() fonksiyonuna API çağrısı eklenebilir.
+     */
+    const AI_RULES = `
+Kullanıcının verdiği teknik tespitleri esas al.
+Yeni ölçü, tarih, belge, standart, kusur, neden-sonuç ilişkisi veya teknik bulgu UYDURMA.
+Kullanıcının kanaatini değiştirme.
+Belirsizliği koru.
+Yalnızca anlatımı resmi, objektif ve bilirkişi raporu üslubuna dönüştür.
+"Ben gördüm" yerine "yapılan incelemede ... tespit edilmiştir" gibi nesnel anlatım kullan.
+Hukuki değerlendirme yapma; teknik tespitle sınırlı kal.
+Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler kullan.
+`;
+
+    const BRANCH_TERMS = {
+        trafik:"araç, yol, hız, fren, çarpışma, kamera, görüş, kusur",
+        gayrimenkul:"taşınmaz, ada/parsel, yüzölçümü, imar, emsal, değer",
+        bilisim:"dijital delil, cihaz, imaj, hash, log, metadata, dosya bütünlüğü",
+        insaat:"yapı, proje, mahal, metraj, ölçüm, imalat, malzeme",
+        hesap:"hesap dönemi, kalem, belge, tutar, mahsup, faiz",
+        muhasebe:"muhasebe kaydı, belge, hesap, dönem, tutar",
+        kimya:"numune, ürün, analiz, laboratuvar, kimyasal özellik",
+        biyomedikal:"cihaz, seri no, kalibrasyon, bakım, arıza",
+        enerji:"tesis, kapasite, üretim, tüketim, ölçüm",
+        gemiinsaa:"gemi, IMO no, makine, sefer, teknik ölçüm",
+        havacilik:"hava aracı, uçuş, tescil, kayıt, olay zamanı",
+        petrol:"kuyu, saha, boru hattı, basınç, debi, üretim",
+        metalurji:"malzeme, numune, test, kaynak, mekanik özellik"
+    };
+
+    function selectedBranchKey() {
+        return document.getElementById('bransSecim')?.value || "";
+    }
+
+    function selectedBranchName() {
+        const k = selectedBranchKey();
+        return (typeof branchDatabase !== 'undefined' && branchDatabase[k]) ? branchDatabase[k].adi : "";
+    }
+
+    function normalizeOfficial(text) {
+        let t = text.trim();
+        if (!t) return "";
+        t = t.replace(/\bben\b/gi, "yapılan inceleme");
+        t = t.replace(/gördüm/gi, "tespit edilmiştir");
+        t = t.replace(/gördük/gi, "tespit edilmiştir");
+        t = t.replace(/bence/gi, "teknik değerlendirme kapsamında");
+        t = t.replace(/bana göre/gi, "teknik değerlendirme kapsamında");
+        t = t.replace(/bayağı/gi, "belirgin şekilde");
+        t = t.replace(/çok fazla/gi, "belirgin düzeyde");
+        t = t.replace(/yok gibi/gi, "tespit edilememiştir");
+        t = t.replace(/\bvar\b/gi, "mevcuttur");
+        t = t.replace(/\byok\b/gi, "mevcut değildir");
+        t = t.replace(/\s+/g, " ").trim();
+        if (!/[.!?]$/.test(t)) t += ".";
+        if (/^(inceleme|yapılan inceleme)/i.test(t)) return t;
+        return "Yapılan incelemede " + t.charAt(0).toLowerCase() + t.slice(1);
+    }
+
+    function technicalize(text) {
+        let t = normalizeOfficial(text);
+        const key = selectedBranchKey();
+        const terms = BRANCH_TERMS[key];
+        if (terms && !/teknik açıdan|teknik yönden|teknik değerlendirme/i.test(t)) {
+            t += ` Teknik değerlendirmede ${terms.split(",").slice(0,3).join(", ")} hususları dikkate alınmıştır.`;
+        }
+        return t;
+    }
+
+    function detailedize(text) {
+        let t = normalizeOfficial(text);
+        if (!t) return "";
+        if (!/inceleme kapsamında|mevcut bilgi ve belgeler/i.test(t)) {
+            t += " Söz konusu tespit, inceleme kapsamında mevcut bilgi ve belgelerle birlikte değerlendirilmiştir.";
+        }
+        return t;
+    }
+
+    function objectiveize(text) {
+        let t = normalizeOfficial(text);
+        t = t.replace(/kesinlikle/gi, "mevcut bulgular kapsamında");
+        t = t.replace(/kesin/gi, "mevcut bulgulara göre");
+        t = t.replace(/kesin olarak/gi, "mevcut veriler kapsamında");
+        return t;
+    }
+
+    function shorten(text) {
+        let t = normalizeOfficial(text);
+        if (t.length <= 260) return t;
+        const parts = t.split(/(?<=[.!?])\s+/);
+        return parts.slice(0, 2).join(" ");
+    }
+
+    async function generateAIText(prompt, fallback) {
+        /*
+         * Gerçek yapay zekâ bağlantısı için bu fonksiyonun gövdesine
+         * kullanıcı tarafından seçilen güvenli bir AI API/backend bağlantısı
+         * eklenebilir. Şimdilik yerel güvenli düzenleme kullanılır.
+         */
+        return fallback();
+    }
+
+    function aiRewriteStep(index, mode) {
+        const input = document.getElementById(`step_input_${index}`);
+        const result = document.getElementById(`ai_result_${index}`);
+        const warning = document.getElementById(`ai_warning_${index}`);
+        const raw = input ? input.value.trim() : "";
+
+        if (!raw) {
+            alert("Önce kendi tespitinizi yazınız.");
+            return;
+        }
+
+        let transformed = raw;
+        if (mode === "official") transformed = normalizeOfficial(raw);
+        if (mode === "technical") transformed = technicalize(raw);
+        if (mode === "detailed") transformed = detailedize(raw);
+        if (mode === "objective") transformed = objectiveize(raw);
+        if (mode === "short") transformed = shorten(raw);
+
+        result.textContent = transformed;
+        result.style.display = "block";
+        warning.textContent = "AI kuralı: Bu metin yalnızca mevcut tespitinizin anlatımını düzenler; yeni teknik bulgu, ölçü veya sonuç eklememelidir. Metni rapora almadan önce kontrol ediniz.";
+        warning.style.display = "block";
+
+        const apply = document.createElement("button");
+        apply.type = "button";
+        apply.className = "ai-apply";
+        apply.textContent = "✓ Bu Metni Rapor Metni Olarak Kullan";
+        apply.onclick = () => { input.value = transformed; };
+        result.appendChild(document.createElement("br"));
+        result.appendChild(apply);
+
+        const regen = document.createElement("button");
+        regen.type = "button";
+        regen.className = "ai-regenerate";
+        regen.textContent = "↻ Yeniden Düzenle";
+        regen.onclick = () => aiRewriteStep(index, mode);
+        result.appendChild(document.createTextNode(" "));
+        result.appendChild(regen);
+    }
+
+    function collectFindings() {
+        const findings = [];
+        if (typeof branchDatabase === 'undefined') return findings;
+        const key = selectedBranchKey();
+        const data = branchDatabase[key];
+        if (!data) return findings;
+        data.adimlar.forEach((st, i) => {
+            const el = document.getElementById(`step_input_${i}`);
+            if (el && el.value.trim()) {
+                findings.push(`${st.title}: ${el.value.trim()}`);
+            }
+        });
+        return findings;
+    }
+
+    function aiGenerateConclusion() {
+        const findings = collectFindings();
+        const result = document.getElementById("ai_conclusion_result");
+        const warning = document.getElementById("ai_conclusion_warning");
+
+        if (findings.length === 0) {
+            alert("Önce inceleme adımlarındaki tespitleri yazınız.");
+            return;
+        }
+
+        let conclusion = "Yapılan teknik inceleme kapsamında " +
+            findings.length + " inceleme başlığında tespitler değerlendirilmiştir. " +
+            findings.map(x => x.split(":").slice(1).join(":").trim()).join(" ") +
+            " Mevcut bilgi ve belgeler ile inceleme bulguları birlikte değerlendirildiğinde, yukarıda belirtilen teknik tespitlerin dosya kapsamındaki değerlendirmede esas alınabileceği kanaatine varılmıştır.";
+
+        conclusion = objectiveize(conclusion);
+        result.textContent = conclusion;
+        result.style.display = "block";
+        warning.textContent = "Bu sonuç taslağı yalnızca girilmiş bulguları birleştirir. Nihai teknik kanaati mutlaka bilirkişi kontrol etmeli; desteklenmeyen bir kusur, ölçü veya neden-sonuç ilişkisi eklenmemelidir.";
+
+        const apply = document.createElement("button");
+        apply.type = "button";
+        apply.className = "ai-apply";
+        apply.textContent = "✓ Sonucu Rapor Alanına Aktar";
+        apply.onclick = () => { document.getElementById("technicalConclusion").value = conclusion; };
+        result.appendChild(document.createElement("br"));
+        result.appendChild(apply);
+        warning.style.display = "block";
+    }
+
+    function aiImproveConclusion(mode) {
+        const input = document.getElementById("technicalConclusion");
+        const result = document.getElementById("ai_conclusion_result");
+        const raw = input.value.trim();
+        if (!raw) {
+            alert("Önce teknik sonuç metnini yazınız veya '9 Bulguyu Birlikte Değerlendir' düğmesini kullanınız.");
+            return;
+        }
+        const text = mode === "short" ? shorten(raw) : objectiveize(raw);
+        result.textContent = text;
+        result.style.display = "block";
+        const apply = document.createElement("button");
+        apply.type = "button";
+        apply.className = "ai-apply";
+        apply.textContent = "✓ Sonucu Kullan";
+        apply.onclick = () => { input.value = text; };
+        result.appendChild(document.createElement("br"));
+        result.appendChild(apply);
     }
 
     function compileReportText() {
@@ -1058,7 +1302,10 @@
             </head>
             <body>
                 <div class="report">${reportHtml}</div>
-            </body>
+            <div style="max-width:1100px;margin:18px auto;padding:10px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:7px;font-size:.82rem;color:#334155;">
+<b>AI BİLİRKİŞİ ASİSTANI KULLANIM NOTU:</b> Yapay zekâ yalnızca girilen teknik tespitlerin anlatımını düzenlemek ve bulguları toplamak amacıyla kullanılır. Ölçüm, belge, standart, kusur veya teknik sonuç gibi bilgiler kullanıcı tarafından verilmedikçe oluşturulmamalıdır. Nihai rapor metni bilirkişi tarafından kontrol edilmelidir.
+</div>
+</body>
             </html>
         `);
         win.document.close();
