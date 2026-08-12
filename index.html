@@ -135,6 +135,15 @@ body.locked .container{display:none;}
 @media(max-width:700px){.program-guide-grid{grid-template-columns:1fr}.shortcut-row{grid-template-columns:1fr auto}.shortcut-row small{grid-column:1/-1}}
 </style>
 
+
+<style>
+.beyan-onay-uyari{
+    outline:2px solid #dc2626 !important;
+    outline-offset:3px;
+    border-radius:6px;
+}
+</style>
+
 </head>
 <body>
 
@@ -2686,7 +2695,41 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         return report;
     }
 
+
+    // --- 9. BEYANLAR: ONAYLAR ZORUNLUDUR ---
+    function validateBeyanOnaylari() {
+        const ids = ['tarafsizlikBeyani', 'aiOnayi'];
+        const missing = ids
+            .map(id => document.getElementById(id))
+            .filter(el => el && !el.checked);
+
+        if (missing.length) {
+            missing.forEach(el => {
+                el.classList.add('beyan-onay-uyari');
+                const label = el.closest('label');
+                if (label) label.classList.add('beyan-onay-uyari');
+            });
+            const first = missing[0];
+            first.scrollIntoView({behavior:'smooth', block:'center'});
+            alert('Rapor oluşturulmadan önce 9. BEYANLAR bölümündeki tüm onay kutularını işaretlemeniz zorunludur.');
+            return false;
+        }
+        return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        ['tarafsizlikBeyani','aiOnayi'].forEach(function(id) {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', function() {
+                const label = el.closest('label');
+                el.classList.remove('beyan-onay-uyari');
+                if (label) label.classList.remove('beyan-onay-uyari');
+            });
+        });
+    });
+
     function generateStandardReport() {
+        if (!validateBeyanOnaylari()) return;
         let report = compileReportText();
         if (!report) return;
         document.getElementById('output').innerText = report;
@@ -2700,6 +2743,8 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     }
 
     async function downloadWordDoc() {
+        if (!validateBeyanOnaylari()) return;
+
         const report = compileReportText();
         if (!report) return;
 
@@ -2799,6 +2844,8 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     }
 
     function downloadPdf() {
+        if (!validateBeyanOnaylari()) return;
+
         const report = compileReportText();
         if (!report) return;
 
