@@ -83,6 +83,35 @@
 body.locked{overflow:hidden;}
 body.locked .container{display:none;}
 
+/* Kod Talep Modalı */
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;font-family:sans-serif;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:#fff;border-radius:12px;padding:28px 26px;max-width:420px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.35);position:relative;}
+.modal-box h3{margin:0 0 6px;color:#1e293b;font-size:1.1rem;}
+.modal-box p{margin:0 0 16px;font-size:.83rem;color:#64748b;line-height:1.5;}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#94a3b8;width:auto;padding:0;}
+.modal-box label{display:block;font-size:.82rem;font-weight:600;color:#334155;margin:10px 0 4px;}
+.modal-box input{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;font-size:.92rem;box-sizing:border-box;}
+.modal-submit{width:100%;margin-top:16px;padding:11px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;}
+.modal-submit:hover{background:#1d4ed8;}
+.modal-submit:disabled{background:#94a3b8;cursor:not-allowed;}
+.request-code-link{background:none;border:none;color:#93c5fd;text-decoration:underline;font-size:.8rem;cursor:pointer;margin-top:14px;width:auto;padding:0;}
+.modal-success{display:none;text-align:center;padding:10px 0;}
+.modal-success .check{font-size:2.5rem;margin-bottom:8px;}
+.modal-error-msg{display:none;color:#dc2626;font-size:.8rem;margin-top:8px;font-weight:600;}
+
+/* Bilirkişi Asistanı (Gemini AI) */
+.bk-assistant-box{margin:0 0 20px;padding:18px 20px;background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1px solid #c7d2fe;border-radius:10px;font-family:sans-serif;}
+.bk-assistant-box h3{margin:0 0 4px;font-size:1.05rem;color:#3730a3;}
+.bk-assistant-box p{margin:0 0 12px;font-size:.82rem;color:#64748b;}
+.bk-assistant-box textarea{width:100%;min-height:90px;padding:11px;border:1px solid #c7d2fe;border-radius:6px;font-family:inherit;font-size:.9rem;box-sizing:border-box;resize:vertical;}
+.ai-ask-btn{margin-top:10px;width:auto;padding:10px 18px;background:#4f46e5;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;font-size:.88rem;}
+.ai-ask-btn:hover{background:#4338ca;}
+.ai-ask-btn:disabled{background:#a5b4fc;cursor:not-allowed;}
+.ai-result-box{display:none;margin-top:14px;padding:14px 16px;background:#fff;border:1px solid #ddd6fe;border-radius:8px;font-size:.88rem;color:#1e293b;line-height:1.6;white-space:pre-wrap;}
+.ai-privacy-note{margin-top:10px;font-size:.74rem;color:#94a3b8;}
+.ai-disclaimer-note{margin-top:6px;font-size:.74rem;color:#7c3aed;font-weight:600;}
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -92,14 +121,70 @@ body.locked .container{display:none;}
 </head>
 <body>
 
+<!-- ================== FIREBASE BAŞLATMA (MODÜL) ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import {
+        getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot,
+        arrayUnion, serverTimestamp, collection, addDoc
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    // Firebase Console'dan aldığınız proje bilgileri
+    const firebaseConfig = {
+        apiKey: "AIzaSyBDfBZ9MGDbf97W6egtJrmT9J3AM-S5aSM",
+        authDomain: "bilirkisi-c8f00.firebaseapp.com",
+        projectId: "bilirkisi-c8f00",
+        storageBucket: "bilirkisi-c8f00.firebasestorage.app",
+        messagingSenderId: "968129366886",
+        appId: "1:968129366886:web:5d2f3dda994274ff2b56a7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Aşağıdaki normal (module olmayan) scriptlerin Firestore'u kullanabilmesi için
+    // gerekli fonksiyonları global alana (window) açıyoruz.
+    window.__fb = { db, doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, serverTimestamp, collection, addDoc };
+    window.__fbReady = true;
+    document.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<!-- EmailJS (kod talep formu bildirimleri için) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <div id="accessLockOverlay">
     <div class="lock-card">
         <h2>🔒 Bilirkişi Rapor Aracı</h2>
-        <p>Bu araç yalnızca erişim kodu satın alan kullanıcılara açıktır. Lütfen size iletilen erişim kodunu giriniz.</p>
+        <p id="lockMessage">Bu araç yalnızca erişim kodu satın alan kullanıcılara açıktır. Lütfen size iletilen erişim kodunu giriniz.</p>
         <input type="text" id="accessCodeInput" placeholder="ERİŞİM KODU" autocomplete="off" onkeydown="if(event.key==='Enter')checkAccessCode()">
-        <button type="button" onclick="checkAccessCode()">GİRİŞ YAP</button>
+        <button type="button" id="accessSubmitBtn" onclick="checkAccessCode()">GİRİŞ YAP</button>
         <div class="lock-error" id="lockError">Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.</div>
-        <div class="lock-contact">Erişim kodunuz yoksa satın almak için: <b>[İLETİŞİM BİLGİNİZİ BURAYA YAZIN]</b></div>
+        <button type="button" class="request-code-link" onclick="openRequestModal()">Erişim kodunuz yok mu? Kod talep edin</button>
+    </div>
+</div>
+
+<!-- Kod Talep Modalı -->
+<div class="modal-backdrop" id="requestModalBackdrop">
+    <div class="modal-box">
+        <button type="button" class="modal-close" onclick="closeRequestModal()">✕</button>
+        <div id="requestFormArea">
+            <h3>Erişim Kodu Talebi</h3>
+            <p>Bilgilerinizi bırakın, ödeme ve erişim kodu ile ilgili sizinle en kısa sürede iletişime geçelim.</p>
+            <label>Ad Soyad</label>
+            <input type="text" id="reqAdSoyad" placeholder="Ad Soyad" autocomplete="off">
+            <label>E-posta</label>
+            <input type="email" id="reqEmail" placeholder="ornek@eposta.com" autocomplete="off">
+            <label>Telefon Numarası</label>
+            <input type="tel" id="reqTelefon" placeholder="05xx xxx xx xx" autocomplete="off">
+            <div class="modal-error-msg" id="reqErrorMsg"></div>
+            <button type="button" class="modal-submit" id="reqSubmitBtn" onclick="submitCodeRequest()">Talebi Gönder</button>
+        </div>
+        <div class="modal-success" id="requestSuccessArea">
+            <div class="check">✅</div>
+            <b>Talebiniz alınmıştır.</b>
+            <p>Ödeme ve erişim bilgileri için sizinle iletişime geçilecektir.</p>
+            <button type="button" class="modal-submit" onclick="closeRequestModal()">Kapat</button>
+        </div>
     </div>
 </div>
 
@@ -118,6 +203,17 @@ body.locked .container{display:none;}
             <button type="button" style="background:#2563eb;color:#fff;border:none;border-radius:4px;" onclick="applyStoredDraft()">Evet, Taslağı Yükle</button>
             <button type="button" style="background:#94a3b8;color:#fff;border:none;border-radius:4px;" onclick="dismissDraftBanner()">Hayır, Boş Başla</button>
         </div>
+    </div>
+
+    <div class="bk-assistant-box">
+        <h3>🧑‍⚖️ Bilirkişi Asistanı (Beta)</h3>
+        <p>Taslak metninizi veya sorunuzu yazın, yapay zeka size teknik dil/ifade önerisi veya yol gösterici bir yanıt sunsun.</p>
+        <textarea id="geminiInput" placeholder="Örn: Bu bulguyu daha teknik ve tarafsız bir dille nasıl ifade edebilirim? / ... hakkında bilirkişi raporunda nelere dikkat etmeliyim?"></textarea>
+        <br>
+        <button type="button" class="ai-ask-btn" id="geminiAskBtn" onclick="askGeminiAssistant()">Bilirkişi Asistanına Sor</button>
+        <div class="ai-result-box" id="geminiResultBox"></div>
+        <div class="ai-privacy-note">🔒 Gizlilik: Buraya yazdığınız sorular ve alınan yanıtlar hiçbir şekilde veritabanına kaydedilmez; yalnızca bu oturumda görüntülenir.</div>
+        <div class="ai-disclaimer-note">⚠️ Yapay zeka çıktıları taslak niteliğindedir; nihai kontrol, değerlendirme ve sorumluluk bilirkişiye aittir.</div>
     </div>
 
     <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
@@ -332,7 +428,7 @@ body.locked .container{display:none;}
     <div class="heyet-box" id="heyetContainer" style="display:none;">
         <b>HEYET (KURUL) ÜYELERİ</b>
         <div style="font-size:.82rem;color:#64748b;margin:6px 0 4px;">
-            Yukarıdaki bilgiler heyet başkanına aittir. Diğer heyet üyelerini aşağıdan ekleyiniz; her üye rapora imza sahibi olarak yazılır.
+            Yukarıdaki bilgiler ilk heyet üyesine aittir. Diğer heyet üyelerini aşağıdan ekleyiniz; her üye rapora eşit şekilde imza sahibi olarak yazılır.
         </div>
         <div id="heyet-list"></div>
         <button type="button" class="heyet-add" onclick="addHeyetRow()">+ Heyet Üyesi Ekle</button>
@@ -364,55 +460,302 @@ body.locked .container{display:none;}
 </div>
 
 <script>
-    // --- ERİŞİM KODU KİLİDİ ---
-    const validAccessCodeHashes = [
-        "4aa05c62bc51969c5466a0bd884105fa76e806b034362effd5439368446aacba", // DEMO2026
-        "13a956e9150e1fc2307adab0d42e4b54cd728ba31e4b29ce783c55dc51c5fc86", // BILIR1
-        "f583a381d8b0902e79b7f92c64588435d323936c773eba3755d699f45e22b9e0"  // Kod: KOD19
-    ];
+    // ====================================================================
+    // ERİŞİM KODU SİSTEMİ (Firestore tabanlı — cihaz limiti + tekil oturum)
+    // ====================================================================
+    // Kodlar artık kodun içinde DEĞİL, Firebase Console > Firestore Database
+    // içindeki "erisim_kodlari" koleksiyonunda tutulur. Yeni kod eklemek için:
+    //   1) Firebase Console'da Firestore Database'i açın
+    //   2) "erisim_kodlari" koleksiyonuna gidin (yoksa oluşturun)
+    //   3) "+ Belge Ekle" ile YENİ BİR BELGE oluşturun, Belge Kimliği (Document ID)
+    //      alanına müşteriye vereceğiniz kodu BÜYÜK HARFLE yazın (örn: AVUKAT2026)
+    //   4) İçine deviceIds adında BOŞ bir dizi (array) alanı ekleyin ([])
+    //   5) Kaydedin — kod anında sitede geçerli olur, kod yazmanıza/deploy'a gerek yok.
     const ACCESS_STORAGE_KEY = 'bk_access_granted_v1';
+    const ACTIVE_CODE_KEY = 'bk_active_code_v1';
+    const SESSION_ID_KEY = 'bk_session_id_v1';
+    const DEVICE_ID_KEY = 'bk_device_id_v1';
 
-    async function sha256Hex(text) {
-        const enc = new TextEncoder().encode(text.trim().toUpperCase());
-        const buf = await crypto.subtle.digest('SHA-256', enc);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    function waitForFirebase() {
+        return new Promise(resolve => {
+            if (window.__fbReady) return resolve();
+            document.addEventListener('firebase-ready', () => resolve(), { once: true });
+        });
     }
 
-    async function checkAccessCode() {
-        const input = document.getElementById('accessCodeInput');
-        const code = input.value.trim();
-        const errorBox = document.getElementById('lockError');
-        if (!code) return;
-        const hash = await sha256Hex(code);
-        if (validAccessCodeHashes.includes(hash)) {
-            try { localStorage.setItem(ACCESS_STORAGE_KEY, '1'); } catch (e) {}
-            unlockSite();
-        } else {
-            errorBox.style.display = 'block';
-            input.value = '';
-            input.focus();
+    function getDeviceId() {
+        let id = null;
+        try { id = localStorage.getItem(DEVICE_ID_KEY); } catch (e) {}
+        if (!id) {
+            id = (crypto.randomUUID ? crypto.randomUUID() : ('dev-' + Date.now() + '-' + Math.random().toString(16).slice(2)));
+            try { localStorage.setItem(DEVICE_ID_KEY, id); } catch (e) {}
         }
+        return id;
+    }
+
+    let activeSessionUnsub = null;
+
+    function showLockScreen(message) {
+        const overlay = document.getElementById('accessLockOverlay');
+        const msgBox = document.getElementById('lockMessage');
+        if (message && msgBox) msgBox.textContent = message;
+        overlay.style.display = 'flex';
+        document.body.classList.add('locked');
     }
 
     function unlockSite() {
         document.getElementById('accessLockOverlay').style.display = 'none';
         document.body.classList.remove('locked');
     }
-</script>
 
-    function checkStoredAccess() {
-        let granted = false;
-        try { granted = localStorage.getItem(ACCESS_STORAGE_KEY) === '1'; } catch (e) {}
-        if (granted) {
+    // Bir kod için gerçek zamanlı dinleyici kurar: başka bir cihaz aynı kodla
+    // giriş yaparsa (activeSessionId değişirse) bu cihazdaki oturumu otomatik kilitler.
+    async function watchSession(codeId, mySessionId) {
+        await waitForFirebase();
+        const { db, doc, onSnapshot } = window.__fb;
+        if (activeSessionUnsub) { activeSessionUnsub(); activeSessionUnsub = null; }
+        const ref = doc(db, 'erisim_kodlari', codeId);
+        activeSessionUnsub = onSnapshot(ref, (snap) => {
+            if (!snap.exists()) {
+                forceLockOut('Erişim kodunuz artık geçerli değil.');
+                return;
+            }
+            const data = snap.data();
+            if (data.activeSessionId && data.activeSessionId !== mySessionId) {
+                forceLockOut('Bu kod başka bir cihazda kullanıldığı için oturumunuz sonlandırıldı. Devam etmek için tekrar giriş yapınız.');
+            }
+        });
+    }
+
+    function forceLockOut(message) {
+        try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
+        if (activeSessionUnsub) { activeSessionUnsub(); activeSessionUnsub = null; }
+        showLockScreen(message);
+    }
+
+    async function checkAccessCode() {
+        const input = document.getElementById('accessCodeInput');
+        const submitBtn = document.getElementById('accessSubmitBtn');
+        const errorBox = document.getElementById('lockError');
+        const rawCode = input.value.trim();
+        if (!rawCode) return;
+        const codeId = rawCode.toUpperCase();
+
+        errorBox.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'KONTROL EDİLİYOR...';
+
+        try {
+            await waitForFirebase();
+            const { db, doc, getDoc, setDoc, updateDoc, arrayUnion, serverTimestamp } = window.__fb;
+            const ref = doc(db, 'erisim_kodlari', codeId);
+            const snap = await getDoc(ref);
+
+            if (!snap.exists()) {
+                errorBox.textContent = 'Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.';
+                errorBox.style.display = 'block';
+                input.value = '';
+                input.focus();
+                return;
+            }
+
+            const data = snap.data();
+            const deviceIds = Array.isArray(data.deviceIds) ? data.deviceIds : [];
+            const myDeviceId = getDeviceId();
+            const alreadyKnownDevice = deviceIds.includes(myDeviceId);
+
+            if (!alreadyKnownDevice && deviceIds.length >= 3) {
+                errorBox.textContent = 'Bu kod için tanımlı cihaz limitine ulaşıldı (maksimum 3 cihaz).';
+                errorBox.style.display = 'block';
+                return;
+            }
+
+            const newSessionId = (crypto.randomUUID ? crypto.randomUUID() : ('s-' + Date.now() + '-' + Math.random().toString(16).slice(2)));
+
+            const updatePayload = {
+                activeSessionId: newSessionId,
+                activeSessionAt: serverTimestamp()
+            };
+            if (!alreadyKnownDevice) {
+                updatePayload.deviceIds = arrayUnion(myDeviceId);
+            }
+            await updateDoc(ref, updatePayload);
+
+            try {
+                localStorage.setItem(ACCESS_STORAGE_KEY, '1');
+                localStorage.setItem(ACTIVE_CODE_KEY, codeId);
+                localStorage.setItem(SESSION_ID_KEY, newSessionId);
+            } catch (e) {}
+
             unlockSite();
-        } else {
-            document.body.classList.add('locked');
+            watchSession(codeId, newSessionId);
+        } catch (e) {
+            console.error(e);
+            errorBox.textContent = 'Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edip tekrar deneyin.';
+            errorBox.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'GİRİŞ YAP';
         }
+    }
+
+    async function checkStoredAccess() {
+        let granted = false, code = null, sessionId = null;
+        try {
+            granted = localStorage.getItem(ACCESS_STORAGE_KEY) === '1';
+            code = localStorage.getItem(ACTIVE_CODE_KEY);
+            sessionId = localStorage.getItem(SESSION_ID_KEY);
+        } catch (e) {}
+
+        if (!granted || !code || !sessionId) {
+            showLockScreen();
+            return;
+        }
+
+        try {
+            await waitForFirebase();
+            const { db, doc, getDoc } = window.__fb;
+            const ref = doc(db, 'erisim_kodlari', code);
+            const snap = await getDoc(ref);
+            if (snap.exists() && snap.data().activeSessionId === sessionId) {
+                unlockSite();
+                watchSession(code, sessionId);
+            } else {
+                try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
+                showLockScreen('Bu kod başka bir cihazda kullanıldığı için oturumunuz sonlandırıldı. Lütfen tekrar giriş yapınız.');
+            }
+        } catch (e) {
+            console.error(e);
+            showLockScreen();
+        }
+    }
+
+    // ====================================================================
+    // KOD TALEP FORMU (Firestore + EmailJS bildirimi)
+    // ====================================================================
+    // EmailJS ayarları: emailjs.com üzerinde ücretsiz hesap açıp bir "Service"
+    // ve bir "Template" oluşturun (şablonda alıcı adresi bilirkisi.destek@gmail.com
+    // olacak şekilde ayarlanır). Aşağıdaki 3 değeri kendi bilgilerinizle değiştirin.
+    const EMAILJS_PUBLIC_KEY = "EMAILJS_PUBLIC_KEY_BURAYA";
+    const EMAILJS_SERVICE_ID = "EMAILJS_SERVICE_ID_BURAYA";
+    const EMAILJS_TEMPLATE_ID = "EMAILJS_TEMPLATE_ID_BURAYA";
+
+    try {
+        if (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf('BURAYA') === -1) {
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        }
+    } catch (e) { console.warn('EmailJS başlatılamadı:', e); }
+
+    function openRequestModal() {
+        document.getElementById('requestModalBackdrop').classList.add('open');
+        document.getElementById('requestFormArea').style.display = 'block';
+        document.getElementById('requestSuccessArea').style.display = 'none';
+    }
+    function closeRequestModal() {
+        document.getElementById('requestModalBackdrop').classList.remove('open');
+    }
+
+    async function submitCodeRequest() {
+        const adSoyad = document.getElementById('reqAdSoyad').value.trim();
+        const email = document.getElementById('reqEmail').value.trim();
+        const telefon = document.getElementById('reqTelefon').value.trim();
+        const errorMsg = document.getElementById('reqErrorMsg');
+        const submitBtn = document.getElementById('reqSubmitBtn');
+        errorMsg.style.display = 'none';
+
+        if (!adSoyad || !email || !telefon) {
+            errorMsg.textContent = 'Lütfen tüm alanları doldurunuz.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorMsg.textContent = 'Lütfen geçerli bir e-posta adresi giriniz.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Gönderiliyor...';
+
+        try {
+            await waitForFirebase();
+            const { db, collection, addDoc, serverTimestamp } = window.__fb;
+            await addDoc(collection(db, 'kod_talepleri'), {
+                adSoyad, email, telefon,
+                tarih: serverTimestamp(),
+                durum: 'beklemede'
+            });
+
+            try {
+                if (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf('BURAYA') === -1) {
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                        ad_soyad: adSoyad, email: email, telefon: telefon,
+                        to_email: 'bilirkisi.destek@gmail.com'
+                    });
+                }
+            } catch (mailErr) {
+                console.warn('E-posta bildirimi gönderilemedi (Firestore kaydı yine de alındı):', mailErr);
+            }
+
+            document.getElementById('requestFormArea').style.display = 'none';
+            document.getElementById('requestSuccessArea').style.display = 'block';
+        } catch (e) {
+            console.error(e);
+            errorMsg.textContent = 'Talebiniz gönderilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.';
+            errorMsg.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Talebi Gönder';
+        }
+    }
+
+    // ====================================================================
+    // BİLİRKİŞİ ASİSTANI (Gemini AI — Vercel Serverless Function üzerinden)
+    // ====================================================================
+    // Güvenlik: Gemini API anahtarı artık bu dosyada YOK. İstek, tarayıcıdan
+    // doğrudan Google'a değil, kendi sunucunuzdaki /api/gemini fonksiyonuna
+    // gidiyor; anahtar orada (Vercel Environment Variables içinde) saklanıyor
+    // ve hiçbir zaman kullanıcıya görünmüyor. Kurulum adımları için
+    // proje köküne eklediğiniz api/gemini.js dosyasının başındaki yorumlara bakın.
+
+    async function askGeminiAssistant() {
+        const input = document.getElementById('geminiInput');
+        const btn = document.getElementById('geminiAskBtn');
+        const resultBox = document.getElementById('geminiResultBox');
+        const question = input.value.trim();
+        if (!question) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Yanıt hazırlanıyor...';
+        resultBox.style.display = 'block';
+        resultBox.textContent = 'Yanıt hazırlanıyor...';
+
+        try {
+            const resp = await fetch('/api/gemini', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question })
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                resultBox.textContent = 'Bilirkişi asistanı şu an kullanılamıyor: ' + (data.error || 'bilinmeyen hata') + '. (Vercel\'de GEMINI_API_KEY ortam değişkeninin tanımlı olduğundan emin olun.)';
+                return;
+            }
+            resultBox.textContent = data.text || 'Yanıt alınamadı. Lütfen tekrar deneyin.';
+        } catch (e) {
+            console.error(e);
+            resultBox.textContent = 'Bir hata oluştu. İnternet bağlantınızı kontrol edip tekrar deneyin.';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Bilirkişi Asistanına Sor';
+        }
+        // NOT: Soru/cevap kasıtlı olarak Firestore'a KAYDEDİLMEMEKTEDİR (gizlilik kuralı gereği).
     }
 </script>
 
 <script>
     let img1 = null, img2 = null;
+
 
     // --- Merci türüne göre taraf/esas etiketlerini uyarlar ---
     const merciEtiketleri = {
@@ -473,7 +816,7 @@ body.locked .container{display:none;}
         const container = document.getElementById('heyetContainer');
         const bkAdLabel = document.getElementById('bkAdLabel');
         container.style.display = checked ? 'block' : 'none';
-        if (bkAdLabel) bkAdLabel.textContent = checked ? "Adı Soyadı (Heyet Başkanı):" : "Adı Soyadı:";
+        if (bkAdLabel) bkAdLabel.textContent = checked ? "Adı Soyadı (Heyet Üyesi):" : "Adı Soyadı:";
         if (checked && document.getElementById('heyet-list').children.length === 0) {
             addHeyetRow();
         }
@@ -2181,12 +2524,12 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
         if (heyetVarMi && heyetUyeleri.length > 0) {
             report += `Bilirkişi Heyeti\n\n`;
-            report += `Heyet Başkanı:\n`;
+            report += `Heyet Üyesi 1:\n`;
             if (bkAd) report += `${bkAd}\n`;
             if (bkUnvan) report += `${bkUnvan}\n`;
             if (bkSicil) report += `Sicil No: ${bkSicil}\n`;
             heyetUyeleri.forEach((u, i) => {
-                report += `\nHeyet Üyesi ${i + 1}:\n`;
+                report += `\nHeyet Üyesi ${i + 2}:\n`;
                 if (u.ad) report += `${u.ad}\n`;
                 if (u.unvan) report += `${u.unvan}\n`;
                 if (u.sicil) report += `Sicil No: ${u.sicil}\n`;
@@ -2616,4 +2959,3 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 </script>
 </body>
 </html>
-
