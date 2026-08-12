@@ -118,6 +118,23 @@ body.locked .container{display:none;}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+.program-guide{margin:10px 0 14px;border:1px solid #cbd5e1;border-radius:10px;background:#f8fafc;padding:12px}
+.program-guide-title{font-weight:800;color:#0f172a;font-size:.9rem;margin-bottom:5px}
+.program-guide-note{font-size:.76rem;color:#64748b;margin-bottom:10px;line-height:1.45}
+.program-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.program-guide-card{background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:10px}
+.program-guide-card h4{margin:0 0 8px;font-size:.84rem;color:#1e293b}
+.shortcut-row{display:grid;grid-template-columns:1.25fr auto 1.2fr;gap:7px;align-items:center;padding:5px 0;border-top:1px solid #f1f5f9;font-size:.73rem}
+.shortcut-row:first-of-type{border-top:0}
+.shortcut-row kbd{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#e2e8f0;border:1px solid #cbd5e1;border-radius:5px;padding:2px 6px;white-space:nowrap;font-weight:700;color:#0f172a}
+.shortcut-row small{font-size:.68rem;color:#64748b}
+.step-shortcut-hint{margin-top:7px;padding:7px 9px;background:#f8fafc;border-left:3px solid #64748b;border-radius:5px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.72rem;color:#475569}
+.step-shortcut-hint .shortcut-label{font-weight:800;color:#334155;font-size:.66rem;letter-spacing:.03em}
+@media(max-width:700px){.program-guide-grid{grid-template-columns:1fr}.shortcut-row{grid-template-columns:1fr auto}.shortcut-row small{grid-column:1/-1}}
+</style>
+
 </head>
 <body>
 
@@ -757,6 +774,128 @@ body.locked .container{display:none;}
     let img1 = null, img2 = null;
 
 
+
+    function escapeHtmlSafe(value) {
+        return String(value || '').replace(/[&<>"']/g, function (m) {
+            return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]);
+        });
+    }
+
+    // --- GRAFİK / GÖRSEL İLETİŞİM / MATBAA: PROGRAM KISAYOLLARI ---
+    const DESIGN_PROGRAM_GUIDE = {
+        photoshop: [
+            ["Görseli Aç", "Ctrl + O", "File → Open"],
+            ["Yeni Belge", "Ctrl + N", "File → New"],
+            ["Görsel Boyutu / Çözünürlük", "Alt + Ctrl + I", "Image → Image Size"],
+            ["Tuval Boyutu", "Alt + Ctrl + C", "Image → Canvas Size"],
+            ["Katmanlar Paneli", "F7", "Window → Layers"],
+            ["Serbest Dönüştürme", "Ctrl + T", "Edit → Free Transform"],
+            ["Katmanı Çoğalt", "Ctrl + J", "Layer → Duplicate Layer"],
+            ["Katmanları Birleştir", "Ctrl + E", "Layer → Merge Layers"],
+            ["Yeni Katman", "Ctrl + Shift + N", "Layer → New → Layer"],
+            ["Renk Ayarları", "Shift + Ctrl + K", "Edit → Color Settings"],
+            ["Görünümü %100", "Ctrl + 1", "View → 100%"],
+            ["Ekrana Sığdır", "Ctrl + 0", "View → Fit on Screen"],
+            ["Geri Al", "Ctrl + Z", "Edit → Undo"],
+            ["Fırça Aracı", "B", "Brush Tool"],
+            ["Taşıma Aracı", "V", "Move Tool"]
+        ],
+        illustrator: [
+            ["Dosya Aç", "Ctrl + O", "File → Open"],
+            ["Yerleştir / Görsel Ekle", "Ctrl + Shift + P", "File → Place"],
+            ["Artboard Aracı", "Shift + O", "Artboard Tool"],
+            ["Katmanlar Paneli", "F7", "Window → Layers"],
+            ["Belge Renk Modu", "—", "File → Document Color Mode → RGB/CMYK"],
+            ["Belge Ayarları / Taşma", "Alt + Ctrl + P", "File → Document Setup"],
+            ["Clipping Mask Oluştur", "Ctrl + 7", "Object → Clipping Mask → Make"],
+            ["Clipping Mask Kaldır", "Alt + Ctrl + 7", "Object → Clipping Mask → Release"],
+            ["Grupla", "Ctrl + G", "Object → Group"],
+            ["Grubu Çöz", "Ctrl + Shift + G", "Object → Ungroup"],
+            ["Yazıyı Anahatlara Çevir", "Ctrl + Shift + O", "Type → Create Outlines"],
+            ["Outline / Kontur Görünümü", "Ctrl + Y", "View → Outline"],
+            ["Önizleme Görünümü", "Ctrl + Y", "View → GPU/Preview"],
+            ["Hizalama Paneli", "Shift + F7", "Window → Align"],
+            ["Renk Paneli", "F6", "Window → Color"],
+            ["Swatches Paneli", "F5", "Window → Swatches"],
+            ["Geri Al", "Ctrl + Z", "Edit → Undo"]
+        ]
+    };
+
+    function renderDesignProgramGuide() {
+        const area = document.getElementById("graphic-tools-area");
+        if (!area) return;
+        const key = selectedBranchKey();
+        const active = ["grafiktasarim", "gorseliletisim", "matbaa"].includes(key);
+        if (!active) {
+            area.innerHTML = "";
+            return;
+        }
+
+        area.innerHTML = `
+          <div class="program-guide">
+            <div class="program-guide-title">🖥️ PROGRAMDA AÇMA / KONTROL ETME KISAYOLLARI</div>
+            <div class="program-guide-note">
+              Aşağıdaki kısayollar Windows/PC Adobe arayüzü içindir. İlgili inceleme sırasında
+              Photoshop veya Illustrator'da kullanılabilecek temel işlem ve menü yollarını gösterir.
+            </div>
+            <div class="program-guide-grid">
+              <div class="program-guide-card">
+                <h4>Adobe Photoshop</h4>
+                ${DESIGN_PROGRAM_GUIDE.photoshop.map(x => `
+                  <div class="shortcut-row">
+                    <span>${escapeHtmlSafe(x[0])}</span>
+                    <kbd>${escapeHtmlSafe(x[1])}</kbd>
+                    <small>${escapeHtmlSafe(x[2])}</small>
+                  </div>`).join("")}
+              </div>
+              <div class="program-guide-card">
+                <h4>Adobe Illustrator</h4>
+                ${DESIGN_PROGRAM_GUIDE.illustrator.map(x => `
+                  <div class="shortcut-row">
+                    <span>${escapeHtmlSafe(x[0])}</span>
+                    <kbd>${escapeHtmlSafe(x[1])}</kbd>
+                    <small>${escapeHtmlSafe(x[2])}</small>
+                  </div>`).join("")}
+              </div>
+            </div>
+          </div>`;
+    }
+
+    function renderStepShortcutHints() {
+        const key = selectedBranchKey();
+        if (!["grafiktasarim", "gorseliletisim", "matbaa"].includes(key)) return;
+
+        const data = (typeof branchDatabase !== "undefined") ? branchDatabase[key] : null;
+        if (!data || !Array.isArray(data.adimlar)) return;
+
+        const hints = [
+            [["Photoshop", "Alt + Ctrl + I", "Image → Image Size"], ["Illustrator", "Shift + O", "Artboard Tool"]],
+            [["Photoshop", "F7", "Layers"], ["Illustrator", "F7", "Layers"]],
+            [["Photoshop", "Ctrl + T", "Free Transform"], ["Illustrator", "Ctrl + Y", "Outline / Preview"]],
+            [["Photoshop", "Shift + Ctrl + K", "Color Settings"], ["Illustrator", "Alt + Ctrl + P", "Document Setup"]],
+            [["Photoshop", "Ctrl + J", "Duplicate Layer"], ["Illustrator", "Ctrl + G", "Group"]],
+            [["Photoshop", "F7", "Layers / opacity"], ["Illustrator", "Ctrl + 7", "Clipping Mask"]],
+            [["Photoshop", "Alt + Ctrl + C", "Canvas Size"], ["Illustrator", "Alt + Ctrl + P", "Document Setup"]],
+            [["Photoshop", "Ctrl + O", "Open"], ["Illustrator", "Ctrl + Shift + P", "Place"]]
+        ];
+
+        data.adimlar.forEach((_, i) => {
+            const el = document.getElementById(`step_input_${i}`);
+            if (!el || !el.parentElement) return;
+            const old = el.parentElement.querySelector(".step-shortcut-hint");
+            if (old) old.remove();
+
+            const pair = hints[i] || hints[hints.length - 1];
+            const box = document.createElement("div");
+            box.className = "step-shortcut-hint";
+            box.innerHTML = `
+              <span class="shortcut-label">PROGRAM KISAYOLU</span>
+              <span><b>Photoshop:</b> ${escapeHtmlSafe(pair[0][1])} — ${escapeHtmlSafe(pair[0][2])}</span>
+              <span><b>Illustrator:</b> ${escapeHtmlSafe(pair[1][1])} — ${escapeHtmlSafe(pair[1][2])}</span>`;
+            el.parentElement.appendChild(box);
+        });
+    }
+
     // --- Merci türüne göre taraf/esas etiketlerini uyarlar ---
     const merciEtiketleri = {
         hukuk: { esas: "Esas Numarası:", taraflar: "Taraflar (Davacı / Davalı):", taraflarPh: "Örn: Davacı: ... / Davalı: ..." },
@@ -765,6 +904,8 @@ body.locked .container{display:none;}
         icra: { esas: "Esas / Takip Numarası:", taraflar: "Taraflar (Alacaklı / Borçlu):", taraflarPh: "Örn: Alacaklı: ... / Borçlu: ..." }
     };
     function updateMerciAlanlari() {
+        try { renderDesignProgramGuide(); } catch (e) { console.warn('Program rehberi:', e); }
+        try { renderStepShortcutHints(); } catch (e) { console.warn('Kısayol ipuçları:', e); }
         const tur = document.getElementById('merciTuru').value;
         const cfg = merciEtiketleri[tur] || merciEtiketleri.hukuk;
         const esasLabel = document.getElementById('esasLabel');
