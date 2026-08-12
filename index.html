@@ -70,6 +70,19 @@
 .masraf-toplam{margin-top:14px;padding:12px 14px;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:6px;font-weight:bold;font-family:sans-serif;color:#065f46;display:flex;justify-content:space-between;font-size:.95rem}
 @media (max-width:600px){.heyet-grid{grid-template-columns:1fr}.masraf-row{grid-template-columns:1fr}}
 
+/* Erişim Kodu Kilidi */
+#accessLockOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e293b,#0f172a);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:sans-serif;}
+.lock-card{background:#fff;border-radius:12px;padding:36px 32px;max-width:400px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center;}
+.lock-card h2{margin:0 0 8px;font-size:1.25rem;color:#1e293b;}
+.lock-card p{margin:0 0 20px;font-size:.88rem;color:#64748b;line-height:1.5;}
+.lock-card input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:6px;font-size:1rem;text-align:center;letter-spacing:2px;box-sizing:border-box;margin-bottom:12px;}
+.lock-card button{width:100%;padding:12px;background:#2c3e50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.95rem;cursor:pointer;}
+.lock-card button:hover{background:#1a252f;}
+.lock-error{display:none;margin-top:10px;color:#dc2626;font-size:.82rem;font-weight:600;}
+.lock-contact{margin-top:18px;font-size:.78rem;color:#94a3b8;}
+body.locked{overflow:hidden;}
+body.locked .container{display:none;}
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -78,6 +91,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
+
+<div id="accessLockOverlay">
+    <div class="lock-card">
+        <h2>🔒 Bilirkişi Rapor Aracı</h2>
+        <p>Bu araç yalnızca erişim kodu satın alan kullanıcılara açıktır. Lütfen size iletilen erişim kodunu giriniz.</p>
+        <input type="text" id="accessCodeInput" placeholder="ERİŞİM KODU" autocomplete="off" onkeydown="if(event.key==='Enter')checkAccessCode()">
+        <button type="button" onclick="checkAccessCode()">GİRİŞ YAP</button>
+        <div class="lock-error" id="lockError">Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.</div>
+        <div class="lock-contact">Erişim kodunuz yoksa satın almak için: <b>[İLETİŞİM BİLGİNİZİ BURAYA YAZIN]</b></div>
+    </div>
+</div>
 
 <div class="container">
     <h1>BİLİRKİŞİ RAPOR TASLAĞI<br><span style="font-size:0.65em;font-weight:normal;">(Kişisel Taslak Oluşturma Aracı)</span></h1>
@@ -338,6 +362,54 @@
     
     <div id="output"></div>
 </div>
+
+<script>
+    // --- ERİŞİM KODU KİLİDİ ---
+    // Kodlar düz metin olarak DEĞİL, SHA-256 hash'i olarak saklanır (sayfa kaynağına bakan biri
+    // gerçek kodu doğrudan göremez). Yeni kod eklemek için ayrıca verdiğim
+    // "erisim-kodu-uretici.html" aracını kullanın: kodu yazın, çıkan hash'i aşağıdaki listeye ekleyin.
+    const validAccessCodeHashes = [
+        "4aa05c62bc51969c5466a0bd884105fa76e806b034362effd5439368446aacba" // örnek/demo kod: DEMO2026
+    ];
+    const ACCESS_STORAGE_KEY = 'bk_access_granted_v1';
+
+    async function sha256Hex(text) {
+        const enc = new TextEncoder().encode(text.trim().toUpperCase());
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkAccessCode() {
+        const input = document.getElementById('accessCodeInput');
+        const code = input.value.trim();
+        const errorBox = document.getElementById('lockError');
+        if (!code) return;
+        const hash = await sha256Hex(code);
+        if (validAccessCodeHashes.includes(hash)) {
+            try { localStorage.setItem(ACCESS_STORAGE_KEY, '1'); } catch (e) {}
+            unlockSite();
+        } else {
+            errorBox.style.display = 'block';
+            input.value = '';
+            input.focus();
+        }
+    }
+
+    function unlockSite() {
+        document.getElementById('accessLockOverlay').style.display = 'none';
+        document.body.classList.remove('locked');
+    }
+
+    function checkStoredAccess() {
+        let granted = false;
+        try { granted = localStorage.getItem(ACCESS_STORAGE_KEY) === '1'; } catch (e) {}
+        if (granted) {
+            unlockSite();
+        } else {
+            document.body.classList.add('locked');
+        }
+    }
+</script>
 
 <script>
     let img1 = null, img2 = null;
@@ -2532,6 +2604,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        checkStoredAccess();
         updateMerciAlanlari();
         addQARow();
         checkForExistingDraft();
