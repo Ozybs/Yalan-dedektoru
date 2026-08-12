@@ -44,6 +44,32 @@
 .ek-file-name{flex:1}
 .ek-remove{width:auto!important;margin:0!important;padding:5px 9px!important;background:#64748b!important}
 
+/* Taslak Kaydet / Yükle Bar */
+.draft-bar{position:sticky;top:0;z-index:50;display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#1e293b;color:#fff;padding:10px 16px;border-radius:6px;margin-bottom:18px;font-family:sans-serif;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.draft-bar .draft-status{flex:1;font-size:.82rem;color:#cbd5e1;min-width:160px}
+.draft-btn{width:auto!important;flex:none!important;margin:0!important;padding:8px 13px!important;font-size:.82rem!important;font-weight:600!important;border-radius:5px!important}
+.draft-btn.save{background:#16a34a!important}
+.draft-btn.save:hover{background:#15803d!important}
+.draft-btn.clear{background:#b91c1c!important}
+.draft-btn.clear:hover{background:#991b1b!important}
+.draft-banner{display:none;font-family:sans-serif;background:#eff6ff;border:1px solid #93c5fd;border-left:5px solid #2563eb;border-radius:6px;padding:12px 14px;margin-bottom:16px;font-size:.88rem;color:#1e3a8a}
+.draft-banner .draft-banner-btns{margin-top:9px;display:flex;gap:8px}
+.draft-banner button{width:auto;flex:none;padding:7px 12px;font-size:.82rem}
+
+/* Heyet (Kurul) Alanı */
+.heyet-box{margin-top:14px;padding:14px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px}
+.heyet-member{border:1px solid #cbd5e1;border-radius:6px;background:#fff;padding:12px;margin-top:10px}
+.heyet-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.heyet-remove{width:auto!important;margin-top:8px!important;background:#64748b!important;padding:6px 10px!important;font-size:.8rem!important}
+.heyet-add{width:auto!important;background:#334155!important;padding:8px 14px!important;font-size:.85rem!important;margin-top:6px!important}
+
+/* Ücret / Masraf Bildirimi Alanı */
+.masraf-row{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;align-items:end;margin-top:10px;padding:10px;background:#fff;border:1px solid #cbd5e1;border-radius:6px}
+.masraf-remove{width:auto!important;background:#64748b!important;padding:8px 10px!important;font-size:.8rem!important}
+.masraf-add{width:auto!important;background:#334155!important;padding:8px 14px!important;font-size:.85rem!important;margin-top:10px!important}
+.masraf-toplam{margin-top:14px;padding:12px 14px;background:#ecfdf5;border:1px solid #6ee7b7;border-radius:6px;font-weight:bold;font-family:sans-serif;color:#065f46;display:flex;justify-content:space-between;font-size:.95rem}
+@media (max-width:600px){.heyet-grid{grid-template-columns:1fr}.masraf-row{grid-template-columns:1fr}}
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -55,7 +81,21 @@
 
 <div class="container">
     <h1>BİLİRKİŞİ RAPOR TASLAĞI<br><span style="font-size:0.65em;font-weight:normal;">(Kişisel Taslak Oluşturma Aracı)</span></h1>
-    
+
+    <div class="draft-bar">
+        <span class="draft-status" id="draftStatus">Otomatik kayıt aktif — sekmeyi kapatsanız bile verileriniz bu tarayıcıda saklanır.</span>
+        <button type="button" class="draft-btn save" onclick="manualSaveDraft()">💾 Taslağı Şimdi Kaydet</button>
+        <button type="button" class="draft-btn clear" onclick="clearDraft()">🗑️ Taslağı Sil</button>
+    </div>
+
+    <div class="draft-banner" id="draftBanner">
+        <b>Kaydedilmiş bir taslağınız bulundu.</b> Önceki oturumdan kalan form verilerini geri yüklemek ister misiniz?
+        <div class="draft-banner-btns">
+            <button type="button" style="background:#2563eb;color:#fff;border:none;border-radius:4px;" onclick="applyStoredDraft()">Evet, Taslağı Yükle</button>
+            <button type="button" style="background:#94a3b8;color:#fff;border:none;border-radius:4px;" onclick="dismissDraftBanner()">Hayır, Boş Başla</button>
+        </div>
+    </div>
+
     <div class="section-title">1. MAHKEME, DOSYA VE RAPOR TÜRÜ BİLGİLERİ</div>
     <div class="form-group">
         <label>Rapor Türü:</label>
@@ -196,7 +236,35 @@
         <textarea id="ekler" placeholder="Eklerle ilgili açıklama, belge adı, fotoğraf açıklaması, tablo/kroki bilgisi vb."></textarea>
     </div>
 
-    <div class="section-title">6. TEKNİK SONUÇ VE KANAAT</div>
+    <div class="section-title">6. ÜCRET VE MASRAF BİLDİRİMİ</div>
+    <div class="form-group">
+        <div style="font-size:.82rem;color:#64748b;margin:0 0 9px;">
+            Bilirkişilik ücret tarifesi kapsamındaki inceleme ücretiniz ile inceleme sırasında yaptığınız (ulaşım, numune, laboratuvar, uzman görüşü, fotokopi vb.) masrafları buradan bildirebilirsiniz. Bu bölüm isteğe bağlıdır; doldurulursa rapora ayrı bir bölüm olarak eklenir.
+        </div>
+        <div class="heyet-grid" style="grid-template-columns:1fr 1fr;">
+            <div>
+                <label>Bilirkişilik Ücreti (Tarifeye Göre, TL):</label>
+                <input type="number" id="bilirkisiUcreti" placeholder="Örn: 5000" min="0" step="0.01" oninput="updateMasrafToplam()">
+            </div>
+            <div>
+                <label>İnceleme İçin Harcanan Süre:</label>
+                <input type="text" id="incelemeSuresi" placeholder="Örn: 3 iş günü / 14 saat">
+            </div>
+        </div>
+        <label style="margin-top:14px;display:block;">Masraf Kalemleri:</label>
+        <div id="masraf-list"></div>
+        <button type="button" class="masraf-add" onclick="addMasrafRow()">+ Masraf Kalemi Ekle</button>
+        <div class="masraf-toplam">
+            <span>TOPLAM (Ücret + Masraflar):</span>
+            <span id="masrafToplamGoster">0,00 TL</span>
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+            <label>Ücret / Masraf Bildirimine İlişkin Ek Açıklama (varsa):</label>
+            <textarea id="masrafAciklama" style="height:55px;" placeholder="Örn: Ulaşım masrafı fatura/fiş ekte sunulmuştur..."></textarea>
+        </div>
+    </div>
+
+    <div class="section-title">7. TEKNİK SONUÇ VE KANAAT</div>
     <div class="form-group">
         <label>Mahkemenin / Merciin Sorduğu Sorular ve Bilirkişi Kanaati:</label>
         <div style="font-size:.82rem;color:#64748b;margin:0 0 9px;">
@@ -220,9 +288,12 @@
         </div>
     </div>
 
-<div class="section-title">7. BİLİRKİŞİ BİLGİLERİ</div>
+<div class="section-title">8. BİLİRKİŞİ BİLGİLERİ</div>
+    <div class="form-group" style="background:#f8fafc;padding:12px 14px;border:1px solid #cbd5e1;border-radius:6px;">
+        <label style="font-weight:normal;cursor:pointer;margin:0;"><input type="checkbox" id="heyetVarMi" style="width:auto;margin-right:8px;" onchange="toggleHeyetAlani()"><b>Bu rapor Heyet (Kurul) tarafından hazırlanmıştır.</b> — Birden fazla bilirkişinin birlikte görevlendirildiği dosyalarda işaretleyiniz.</label>
+    </div>
     <div class="form-group">
-        <label>Adı Soyadı:</label>
+        <label id="bkAdLabel">Adı Soyadı:</label>
         <input type="text" id="bilirkişiAd" placeholder="Örn: Ahmet Yılmaz">
     </div>
     <div class="form-group">
@@ -234,13 +305,22 @@
         <input type="text" id="bilirkişiSicil" placeholder="Örn: 12345">
     </div>
 
-    <div class="section-title">8. BEYANLAR</div>
+    <div class="heyet-box" id="heyetContainer" style="display:none;">
+        <b>HEYET (KURUL) ÜYELERİ</b>
+        <div style="font-size:.82rem;color:#64748b;margin:6px 0 4px;">
+            Yukarıdaki bilgiler heyet başkanına aittir. Diğer heyet üyelerini aşağıdan ekleyiniz; her üye rapora imza sahibi olarak yazılır.
+        </div>
+        <div id="heyet-list"></div>
+        <button type="button" class="heyet-add" onclick="addHeyetRow()">+ Heyet Üyesi Ekle</button>
+    </div>
+
+    <div class="section-title">9. BEYANLAR</div>
     <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
         <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="tarafsizlikBeyani" style="width: auto; margin-right: 8px;"><b>Tarafsızlık Beyanı:</b> Hakkımda 6754 sayılı Bilirkişilik Kanunu ve ilgili mevzuat uyarınca reddi gerektirir bir sebep bulunmadığını, görevimi tarafsızlık ve bağımsızlık ilkelerine uygun olarak yerine getirdiğimi beyan ederim.</label>
         <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="aiOnayi" style="width: auto; margin-right: 8px;"><b>Otomatik Metin Önerisi Onayı:</b> Bu form üzerindeki otomatik metin önerisi aracı yardımıyla üretilmiş olabilecek tüm metinleri bilirkişi olarak bizzat inceleyip teknik doğruluğunu onayladığımı beyan ederim.</label>
     </div>
 
-    <div class="section-title">9. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
+    <div class="section-title">10. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
     <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
         <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="talepEkSure" style="width: auto; margin-right: 8px;"><b>Ek Süre Talebi:</b> İncelemenin tamamlanabilmesi için yasal ek süre verilmesi arz olunur.</label>
         <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="talepKesif" style="width: auto; margin-right: 8px;"><b>Keşif / Kurul Teşkili Talebi:</b> Mahalinde keşif icrası ve/veya heyet teşkili gereklidir.</label>
@@ -312,6 +392,101 @@
             if (soru || kanaat) items.push({ soru, kanaat });
         });
         return items;
+    }
+
+    // --- HEYET (KURUL) DESTEĞİ ---
+    let heyetRowCount = 0;
+    function toggleHeyetAlani() {
+        const checked = document.getElementById('heyetVarMi').checked;
+        const container = document.getElementById('heyetContainer');
+        const bkAdLabel = document.getElementById('bkAdLabel');
+        container.style.display = checked ? 'block' : 'none';
+        if (bkAdLabel) bkAdLabel.textContent = checked ? "Adı Soyadı (Heyet Başkanı):" : "Adı Soyadı:";
+        if (checked && document.getElementById('heyet-list').children.length === 0) {
+            addHeyetRow();
+        }
+    }
+    function addHeyetRow() {
+        heyetRowCount++;
+        const id = heyetRowCount;
+        const wrap = document.createElement('div');
+        wrap.className = 'heyet-member';
+        wrap.id = `heyet-row-${id}`;
+        wrap.innerHTML = `
+            <b>Heyet Üyesi ${id}</b>
+            <div class="heyet-grid">
+                <div><label>Adı Soyadı:</label><input type="text" id="heyet-ad-${id}" placeholder="Örn: Ayşe Kaya"></div>
+                <div><label>Unvanı:</label><input type="text" id="heyet-unvan-${id}" placeholder="Örn: Makine Mühendisi"></div>
+                <div><label>Sicil No:</label><input type="text" id="heyet-sicil-${id}" placeholder="Örn: 67890"></div>
+            </div>
+            <button type="button" class="heyet-remove" onclick="removeHeyetRow(${id})">Bu Üyeyi Kaldır</button>
+        `;
+        document.getElementById('heyet-list').appendChild(wrap);
+        return id;
+    }
+    function removeHeyetRow(id) {
+        const el = document.getElementById(`heyet-row-${id}`);
+        if (el) el.remove();
+    }
+    function collectHeyet() {
+        const rows = document.querySelectorAll('#heyet-list .heyet-member');
+        const items = [];
+        rows.forEach(row => {
+            const idMatch = row.id.match(/heyet-row-(\d+)/);
+            if (!idMatch) return;
+            const ad = document.getElementById(`heyet-ad-${idMatch[1]}`)?.value.trim();
+            const unvan = document.getElementById(`heyet-unvan-${idMatch[1]}`)?.value.trim();
+            const sicil = document.getElementById(`heyet-sicil-${idMatch[1]}`)?.value.trim();
+            if (ad || unvan || sicil) items.push({ ad, unvan, sicil });
+        });
+        return items;
+    }
+
+    // --- ÜCRET VE MASRAF BİLDİRİMİ ---
+    let masrafRowCount = 0;
+    function addMasrafRow() {
+        masrafRowCount++;
+        const id = masrafRowCount;
+        const wrap = document.createElement('div');
+        wrap.className = 'masraf-row';
+        wrap.id = `masraf-row-${id}`;
+        wrap.innerHTML = `
+            <div><label>Masraf Açıklaması:</label><input type="text" id="masraf-aciklama-${id}" placeholder="Örn: Ulaşım / Numune / Laboratuvar Analizi" oninput="updateMasrafToplam()"></div>
+            <div><label>Tutar (TL):</label><input type="number" id="masraf-tutar-${id}" min="0" step="0.01" placeholder="0.00" oninput="updateMasrafToplam()"></div>
+            <button type="button" class="masraf-remove" onclick="removeMasrafRow(${id})">Kaldır</button>
+        `;
+        document.getElementById('masraf-list').appendChild(wrap);
+        updateMasrafToplam();
+        return id;
+    }
+    function removeMasrafRow(id) {
+        const el = document.getElementById(`masraf-row-${id}`);
+        if (el) el.remove();
+        updateMasrafToplam();
+    }
+    function collectMasraf() {
+        const rows = document.querySelectorAll('#masraf-list .masraf-row');
+        const items = [];
+        rows.forEach(row => {
+            const idMatch = row.id.match(/masraf-row-(\d+)/);
+            if (!idMatch) return;
+            const aciklama = document.getElementById(`masraf-aciklama-${idMatch[1]}`)?.value.trim();
+            const tutarRaw = document.getElementById(`masraf-tutar-${idMatch[1]}`)?.value;
+            const tutar = parseFloat(tutarRaw);
+            if (aciklama || (!isNaN(tutar) && tutar > 0)) items.push({ aciklama, tutar: isNaN(tutar) ? 0 : tutar });
+        });
+        return items;
+    }
+    function formatTL(n) {
+        return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL';
+    }
+    function updateMasrafToplam() {
+        const ucret = parseFloat(document.getElementById('bilirkisiUcreti')?.value) || 0;
+        const masraflar = collectMasraf();
+        const masrafToplam = masraflar.reduce((sum, m) => sum + (m.tutar || 0), 0);
+        const genelToplam = ucret + masrafToplam;
+        const el = document.getElementById('masrafToplamGoster');
+        if (el) el.textContent = formatTL(genelToplam);
     }
 
     const branchDatabase = {
@@ -1806,6 +1981,12 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const tarafsizlikBeyani = document.getElementById('tarafsizlikBeyani') ? document.getElementById('tarafsizlikBeyani').checked : false;
         const aiOnayi = document.getElementById('aiOnayi') ? document.getElementById('aiOnayi').checked : false;
         const qaItems = (typeof collectQA === 'function') ? collectQA() : [];
+        const heyetVarMi = document.getElementById('heyetVarMi') ? document.getElementById('heyetVarMi').checked : false;
+        const heyetUyeleri = (heyetVarMi && typeof collectHeyet === 'function') ? collectHeyet() : [];
+        const bilirkisiUcreti = parseFloat(document.getElementById('bilirkisiUcreti')?.value) || 0;
+        const incelemeSuresi = document.getElementById('incelemeSuresi') ? document.getElementById('incelemeSuresi').value.trim() : "";
+        const masrafKalemleri = (typeof collectMasraf === 'function') ? collectMasraf() : [];
+        const masrafAciklama = document.getElementById('masrafAciklama') ? document.getElementById('masrafAciklama').value.trim() : "";
 
         if (!mahkeme || !esas || !selectedKey) {
             alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun.");
@@ -1834,7 +2015,11 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         report += `\n${raporBasligi}\n\n`;
 
         report += `1. GÖREVLENDİRME VE USUL:\n`;
-        report += `Yukarıda esas numarası yazılı dosya kapsamında ${branchData.adi} alanında teknik inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n`;
+        if (heyetVarMi && heyetUyeleri.length > 0) {
+            report += `Yukarıda esas numarası yazılı dosya kapsamında ${branchData.adi} alanında teknik inceleme yapmak üzere, aşağıda kimlik bilgileri yazılı ${heyetUyeleri.length + 1} kişilik bilirkişi heyeti (kurulu) olarak görevlendirilmiş bulunmaktayız.\n`;
+        } else {
+            report += `Yukarıda esas numarası yazılı dosya kapsamında ${branchData.adi} alanında teknik inceleme yapmak üzere bilirkişi olarak görevlendirilmiş bulunmaktayım.\n`;
+        }
         if (gorevlendirme) report += `Görevlendirme Tarihi: ${gorevlendirme}\n`;
         if (gorevlendirmeSayi) report += `Görevlendirme Yazısının Sayısı: ${gorevlendirmeSayi}\n`;
         report += `Hakkımda 6754 sayılı Bilirkişilik Kanunu ve ilgili mevzuat uyarınca reddi gerektirir bir sebep bulunmadığını, görevimi tarafsızlık ve bağımsızlık ilkelerine uygun olarak yerine getirdiğimi beyan ederim.\n`;
@@ -1894,6 +2079,24 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             bolumNo++;
         }
 
+        const masrafToplam = masrafKalemleri.reduce((sum, m) => sum + (m.tutar || 0), 0);
+        const genelToplamUcret = bilirkisiUcreti + masrafToplam;
+        if (bilirkisiUcreti > 0 || masrafKalemleri.length > 0 || masrafAciklama) {
+            report += `${bolumNo}. ÜCRET VE MASRAF BİLDİRİMİ:\n`;
+            if (incelemeSuresi) report += `İnceleme İçin Harcanan Süre: ${incelemeSuresi}\n`;
+            if (bilirkisiUcreti > 0) report += `Bilirkişilik Ücreti (Tarifeye Göre): ${formatTL(bilirkisiUcreti)}\n`;
+            if (masrafKalemleri.length > 0) {
+                report += `Masraf Kalemleri:\n`;
+                masrafKalemleri.forEach(m => {
+                    report += `   - ${m.aciklama || "Belirtilmemiştir"}: ${formatTL(m.tutar || 0)}\n`;
+                });
+            }
+            report += `TOPLAM TALEP EDİLEN ÜCRET VE MASRAF: ${formatTL(genelToplamUcret)}\n`;
+            if (masrafAciklama) report += `Açıklama: ${masrafAciklama}\n`;
+            report += `\n`;
+            bolumNo++;
+        }
+
         let talepler = [];
         if (document.getElementById('talepEkSure').checked) talepler.push("Yasal ek süre verilmesi");
         if (document.getElementById('talepKesif').checked) talepler.push("Mahalinde keşif icrası ve/veya heyet teşkili");
@@ -1903,11 +2106,26 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
         report += `Arz olunur.\n\n`;
         if (raporTarihi) report += `${raporTarihi}\n\n`;
-        report += `Bilirkişi\n`;
-        if (bkAd) report += `${bkAd}\n`;
-        if (bkUnvan) report += `${bkUnvan}\n`;
-        if (bkSicil) report += `Sicil No: ${bkSicil}\n`;
-        if (!bkAd && !bkUnvan) report += `Ad Soyad / Unvan\n`;
+
+        if (heyetVarMi && heyetUyeleri.length > 0) {
+            report += `Bilirkişi Heyeti\n\n`;
+            report += `Heyet Başkanı:\n`;
+            if (bkAd) report += `${bkAd}\n`;
+            if (bkUnvan) report += `${bkUnvan}\n`;
+            if (bkSicil) report += `Sicil No: ${bkSicil}\n`;
+            heyetUyeleri.forEach((u, i) => {
+                report += `\nHeyet Üyesi ${i + 1}:\n`;
+                if (u.ad) report += `${u.ad}\n`;
+                if (u.unvan) report += `${u.unvan}\n`;
+                if (u.sicil) report += `Sicil No: ${u.sicil}\n`;
+            });
+        } else {
+            report += `Bilirkişi\n`;
+            if (bkAd) report += `${bkAd}\n`;
+            if (bkUnvan) report += `${bkUnvan}\n`;
+            if (bkSicil) report += `Sicil No: ${bkSicil}\n`;
+            if (!bkAd && !bkUnvan) report += `Ad Soyad / Unvan\n`;
+        }
 
         return report;
     }
@@ -2142,9 +2360,184 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         handleEkFiles(input);
     }
 
+    // --- TASLAK KAYDET / YÜKLE (localStorage) ---
+    const DRAFT_KEY = 'bilirkisiRaporTaslagi_v1';
+    let draftSaveTimer = null;
+    let draftSuppressAutosave = false;
+
+    function collectFormSnapshot() {
+        const data = {};
+        document.querySelectorAll('.container input[id], .container select[id], .container textarea[id]').forEach(el => {
+            if (el.type === 'file') return;
+            if (el.type === 'checkbox') {
+                data[el.id] = el.checked;
+            } else {
+                data[el.id] = el.value;
+            }
+        });
+        return data;
+    }
+
+    function persistDraft() {
+        try {
+            const snapshot = collectFormSnapshot();
+            localStorage.setItem(DRAFT_KEY, JSON.stringify({ savedAt: new Date().toISOString(), data: snapshot }));
+            const status = document.getElementById('draftStatus');
+            if (status) {
+                const t = new Date();
+                const hh = String(t.getHours()).padStart(2, '0');
+                const mm = String(t.getMinutes()).padStart(2, '0');
+                const ss = String(t.getSeconds()).padStart(2, '0');
+                status.textContent = `Taslak otomatik kaydedildi (${hh}:${mm}:${ss}) — sekmeyi kapatsanız bile veriler saklanır.`;
+            }
+        } catch (e) {
+            const status = document.getElementById('draftStatus');
+            if (status) status.textContent = 'Taslak kaydedilemedi (tarayıcı depolama alanı dolu olabilir).';
+        }
+    }
+
+    function scheduleDraftSave() {
+        if (draftSuppressAutosave) return;
+        clearTimeout(draftSaveTimer);
+        draftSaveTimer = setTimeout(persistDraft, 900);
+    }
+
+    function manualSaveDraft() {
+        persistDraft();
+        alert('Taslak bu tarayıcıya kaydedildi. Not: Yüklediğiniz dosyalar (fotoğraf, PDF vb.) tarayıcı güvenliği nedeniyle taslakla birlikte saklanamaz; sekmeyi yeniden açtığınızda dosyaları tekrar yüklemeniz gerekir.');
+    }
+
+    function clearDraft() {
+        if (!confirm('Kaydedilmiş taslak silinsin mi? Bu işlem geri alınamaz.')) return;
+        localStorage.removeItem(DRAFT_KEY);
+        const status = document.getElementById('draftStatus');
+        if (status) status.textContent = 'Kaydedilmiş taslak silindi. Otomatik kayıt aktif — yeni girdikçe yeniden kaydedilecek.';
+    }
+
+    function dismissDraftBanner() {
+        const banner = document.getElementById('draftBanner');
+        if (banner) banner.style.display = 'none';
+    }
+
+    function applyStoredDraft() {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        dismissDraftBanner();
+        if (!raw) return;
+        let parsed;
+        try { parsed = JSON.parse(raw); } catch (e) { return; }
+        restoreDraft(parsed.data || {});
+        const status = document.getElementById('draftStatus');
+        if (status) status.textContent = 'Kaydedilmiş taslak yüklendi. Dosya eklerini (varsa) yeniden seçmeniz gerekir.';
+    }
+
+    function restoreDraft(data) {
+        if (!data) return;
+        draftSuppressAutosave = true;
+
+        // 1) Branş -> teknik inceleme adımlarını ve branşa özel alanı oluşturur
+        if (data['bransSecim']) {
+            document.getElementById('bransSecim').value = data['bransSecim'];
+            loadBranchParameters();
+        }
+        // 2) Rapor türü -> Ek Rapor alanlarını oluşturur
+        if (data['raporTuru']) {
+            document.getElementById('raporTuru').value = data['raporTuru'];
+            toggleEkRaporAlani();
+        }
+        // 3) Merci türü -> etiketleri günceller
+        if (data['merciTuru']) {
+            document.getElementById('merciTuru').value = data['merciTuru'];
+            updateMerciAlanlari();
+        }
+        // 4) Heyet üyeleri
+        if (data['heyetVarMi']) {
+            document.getElementById('heyetVarMi').checked = true;
+            toggleHeyetAlani();
+            document.getElementById('heyet-list').innerHTML = '';
+            heyetRowCount = 0;
+            const heyetIds = new Set();
+            Object.keys(data).forEach(k => {
+                const m = k.match(/^heyet-ad-(\d+)$/) || k.match(/^heyet-unvan-(\d+)$/) || k.match(/^heyet-sicil-(\d+)$/);
+                if (m) heyetIds.add(parseInt(m[1], 10));
+            });
+            Array.from(heyetIds).sort((a, b) => a - b).forEach(oldId => {
+                const newId = addHeyetRow();
+                ['ad', 'unvan', 'sicil'].forEach(f => {
+                    const val = data[`heyet-${f}-${oldId}`];
+                    const el = document.getElementById(`heyet-${f}-${newId}`);
+                    if (el && val !== undefined) el.value = val;
+                });
+            });
+        }
+        // 5) Soru / Kanaat satırları
+        const qaIds = new Set();
+        Object.keys(data).forEach(k => {
+            const m = k.match(/^qa-soru-(\d+)$/) || k.match(/^qa-kanaat-(\d+)$/);
+            if (m) qaIds.add(parseInt(m[1], 10));
+        });
+        if (qaIds.size > 0) {
+            document.getElementById('qa-list').innerHTML = '';
+            qaRowCount = 0;
+            Array.from(qaIds).sort((a, b) => a - b).forEach(oldId => {
+                const newId = addQARow();
+                const soru = data[`qa-soru-${oldId}`];
+                const kanaat = data[`qa-kanaat-${oldId}`];
+                if (soru !== undefined) document.getElementById(`qa-soru-${newId}`).value = soru;
+                if (kanaat !== undefined) document.getElementById(`qa-kanaat-${newId}`).value = kanaat;
+            });
+        }
+        // 6) Masraf kalemleri
+        const masrafIds = new Set();
+        Object.keys(data).forEach(k => {
+            const m = k.match(/^masraf-aciklama-(\d+)$/) || k.match(/^masraf-tutar-(\d+)$/);
+            if (m) masrafIds.add(parseInt(m[1], 10));
+        });
+        if (masrafIds.size > 0) {
+            document.getElementById('masraf-list').innerHTML = '';
+            masrafRowCount = 0;
+            Array.from(masrafIds).sort((a, b) => a - b).forEach(oldId => {
+                const newId = addMasrafRow();
+                const aciklama = data[`masraf-aciklama-${oldId}`];
+                const tutar = data[`masraf-tutar-${oldId}`];
+                if (aciklama !== undefined) document.getElementById(`masraf-aciklama-${newId}`).value = aciklama;
+                if (tutar !== undefined) document.getElementById(`masraf-tutar-${newId}`).value = tutar;
+            });
+        }
+
+        // 7) Geriye kalan tüm basit alanları (id eşleşmesiyle) doldurur
+        Object.keys(data).forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.type === 'checkbox') {
+                el.checked = !!data[id];
+            } else {
+                el.value = data[id];
+            }
+        });
+
+        updateMasrafToplam();
+        draftSuppressAutosave = false;
+    }
+
+    function checkForExistingDraft() {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        try {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.data && Object.keys(parsed.data).length > 0) {
+                const banner = document.getElementById('draftBanner');
+                if (banner) banner.style.display = 'block';
+            }
+        } catch (e) { /* bozuk taslak - yok say */ }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         updateMerciAlanlari();
         addQARow();
+        checkForExistingDraft();
+        // Formdaki her değişiklikte otomatik taslak kaydı (debounce ile)
+        document.querySelector('.container').addEventListener('input', scheduleDraftSave);
+        document.querySelector('.container').addEventListener('change', scheduleDraftSave);
     });
 
 </script>
