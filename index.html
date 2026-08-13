@@ -2304,9 +2304,14 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     // Dönüştür" butonunu kullansın ya da kullanmasın) uygulanır.
     function capitalizeSentences(text) {
         if (!text) return text;
-        return text.replace(/(^\s*|[.!?]\s+)([a-zçğıöşü])/g, (match, sep, letter) => {
-            return sep + letter.toLocaleUpperCase('tr-TR');
-        });
+        let t = text;
+        // Cümle sonu noktalama işaretinden (. ! ?) hemen sonra harf geliyorsa
+        // (aralarında boşluk olsun ya da olmasın — kullanıcı "eksik.yanlış" gibi
+        // boşluksuz da yazmış olabilir), bir boşluk ekler ve o harfi büyütür.
+        t = t.replace(/([.!?])\s*([a-zçğıöşü])/g, (m, punct, letter) => punct + ' ' + letter.toLocaleUpperCase('tr-TR'));
+        // Metnin en başındaki harfi de büyütür.
+        t = t.replace(/^\s*([a-zçğıöşü])/, (m, letter) => m.slice(0, m.length - 1) + letter.toLocaleUpperCase('tr-TR'));
+        return t;
     }
 
     function cleanColloquial(text) {
@@ -2333,7 +2338,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
     function splitIntoSentences(text) {
         return cleanColloquial(text)
-            .split(/(?<=[.!?])\s+|\n+/)
+            .split(/(?<=[.!?])\s*|\n+/)
             .map(x => x.trim())
             .filter(Boolean);
     }
