@@ -958,8 +958,8 @@ body.locked .container{display:none;}
         rows.forEach(row => {
             const idMatch = row.id.match(/qa-row-(\d+)/);
             if (!idMatch) return;
-            const soru = document.getElementById(`qa-soru-${idMatch[1]}`)?.value.trim();
-            const kanaat = document.getElementById(`qa-kanaat-${idMatch[1]}`)?.value.trim();
+            const soru = capitalizeSentences(document.getElementById(`qa-soru-${idMatch[1]}`)?.value.trim() || "");
+            const kanaat = capitalizeSentences(document.getElementById(`qa-kanaat-${idMatch[1]}`)?.value.trim() || "");
             if (soru || kanaat) items.push({ soru, kanaat });
         });
         return items;
@@ -1041,7 +1041,7 @@ body.locked .container{display:none;}
         rows.forEach(row => {
             const idMatch = row.id.match(/masraf-row-(\d+)/);
             if (!idMatch) return;
-            const aciklama = document.getElementById(`masraf-aciklama-${idMatch[1]}`)?.value.trim();
+            const aciklama = capitalizeFirstTR(document.getElementById(`masraf-aciklama-${idMatch[1]}`)?.value.trim() || "");
             const tutarRaw = document.getElementById(`masraf-tutar-${idMatch[1]}`)?.value;
             const tutar = parseFloat(tutarRaw);
             if (aciklama || (!isNaN(tutar) && tutar > 0)) items.push({ aciklama, tutar: isNaN(tutar) ? 0 : tutar });
@@ -2298,6 +2298,17 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         return t.charAt(0).toLocaleUpperCase('tr-TR') + t.slice(1);
     }
 
+    // Genel amaçlı imla düzeltmesi: metnin başındaki VE nokta(.), ünlem(!),
+    // soru işaretinden(?) sonra gelen her cümlenin ilk harfini büyütür.
+    // Rapora yazılan HER serbest metin alanına (kullanıcı "Rapor Diline
+    // Dönüştür" butonunu kullansın ya da kullanmasın) uygulanır.
+    function capitalizeSentences(text) {
+        if (!text) return text;
+        return text.replace(/(^\s*|[.!?]\s+)([a-zçğıöşü])/g, (match, sep, letter) => {
+            return sep + letter.toLocaleUpperCase('tr-TR');
+        });
+    }
+
     function cleanColloquial(text) {
         let t = text.trim();
         const replacements = [
@@ -2542,11 +2553,11 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const gorevlendirme = document.getElementById('gorevlendirme') ? document.getElementById('gorevlendirme').value.trim() : "";
         const gorevlendirmeSayi = document.getElementById('gorevlendirmeSayi') ? document.getElementById('gorevlendirmeSayi').value.trim() : "";
         const raporTarihi = document.getElementById('raporTarihi') ? document.getElementById('raporTarihi').value.trim() : "";
-        const kunye = document.getElementById('materyalKunyesi').value.trim();
-        const deliller = document.getElementById('delilListesi') ? document.getElementById('delilListesi').value.trim() : "";
-        const yontem = document.getElementById('incelemeYontemi') ? document.getElementById('incelemeYontemi').value.trim() : "";
+        const kunye = capitalizeSentences(document.getElementById('materyalKunyesi').value.trim());
+        const deliller = document.getElementById('delilListesi') ? capitalizeSentences(document.getElementById('delilListesi').value.trim()) : "";
+        const yontem = document.getElementById('incelemeYontemi') ? capitalizeSentences(document.getElementById('incelemeYontemi').value.trim()) : "";
         const eklerText = document.getElementById('ekler') ? document.getElementById('ekler').value.trim() : "";
-        const eklerTextLines = eklerText ? eklerText.split(/\n+/).map(l => l.trim()).filter(Boolean) : [];
+        const eklerTextLines = eklerText ? eklerText.split(/\n+/).map(l => capitalizeSentences(l.trim())).filter(Boolean) : [];
         const eklerFileNames = (typeof ekUploadedFiles !== "undefined" && ekUploadedFiles.length)
             ? ekUploadedFiles.map(f => f.name)
             : [];
@@ -2560,7 +2571,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             }
         });
         const ekler = eklerLines.join("\n");
-        const branchSpecial = document.getElementById('branchSpecial') ? document.getElementById('branchSpecial').value.trim() : "";
+        const branchSpecial = document.getElementById('branchSpecial') ? capitalizeSentences(document.getElementById('branchSpecial').value.trim()) : "";
         const selectedKey = document.getElementById('bransSecim').value;
         const bkAd = document.getElementById('bilirkişiAd') ? document.getElementById('bilirkişiAd').value.trim() : "";
         const bkUnvan = document.getElementById('bilirkişiUnvan') ? document.getElementById('bilirkişiUnvan').value.trim() : "";
@@ -2573,7 +2584,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const bilirkisiUcreti = parseFloat(document.getElementById('bilirkisiUcreti')?.value) || 0;
         const incelemeSuresi = document.getElementById('incelemeSuresi') ? document.getElementById('incelemeSuresi').value.trim() : "";
         const masrafKalemleri = (typeof collectMasraf === 'function') ? collectMasraf() : [];
-        const masrafAciklama = document.getElementById('masrafAciklama') ? document.getElementById('masrafAciklama').value.trim() : "";
+        const masrafAciklama = document.getElementById('masrafAciklama') ? capitalizeSentences(document.getElementById('masrafAciklama').value.trim()) : "";
 
         if (!mahkeme || !esas || !selectedKey) {
             alert("Lütfen mahkeme adını, esas numarasını ve bilirkişilik branşını eksiksiz doldurun.");
@@ -2614,9 +2625,9 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
         if (raporTuru === 'ek') {
             const onceki = document.getElementById('oncekiRaporTarihi') ? document.getElementById('oncekiRaporTarihi').value.trim() : "";
-            const itiraz = document.getElementById('itirazMetni') ? document.getElementById('itirazMetni').value.trim() : "";
-            const yeni = document.getElementById('yeniDeliller') ? document.getElementById('yeniDeliller').value.trim() : "";
-            const itirazCevap = document.getElementById('itirazCevabi') ? document.getElementById('itirazCevabi').value.trim() : "";
+            const itiraz = document.getElementById('itirazMetni') ? capitalizeSentences(document.getElementById('itirazMetni').value.trim()) : "";
+            const yeni = document.getElementById('yeniDeliller') ? capitalizeSentences(document.getElementById('yeniDeliller').value.trim()) : "";
+            const itirazCevap = document.getElementById('itirazCevabi') ? capitalizeSentences(document.getElementById('itirazCevabi').value.trim()) : "";
             report += `EK RAPORUN DAYANAĞI:\n`;
             if (onceki) report += `Önceki rapor tarihi: ${onceki}\n`;
             report += `İTİRAZ / TALEPLER:\n${itiraz || "Belirtilmemiştir."}\n\n`;
@@ -2636,7 +2647,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         let activeCount = 0;
         branchData.adimlar.forEach((st, i) => {
             const el = document.getElementById(`step_input_${i}`);
-            const val = el ? el.value.trim() : "";
+            const val = el ? capitalizeSentences(el.value.trim()) : "";
             if (val) {
                 activeCount++;
                 const cleanTitle = st.title.replace(/^[0-9]+\.\s*/, '');
@@ -2694,7 +2705,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             bolumNo++;
         }
 
-        const eksikBelge = document.getElementById('eksikBelgeSinirlilik') ? document.getElementById('eksikBelgeSinirlilik').value.trim() : "";
+        const eksikBelge = document.getElementById('eksikBelgeSinirlilik') ? capitalizeSentences(document.getElementById('eksikBelgeSinirlilik').value.trim()) : "";
         if (eksikBelge) {
             report += `${bolumNo}. VARSA EKSİK BELGE / İNCELEME SINIRLILIĞI:\n${eksikBelge}\nBelirtilen eksiklik/sınırlılık dolayısıyla oluşabilecek kanaat farklılığından bilirkişi sorumlu tutulamaz; ilgili belge/bilginin sonradan sunulması halinde ek rapor düzenlenmesi gerekebilir.\n\n`;
             bolumNo++;
