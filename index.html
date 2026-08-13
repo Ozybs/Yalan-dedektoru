@@ -2346,9 +2346,12 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     function normalizeOfficial(text) {
         const sentences = splitIntoSentences(text);
         if (!sentences.length) return "";
-        let out = sentences.map(x => {
+        let out = sentences.map((x, idx) => {
             let y = x;
-            if (!/^(Yapılan|İnceleme|Dosya|Mevcut|İlgili|Sunulan|İncelenen|Değerlendirilen|Söz konusu|Teknik)/i.test(y)) {
+            // "Yapılan incelemede" gibi bir giriş ifadesi yalnızca paragrafın İLK
+            // cümlesine, zaten resmi bir ifadeyle başlamıyorsa eklenir. Aksi halde
+            // her cümlenin aynı kalıpla başlaması (amatörce tekrar) önlenir.
+            if (idx === 0 && !/^(Yapılan|İnceleme|Dosya|Mevcut|İlgili|Sunulan|İncelenen|Değerlendirilen|Söz konusu|Teknik)/i.test(y)) {
                 y = "Yapılan incelemede " + sentenceCase(y);
             }
             y = y.replace(/\bvar\b/gi, "mevcuttur");
