@@ -466,6 +466,12 @@ body.locked .container{display:none;}
         <label style="font-weight: normal; cursor: pointer; margin-top: 10px; display: block;"><input type="checkbox" id="aiOnayi" style="width: auto; margin-right: 8px;"><b>Otomatik Metin Önerisi Onayı:</b> Bu form üzerindeki otomatik metin önerisi aracı yardımıyla üretilmiş olabilecek tüm metinleri bilirkişi olarak bizzat inceleyip teknik doğruluğunu onayladığımı beyan ederim.</label>
     </div>
 
+    <div class="form-group" style="background:#fff7ed;border:1px solid #fdba74;border-radius:8px;padding:14px 16px;margin-top:12px;">
+        <label><b>Varsa Eksik Belge / İnceleme Sınırlılığı:</b></label>
+        <div style="font-size:.8rem;color:#64748b;margin-bottom:8px;">Tarafınıza sunulmayan, dosyada bulunmayan veya inceleme kapsamını sınırlayan belge/bilgi varsa buraya yazınız. Bu alan doldurulduğunda, belirtilen eksiklik dolayısıyla oluşabilecek kanaat sınırlılığından bilirkişinin sorumlu tutulamayacağı rapora otomatik olarak işlenir.</div>
+        <textarea id="eksikBelgeSinirlilik" style="min-height:80px;" placeholder="Örn: Dosyada X tarihli sözleşmenin aslı bulunmamaktadır; bu husus incelenmemiş olup, ileride sunulması halinde ek rapor düzenlenmesi gerekebilir."></textarea>
+    </div>
+
     <div class="section-title">10. RESMİ TALEPLER (EK SÜRE / KEŞİF)</div>
     <div class="form-group" style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 6px;">
         <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" id="talepEkSure" style="width: auto; margin-right: 8px;"><b>Ek Süre Talebi:</b> İncelemenin tamamlanabilmesi için yasal ek süre verilmesi arz olunur.</label>
@@ -1060,14 +1066,14 @@ body.locked .container{display:none;}
             kanun: "5846 sayılı Fikir ve Sanat Eserleri Kanunu (FSEK)",
             isGraphic: true,
             adimlar: [
-                { title: "1. Eser Kimliği ve Kaynak Dosya İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Dosya adı, format, oluşturma/değiştirme tarihi, yazılım sürümü ve kaynak eserin kimliğini netleştirir." },
-                { title: "2. Kompozisyon, Yerleşim ve Oran Analizi", guide: "<strong>Ne İşe Yarar:</strong> Görsel hiyerarşi, boşluk kullanımı, hizalama ve genel yerleşim benzerliğini karşılaştırır." },
-                { title: "3. Tipografi ve Font Karakteristiği", guide: "<strong>Ne İşe Yarar:</strong> Yazı tipi ailesi, punto, satır aralığı, karakter aralığı ve tipografik düzeni inceler." },
-                { title: "4. Renk Paleti ve Renk Uzayı (RGB/CMYK)", guide: "<strong>Ne İşe Yarar:</strong> Baskı ve ekran renk değerlerini, pantone/spot renk kullanımını kıyaslar." },
-                { title: "5. Vektör Yapısı, Path ve Anchor Noktaları", guide: "<strong>Ne İşe Yarar:</strong> Logo/çizim vektör düğümlerini, eğri yapılarını ve üretim tekniğini ortaya koyar." },
-                { title: "6. Katman, Maske ve Gizli İçerik Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Gömülü eski katmanlar, clipping maskeleri ve gizlenmiş unsurları saptar." },
-                { title: "7. Baskı / Matbaa Teknik İzleri", guide: "<strong>Ne İşe Yarar:</strong> Tram, overprint, taşma (bleed) ve baskı öncesi hazırlık izlerini inceler." },
-                { title: "8. Görsel Benzerlik ve Ayırt Edici Unsurlar", guide: "<strong>Ne İşe Yarar:</strong> Ortak ve farklı karakteristik unsurları somutlaştırarak teknik karşılaştırma sonucunu bağlar." }
+                { title: "1. Eser Kimliği ve Kaynak Dosya İncelemesi", guide: "<strong>Ne İşe Yarar:</strong> Dosya adı, format, oluşturma/değiştirme tarihi, yazılım sürümü ve kaynak eserin kimliğini netleştirir.<br><strong>Kısayollar:</strong> PSD (Photoshop) — Dosya Bilgisi: <kbd>Alt+Shift+Ctrl+I</kbd>, Aç: <kbd>Ctrl+O</kbd> · AI (Illustrator) — Belge Bilgisi: Nesne &gt; Belge Bilgisi (kısayolsuz), Aç: <kbd>Ctrl+O</kbd>" },
+                { title: "2. Kompozisyon, Yerleşim ve Oran Analizi", guide: "<strong>Ne İşe Yarar:</strong> Görsel hiyerarşi, boşluk kullanımı, hizalama ve genel yerleşim benzerliğini karşılaştırır.<br><strong>Kısayollar:</strong> PSD/AI ortak — Cetveller: <kbd>Ctrl+R</kbd>, Kılavuzları Göster/Gizle: <kbd>Ctrl+;</kbd>, Hizalama Paneli: <kbd>Shift+F7</kbd>" },
+                { title: "3. Tipografi ve Font Karakteristiği", guide: "<strong>Ne İşe Yarar:</strong> Yazı tipi ailesi, punto, satır aralığı, karakter aralığı ve tipografik düzeni inceler.<br><strong>Kısayollar:</strong> Yazı Aracı: <kbd>T</kbd> (PSD/AI ortak) · AI — Karakter Paneli: <kbd>Ctrl+T</kbd>, Paragraf Paneli: <kbd>Ctrl+M</kbd> · PSD — Karakter Paneli: Pencere &gt; Karakter (not: PSD'de <kbd>Ctrl+T</kbd> Serbest Dönüştürme'dir, Karakter Paneli değildir)" },
+                { title: "4. Renk Paleti ve Renk Uzayı (RGB/CMYK)", guide: "<strong>Ne İşe Yarar:</strong> Baskı ve ekran renk değerlerini, pantone/spot renk kullanımını kıyaslar.<br><strong>Kısayollar:</strong> Damlalık (Renk Seçici): <kbd>I</kbd> (PSD/AI ortak) · PSD — Prova Renkleri: <kbd>Ctrl+Y</kbd>, Gamut Uyarısı: <kbd>Shift+Ctrl+Y</kbd> · AI — Renk Paneli: <kbd>F6</kbd>" },
+                { title: "5. Vektör Yapısı, Path ve Anchor Noktaları", guide: "<strong>Ne İşe Yarar:</strong> Logo/çizim vektör düğümlerini, eğri yapılarını ve üretim tekniğini ortaya koyar.<br><strong>Kısayollar:</strong> AI — Kalem Aracı: <kbd>P</kbd>, Doğrudan Seçim: <kbd>A</kbd>, Çapa Noktası Ekle: <kbd>+</kbd>, Sil: <kbd>-</kbd>, Dönüştür: <kbd>Shift+C</kbd>, Kenarları Gizle/Göster: <kbd>Ctrl+H</kbd>" },
+                { title: "6. Katman, Maske ve Gizli İçerik Tespiti", guide: "<strong>Ne İşe Yarar:</strong> Gömülü eski katmanlar, clipping maskeleri ve gizlenmiş unsurları saptar.<br><strong>Kısayollar:</strong> Katmanlar Paneli: <kbd>F7</kbd> (PSD/AI ortak) · PSD — Kopyala ile Yeni Katman: <kbd>Ctrl+J</kbd>, Katman Maskesi eklemek için Alt+tıklama maske seçenekleri açar" },
+                { title: "7. Baskı / Matbaa Teknik İzleri", guide: "<strong>Ne İşe Yarar:</strong> Tram, overprint, taşma (bleed) ve baskı öncesi hazırlık izlerini inceler.<br><strong>Kısayollar:</strong> PSD — Prova Renkleri: <kbd>Ctrl+Y</kbd> · AI — Baskı Önizleme (Overprint Preview): <kbd>Alt+Shift+Ctrl+Y</kbd>" },
+                { title: "8. Görsel Benzerlik ve Ayırt Edici Unsurlar", guide: "<strong>Ne İşe Yarar:</strong> Ortak ve farklı karakteristik unsurları somutlaştırarak teknik karşılaştırma sonucunu bağlar.<br><strong>Kısayollar:</strong> Yakınlaştırma Aracı: <kbd>Z</kbd>, Yakınlaştır/Uzaklaştır: <kbd>Ctrl++</kbd> / <kbd>Ctrl+-</kbd>, Pencereye Sığdır: <kbd>Ctrl+0</kbd>, %100 Görünüm: <kbd>Ctrl+1</kbd> (PSD/AI ortak)" }
             ]
         },
         bilisim: {
@@ -1663,6 +1669,11 @@ body.locked .container{display:none;}
                 <div class="form-group">
                     <label>İtirazlara İlişkin Yeni Belge / Delil Varsa:</label>
                     <textarea id="yeniDeliller" placeholder="Ek rapor kapsamında sunulan yeni belge veya delilleri yazınız..."></textarea>
+                </div>
+                <div class="form-group" style="background:#faf5ff;border:1px solid #d8b4fe;border-radius:8px;padding:12px 14px;">
+                    <label>İTİRAZLARA İLİŞKİN BİLİRKİŞİ DEĞERLENDİRMESİ / CEVABI:</label>
+                    <div style="font-size:.8rem;color:#64748b;margin-bottom:8px;">Yukarıdaki itiraz maddelerinin her birine ayrı ayrı, teknik gerekçeleriyle cevap veriniz — itirazı haklı buluyorsanız bunu, katılmıyorsanız gerekçenizi buraya yazınız.</div>
+                    <textarea id="itirazCevabi" style="min-height:110px;" placeholder="Örn: 1 No'lu itiraza ilişkin: ... hususu incelenmiş olup, itiraz teknik açıdan yerinde görülmüştür/görülmemiştir, şöyle ki: ..."></textarea>
                 </div>
             `;
         } else {
@@ -2275,7 +2286,16 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     function sentenceCase(t) {
         t = t.trim();
         if (!t) return "";
-        return t.charAt(0).toLowerCase() + t.slice(1);
+        return t.charAt(0).toLocaleLowerCase('tr-TR') + t.slice(1);
+    }
+
+    // Türkçe kurallarına uygun şekilde bir metnin ilk harfini büyütür
+    // (İngilizce toUpperCase yerine toLocaleUpperCase('tr-TR') kullanılır,
+    // aksi halde küçük "i" harfi yanlışlıkla "I" olur, "İ" olması gerekir).
+    function capitalizeFirstTR(t) {
+        t = t.trim();
+        if (!t) return "";
+        return t.charAt(0).toLocaleUpperCase('tr-TR') + t.slice(1);
     }
 
     function cleanColloquial(text) {
@@ -2317,6 +2337,8 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             }
             y = y.replace(/\bvar\b/gi, "mevcuttur");
             y = y.replace(/\byok\b/gi, "mevcut değildir");
+            // Her cümle mutlaka büyük harfle başlar (imla kuralı).
+            y = capitalizeFirstTR(y);
             if (!/[.!?]$/.test(y)) y += ".";
             return y;
         });
@@ -2351,7 +2373,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     function shorten(text) {
         const parts = splitIntoSentences(text);
         if (parts.length <= 2) return normalizeOfficial(text);
-        return parts.slice(0, 2).join(" ");
+        return normalizeOfficial(parts.slice(0, 2).join(" "));
     }
 
     function aiDraftStep(text, index, mode) {
@@ -2524,17 +2546,17 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const deliller = document.getElementById('delilListesi') ? document.getElementById('delilListesi').value.trim() : "";
         const yontem = document.getElementById('incelemeYontemi') ? document.getElementById('incelemeYontemi').value.trim() : "";
         const eklerText = document.getElementById('ekler') ? document.getElementById('ekler').value.trim() : "";
+        const eklerTextLines = eklerText ? eklerText.split(/\n+/).map(l => l.trim()).filter(Boolean) : [];
         const eklerFileNames = (typeof ekUploadedFiles !== "undefined" && ekUploadedFiles.length)
-            ? ekUploadedFiles.map(f => `• ${f.name}`)
+            ? ekUploadedFiles.map(f => f.name)
             : [];
-        // Textarea + yüklenen dosya adlarını birleştir, aynı satırı iki kez yazma
+        // Manuel yazılan açıklamalar ve yüklenen dosyalar birleştirilip Ek-1, Ek-2... şeklinde numaralandırılır.
         const eklerLines = [];
         const seen = new Set();
-        (eklerText ? eklerText.split(/\n+/) : []).concat(eklerFileNames).forEach(line => {
-            const t = line.trim();
-            if (t && !seen.has(t)) {
-                seen.add(t);
-                eklerLines.push(t);
+        eklerTextLines.concat(eklerFileNames).forEach(line => {
+            if (line && !seen.has(line)) {
+                seen.add(line);
+                eklerLines.push(`Ek-${eklerLines.length + 1}: ${line}`);
             }
         });
         const ekler = eklerLines.join("\n");
@@ -2594,10 +2616,12 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             const onceki = document.getElementById('oncekiRaporTarihi') ? document.getElementById('oncekiRaporTarihi').value.trim() : "";
             const itiraz = document.getElementById('itirazMetni') ? document.getElementById('itirazMetni').value.trim() : "";
             const yeni = document.getElementById('yeniDeliller') ? document.getElementById('yeniDeliller').value.trim() : "";
+            const itirazCevap = document.getElementById('itirazCevabi') ? document.getElementById('itirazCevabi').value.trim() : "";
             report += `EK RAPORUN DAYANAĞI:\n`;
             if (onceki) report += `Önceki rapor tarihi: ${onceki}\n`;
             report += `İTİRAZ / TALEPLER:\n${itiraz || "Belirtilmemiştir."}\n\n`;
             if (yeni) report += `YENİ BELGE / DELİLLER:\n${yeni}\n\n`;
+            report += `İTİRAZLARA İLİŞKİN BİLİRKİŞİ DEĞERLENDİRMESİ / CEVABI:\n${itirazCevap || "Belirtilmemiştir."}\n\n`;
         }
 
         let bolumNo = 2;
@@ -2667,6 +2691,13 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         if (document.getElementById('talepKesif').checked) talepler.push("Mahalinde keşif icrası ve/veya heyet teşkili");
         if (talepler.length > 0) {
             report += `${bolumNo}. EK TALEPLER:\n${talepler.join(" ve ")} hususları takdirlerinize arz olunur.\n\n`;
+            bolumNo++;
+        }
+
+        const eksikBelge = document.getElementById('eksikBelgeSinirlilik') ? document.getElementById('eksikBelgeSinirlilik').value.trim() : "";
+        if (eksikBelge) {
+            report += `${bolumNo}. VARSA EKSİK BELGE / İNCELEME SINIRLILIĞI:\n${eksikBelge}\nBelirtilen eksiklik/sınırlılık dolayısıyla oluşabilecek kanaat farklılığından bilirkişi sorumlu tutulamaz; ilgili belge/bilginin sonradan sunulması halinde ek rapor düzenlenmesi gerekebilir.\n\n`;
+            bolumNo++;
         }
 
         report += `Arz olunur.\n\n`;
@@ -2921,6 +2952,11 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         ekUploadedFiles.forEach((file, index) => {
             const item = document.createElement("div");
             item.className = "ek-file-item";
+
+            const badge = document.createElement("span");
+            badge.textContent = `Ek-${index + 1}`;
+            badge.style.cssText = "flex-shrink:0;background:#1e293b;color:#fff;font-size:.72rem;font-weight:bold;padding:3px 8px;border-radius:12px;";
+            item.appendChild(badge);
 
             if (file.type.startsWith("image/")) {
                 const img = document.createElement("img");
