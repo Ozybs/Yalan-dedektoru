@@ -25,7 +25,11 @@ export default async function handler(req, res) {
         return;
     }
 
-    const { question } = req.body || {};
+    let body = req.body;
+    if (!body || typeof body === 'string') {
+        try { body = JSON.parse(body || '{}'); } catch (e) { body = {}; }
+    }
+    const question = body && body.question;
     if (!question || typeof question !== 'string' || !question.trim()) {
         res.status(400).json({ error: 'Geçerli bir soru gönderilmedi.' });
         return;
@@ -35,7 +39,7 @@ export default async function handler(req, res) {
     const safeQuestion = question.trim().slice(0, 6000);
 
     try {
-        const model = 'gemini-2.5-flash'; // güncel model adını ai.google.dev/gemini-api/docs/models üzerinden kontrol edebilirsiniz
+        const model = 'gemini-3.6-flash'; // güncel model adını ai.google.dev/gemini-api/docs/models üzerinden kontrol edebilirsiniz
         const upstream = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
             {
