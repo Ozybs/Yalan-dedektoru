@@ -246,14 +246,14 @@ body.locked .container{display:none;}
     <h1>BİLİRKİŞİ RAPOR TASLAĞI<br><span style="font-size:0.65em;font-weight:normal;">(Kişisel Taslak Oluşturma Aracı)</span></h1>
 
     <div class="draft-bar">
-        <span class="draft-status" id="draftStatus">Otomatik kayıt aktif — sadece BU tarayıcıda/cihazda saklanır (başka cihazdan görünmez).</span>
+        <span class="draft-status" id="draftStatus">Otomatik kayıt aktif — sadece BU tarayıcıda/cihazda saklanır, hiçbir sunucuya/veritabanına gönderilmez.</span>
         <button type="button" class="draft-btn save" onclick="manualSaveDraft()">💾 Taslağı Şimdi Kaydet</button>
         <button type="button" class="draft-btn download" onclick="downloadDraftFile()">⬇️ Dosya Olarak İndir</button>
         <button type="button" class="draft-btn upload" onclick="document.getElementById('draftFileInput').click()">⬆️ Dosyadan Yükle</button>
         <input type="file" id="draftFileInput" accept="application/json" style="display:none;" onchange="handleDraftFileUpload(this)">
         <button type="button" class="draft-btn clear" onclick="clearDraft()">🗑️ Taslağı Sil</button>
     </div>
-    <div class="draft-bar-note">⚠️ Taslak yalnızca bu tarayıcıya özeldir; tarayıcı geçmişi/önbelleği temizlenirse veya başka bir cihaz/tarayıcı kullanırsanız görünmez. Uzun bir rapor üzerinde çalışırken, özellikle işiniz bitmeden önce, "Dosya Olarak İndir" ile bilgisayarınıza yedek almanızı öneririz.</div>
+    <div class="draft-bar-note">⚠️ Taslak verileriniz hiçbir sunucuya veya veritabanımıza gönderilmez/kaydedilmez; yalnızca bu tarayıcının kendi belleğinde (localStorage) tutulur. Bu yüzden tarayıcı geçmişi/önbelleği temizlenirse veya başka bir cihaz/tarayıcı kullanırsanız taslak görünmez. Uzun bir rapor üzerinde çalışırken, özellikle işiniz bitmeden önce, "Dosya Olarak İndir" ile bilgisayarınıza kendi elinizle bir yedek almanızı öneririz.</div>
 
     <div class="draft-banner" id="draftBanner">
         <b>Kaydedilmiş bir taslağınız bulundu.</b> Önceki oturumdan kalan form verilerini geri yüklemek ister misiniz?
@@ -3110,7 +3110,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
                 const hh = String(t.getHours()).padStart(2, '0');
                 const mm = String(t.getMinutes()).padStart(2, '0');
                 const ss = String(t.getSeconds()).padStart(2, '0');
-                status.textContent = `Taslak otomatik kaydedildi (${hh}:${mm}:${ss}) — sekmeyi kapatsanız bile veriler saklanır.`;
+                status.textContent = `Taslak otomatik kaydedildi (${hh}:${mm}:${ss}) — yalnızca bu cihazda/tarayıcıda saklanır, hiçbir sunucuya veya veritabanımıza gönderilmez.`;
             }
         } catch (e) {
             const status = document.getElementById('draftStatus');
