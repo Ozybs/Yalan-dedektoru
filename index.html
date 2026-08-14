@@ -120,8 +120,109 @@ body.locked .container{display:none;}
 .ai-privacy-note{margin-top:10px;font-size:.74rem;color:#94a3b8;}
 .ai-disclaimer-note{margin-top:6px;font-size:.74rem;color:#7c3aed;font-weight:600;}
 
+
+/* ÖDEME EKRANI */
+.payment-box { max-width: 520px; }
+.payment-intro { margin-bottom: 16px; line-height: 1.5; }
+.payment-summary {
+    background: #f5f7fa;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+}
+.payment-summary div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.bank-info {
+    border: 1px solid #dfe3e8;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.bank-row {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eceff2;
+}
+.bank-row:last-child { border-bottom: 0; }
+.bank-row > span {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+.bank-row strong { word-break: break-word; }
+.iban-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.iban-line button {
+    border: 0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.payment-note {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 16px;
+}
+.payment-done-btn { width: 100%; }
+
 </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+
+// ================================================================
+// ÖDEME AYARLARI — IBAN/BANKA/ALICI BİLGİLERİNİ DAHA SONRA BURADAN DEĞİŞTİR
+// ================================================================
+const PAYMENT_SETTINGS = {
+    amount: "4.900 TL",
+    bankName: "BANKA ADI BURAYA",
+    iban: "TR00 0000 0000 0000 0000 0000 00",
+    accountName: "ALICI BİLGİSİ BURAYA"
+};
+
+function openPaymentModal() {
+    const modal = document.getElementById("paymentModalBackdrop");
+    if (!modal) return;
+    document.getElementById("paymentAmount").textContent = PAYMENT_SETTINGS.amount;
+    document.getElementById("paymentBankName").textContent = PAYMENT_SETTINGS.bankName;
+    document.getElementById("paymentIban").textContent = PAYMENT_SETTINGS.iban;
+    document.getElementById("paymentAccountName").textContent = PAYMENT_SETTINGS.accountName;
+    modal.style.display = "flex";
+}
+
+function closePaymentModal() {
+    const modal = document.getElementById("paymentModalBackdrop");
+    if (modal) modal.style.display = "none";
+}
+
+function copyPaymentIban() {
+    const iban = PAYMENT_SETTINGS.iban;
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(iban).then(() => {
+            alert("IBAN kopyalandı.");
+        }).catch(() => {
+            alert("IBAN: " + iban);
+        });
+    } else {
+        alert("IBAN: " + iban);
+    }
+}
+
+function openRequestModalFromPayment() {
+    closePaymentModal();
+    if (typeof openRequestModal === "function") {
+        openRequestModal();
+    }
+}
+
+</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
@@ -212,8 +313,56 @@ body.locked .container{display:none;}
         <input type="text" id="accessCodeInput" placeholder="ERİŞİM KODU" autocomplete="off" onkeydown="if(event.key==='Enter')checkAccessCode()">
         <button type="button" id="accessSubmitBtn" onclick="checkAccessCode()">GİRİŞ YAP</button>
         <div class="lock-error" id="lockError">Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.</div>
+        <button type="button" class="request-code-link" onclick="openPaymentModal()">💳 Ödeme Yap / Erişim Kodu Al</button>
         <button type="button" class="request-code-link" onclick="openRequestModal()">Erişim kodunuz yok mu? Kod talep edin</button>
         <div class="lock-disclaimer">Bu site Adalet Bakanlığı Bilirkişilik Daire Başkanlığı'nın resmi bir sistemi değildir; bağımsız bir taslak hazırlama aracıdır. Üretilen içeriklerin doğruluğunu kontrol etmek ve nihai raporu onaylamak bilirkişinin sorumluluğundadır.</div>
+    </div>
+</div>
+
+
+<!-- Ödeme Modalı -->
+<div class="modal-backdrop" id="paymentModalBackdrop">
+    <div class="modal-box payment-box">
+        <button type="button" class="modal-close" onclick="closePaymentModal()">✕</button>
+        <h3>💳 Erişim Kodu İçin Ödeme</h3>
+        <p class="payment-intro">
+            Erişim kodunuzu almak için aşağıdaki banka hesabına ödeme yapabilirsiniz.
+        </p>
+
+        <div class="payment-summary">
+            <div><span>Hizmet bedeli</span><strong id="paymentAmount">4.900 TL</strong></div>
+        </div>
+
+        <div class="bank-info">
+            <div class="bank-row">
+                <span>Banka</span>
+                <strong id="paymentBankName">BANKA ADI BURAYA</strong>
+            </div>
+            <div class="bank-row">
+                <span>IBAN</span>
+                <div class="iban-line">
+                    <strong id="paymentIban">TR00 0000 0000 0000 0000 0000 00</strong>
+                    <button type="button" onclick="copyPaymentIban()">Kopyala</button>
+                </div>
+            </div>
+            <div class="bank-row">
+                <span>Alıcı</span>
+                <strong id="paymentAccountName">ALICI BİLGİSİ BURAYA</strong>
+            </div>
+            <div class="bank-row">
+                <span>Açıklama</span>
+                <strong>ERİŞİM KODU</strong>
+            </div>
+        </div>
+
+        <div class="payment-note">
+            Ödemeyi yaptıktan sonra aşağıdaki butona basarak ödeme bildiriminde bulunabilirsiniz.
+            Erişim kodunuz ödeme kontrolünün ardından tarafınıza iletilecektir.
+        </div>
+
+        <button type="button" class="modal-submit payment-done-btn" onclick="openRequestModalFromPayment()">
+            ÖDEMEYİ YAPTIM / KOD TALEP ET
+        </button>
     </div>
 </div>
 
