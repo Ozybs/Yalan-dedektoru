@@ -53,8 +53,13 @@
 .draft-btn{width:auto!important;flex:none!important;margin:0!important;padding:8px 13px!important;font-size:.82rem!important;font-weight:600!important;border-radius:5px!important}
 .draft-btn.save{background:#16a34a!important}
 .draft-btn.save:hover{background:#15803d!important}
+.draft-btn.download{background:#2563eb!important}
+.draft-btn.download:hover{background:#1d4ed8!important}
+.draft-btn.upload{background:#7c3aed!important}
+.draft-btn.upload:hover{background:#6d28d9!important}
 .draft-btn.clear{background:#b91c1c!important}
 .draft-btn.clear:hover{background:#991b1b!important}
+.draft-bar-note{font-family:sans-serif;font-size:.74rem;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;margin-bottom:18px;line-height:1.5;}
 .draft-banner{display:none;font-family:sans-serif;background:#eff6ff;border:1px solid #93c5fd;border-left:5px solid #2563eb;border-radius:6px;padding:12px 14px;margin-bottom:16px;font-size:.88rem;color:#1e3a8a}
 .draft-banner .draft-banner-btns{margin-top:9px;display:flex;gap:8px}
 .draft-banner button{width:auto;flex:none;padding:7px 12px;font-size:.82rem}
@@ -241,10 +246,14 @@ body.locked .container{display:none;}
     <h1>BİLİRKİŞİ RAPOR TASLAĞI<br><span style="font-size:0.65em;font-weight:normal;">(Kişisel Taslak Oluşturma Aracı)</span></h1>
 
     <div class="draft-bar">
-        <span class="draft-status" id="draftStatus">Otomatik kayıt aktif — sekmeyi kapatsanız bile verileriniz bu tarayıcıda saklanır.</span>
+        <span class="draft-status" id="draftStatus">Otomatik kayıt aktif — sadece BU tarayıcıda/cihazda saklanır (başka cihazdan görünmez).</span>
         <button type="button" class="draft-btn save" onclick="manualSaveDraft()">💾 Taslağı Şimdi Kaydet</button>
+        <button type="button" class="draft-btn download" onclick="downloadDraftFile()">⬇️ Dosya Olarak İndir</button>
+        <button type="button" class="draft-btn upload" onclick="document.getElementById('draftFileInput').click()">⬆️ Dosyadan Yükle</button>
+        <input type="file" id="draftFileInput" accept="application/json" style="display:none;" onchange="handleDraftFileUpload(this)">
         <button type="button" class="draft-btn clear" onclick="clearDraft()">🗑️ Taslağı Sil</button>
     </div>
+    <div class="draft-bar-note">⚠️ Taslak yalnızca bu tarayıcıya özeldir; tarayıcı geçmişi/önbelleği temizlenirse veya başka bir cihaz/tarayıcı kullanırsanız görünmez. Uzun bir rapor üzerinde çalışırken, özellikle işiniz bitmeden önce, "Dosya Olarak İndir" ile bilgisayarınıza yedek almanızı öneririz.</div>
 
     <div class="draft-banner" id="draftBanner">
         <b>Kaydedilmiş bir taslağınız bulundu.</b> Önceki oturumdan kalan form verilerini geri yüklemek ister misiniz?
@@ -3118,6 +3127,54 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     function manualSaveDraft() {
         persistDraft();
         alert('Taslak bu tarayıcıya kaydedildi. Not: Yüklediğiniz dosyalar (fotoğraf, PDF vb.) tarayıcı güvenliği nedeniyle taslakla birlikte saklanamaz; sekmeyi yeniden açtığınızda dosyaları tekrar yüklemeniz gerekir.');
+    }
+
+    // Taslağı .json dosyası olarak bilgisayara indirir — tarayıcı/cihaz
+    // bağımsız gerçek bir yedek sağlar (localStorage silinse de elde kalır).
+    function downloadDraftFile() {
+        try {
+            const snapshot = collectFormSnapshot();
+            const payload = { savedAt: new Date().toISOString(), data: snapshot };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const tarih = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+            a.href = url;
+            a.download = `bilirkisi-rapor-taslak-${tarih}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (e) {
+            console.error(e);
+            alert('Taslak dosyası oluşturulurken bir hata oluştu.');
+        }
+    }
+
+    // İndirilmiş bir .json taslak dosyasını tekrar forma yükler.
+    function handleDraftFileUpload(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                if (!parsed || typeof parsed.data !== 'object') {
+                    alert('Bu dosya geçerli bir taslak dosyası gibi görünmüyor.');
+                    return;
+                }
+                if (!confirm('Bu dosyadaki taslak, formdaki mevcut verilerin üzerine yazılacak. Devam edilsin mi?')) return;
+                restoreDraft(parsed.data);
+                persistDraft();
+                alert('Taslak dosyadan başarıyla yüklendi.');
+            } catch (err) {
+                console.error(err);
+                alert('Dosya okunamadı. Lütfen bu araçtan indirilmiş geçerli bir .json dosyası seçtiğinizden emin olun.');
+            } finally {
+                input.value = '';
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
     }
 
     function clearDraft() {
