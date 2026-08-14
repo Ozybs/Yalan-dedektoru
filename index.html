@@ -778,10 +778,10 @@ function openRequestModalFromPayment() {
         <button type="button" class="modal-close" onclick="closeLegalModal()">✕</button>
 
         <h4>KVKK Aydınlatma Metni</h4>
-        <p>6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, "Erişim kodu talep edin" formu aracılığıyla paylaştığınız ad-soyad, e-posta ve telefon numarası bilgileri; yalnızca erişim kodu talebinizin değerlendirilmesi ve sizinle iletişime geçilmesi amacıyla işlenir ve Google Firebase altyapısında güvenli şekilde saklanır. Bilgileriniz üçüncü taraflarla paylaşılmaz ve pazarlama amacıyla kullanılmaz. Kişisel verilerinize ilişkin bilgi talep etme, düzeltme veya silinmesini isteme haklarınız için bilirkisi.destek@gmail.com adresinden bizimle iletişime geçebilirsiniz.</p>
+        <p>6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, "Erişim kodu talep edin" formu aracılığıyla paylaştığınız ad-soyad, e-posta, telefon numarası ile ödeme doğrulaması için bildirilen ödemeyi yapan kişi, gönderen IBAN ve işlem/açıklama bilgileri; erişim kodu talebinin ve ödeme doğrulamasının değerlendirilmesi amacıyla işlenir ve Google Firebase altyapısında güvenli şekilde saklanır. Bilgileriniz üçüncü taraflarla paylaşılmaz ve pazarlama amacıyla kullanılmaz. Kişisel verilerinize ilişkin bilgi talep etme, düzeltme veya silinmesini isteme haklarınız için bilirkisi.destek@gmail.com adresinden bizimle iletişime geçebilirsiniz.</p>
 
         <h4>Gizlilik Politikası</h4>
-        <p>Bu araç üzerinde hazırladığınız rapor taslakları, doldurduğunuz form alanları ve Bilirkişi Asistanı'na yönelttiğiniz sorular yalnızca kendi tarayıcınızda (cihazınızın yerel belleğinde) saklanır; bu içerikler hiçbir şekilde sunucularımıza gönderilmez, kaydedilmez veya görüntülenmez. Veritabanımıza kaydedilen tek kişisel veri, "Erişim kodu talep edin" formunu doldurduğunuzda paylaştığınız ad-soyad, e-posta ve telefon bilgisidir.</p>
+        <p>Bu araç üzerinde hazırladığınız rapor taslakları, doldurduğunuz form alanları ve Bilirkişi Asistanı'na yönelttiğiniz sorular yalnızca kendi tarayıcınızda (cihazınızın yerel belleğinde) saklanır; bu içerikler hiçbir şekilde sunucularımıza gönderilmez, kaydedilmez veya görüntülenmez. Veritabanımıza erişim kodu talebiyle birlikte iletişim bilgileri ve ödeme doğrulaması için bildirilen ödemeyi yapan kişi, gönderen IBAN ve işlem/açıklama bilgileri de kaydedilebilir.</p>
 
         <h4>Kullanım Şartları</h4>
         <p>Bu site, bilirkişilerin rapor taslağı hazırlamasına yardımcı olan bağımsız bir araçtır; Adalet Bakanlığı veya Bilirkişilik Daire Başkanlığı ile herhangi bir bağlantısı yoktur. Araç tarafından üretilen taslak metinler, otomatik metin önerileri ve Bilirkişi Asistanı çıktıları nihai rapor niteliğinde değildir ve hukuki tavsiye teşkil etmez; içeriğin doğruluğunu ve mevzuata uygunluğunu kontrol etmek, nihai raporu onaylamak tamamen bilirkişinin sorumluluğundadır. Erişim kodu kişisel ve devredilemezdir; paylaşılması veya kötüye kullanılması halinde erişim önceden bildirim yapılmaksızın iptal edilebilir. Hizmet bedeli ve iade koşulları hakkında bilgi almak için bilirkisi.destek@gmail.com üzerinden iletişime geçebilirsiniz.</p>
@@ -1012,14 +1012,41 @@ function openRequestModalFromPayment() {
             return;
         }
 
+        let paymentPayerName = '';
+        let paymentPayerIban = '';
+        let paymentReference = '';
+        let paymentStatus = 'ödeme bilgisi girilmedi';
+        let paymentAmount = (typeof PAYMENT_SETTINGS !== 'undefined') ? PAYMENT_SETTINGS.amount : '';
+
+        try {
+            paymentPayerName = sessionStorage.getItem('bk_payer_name') || '';
+            paymentPayerIban = sessionStorage.getItem('bk_payer_iban') || '';
+            paymentReference = sessionStorage.getItem('bk_payment_reference') || '';
+            paymentStatus = sessionStorage.getItem('bk_payment_status') || paymentStatus;
+        } catch (e) {}
+
+        if (!paymentPayerName || !paymentPayerIban) {
+            errorMsg.textContent = 'Lütfen önce ödeme ekranındaki ödemeyi yapan kişi ve gönderen IBAN bilgilerini doldurunuz.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.textContent = 'Gönderiliyor...';
 
         try {
             await waitForFirebase();
             const { db, collection, addDoc, serverTimestamp } = window.__fb;
+
             await addDoc(collection(db, 'kod_talepleri'), {
-                adSoyad, email, telefon,
+                adSoyad,
+                email,
+                telefon,
+                odemeyiYapanAdSoyad: paymentPayerName,
+                gonderenIban: paymentPayerIban,
+                islemAciklamasi: paymentReference,
+                odemeTutari: paymentAmount,
+                odemeDurumu: 'DOĞRULAMA BEKLENİYOR',
                 tarih: serverTimestamp(),
                 durum: 'beklemede'
             });
@@ -1027,13 +1054,39 @@ function openRequestModalFromPayment() {
             try {
                 if (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf('BURAYA') === -1) {
                     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                        ad_soyad: adSoyad, email: email, telefon: telefon,
-                        to_email: 'bilirkisi.destek@gmail.com'
+                        ad_soyad: adSoyad,
+                        email: email,
+                        telefon: telefon,
+                        to_email: 'bilirkisi.destek@gmail.com',
+                        odemeyi_yapan: paymentPayerName,
+                        gonderen_iban: paymentPayerIban,
+                        islem_aciklamasi: paymentReference || 'Belirtilmedi',
+                        odeme_tutari: paymentAmount,
+                        odeme_durumu: 'DOĞRULAMA BEKLENİYOR',
+                        message:
+                            'YENİ ÖDEME / ERİŞİM KODU TALEBİ\n\n' +
+                            'Ad Soyad: ' + adSoyad + '\n' +
+                            'E-posta: ' + email + '\n' +
+                            'Telefon: ' + telefon + '\n\n' +
+                            'ÖDEME BİLGİLERİ\n' +
+                            'Ödemeyi yapan: ' + paymentPayerName + '\n' +
+                            'Gönderen IBAN: ' + paymentPayerIban + '\n' +
+                            'İşlem/Açıklama: ' + (paymentReference || 'Belirtilmedi') + '\n' +
+                            'Tutar: ' + paymentAmount + '\n' +
+                            'Durum: DOĞRULAMA BEKLENİYOR\n\n' +
+                            'NOT: Erişim kodu banka hesabındaki gerçek ödeme kontrol edilmeden verilmemelidir.'
                     });
                 }
             } catch (mailErr) {
                 console.warn('E-posta bildirimi gönderilemedi (Firestore kaydı yine de alındı):', mailErr);
             }
+
+            try {
+                sessionStorage.removeItem('bk_payer_name');
+                sessionStorage.removeItem('bk_payer_iban');
+                sessionStorage.removeItem('bk_payment_reference');
+                sessionStorage.removeItem('bk_payment_status');
+            } catch (e) {}
 
             document.getElementById('requestFormArea').style.display = 'none';
             document.getElementById('requestSuccessArea').style.display = 'block';
