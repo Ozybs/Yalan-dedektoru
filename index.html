@@ -3629,7 +3629,7 @@ function copyPaymentIban(event) {
 
 function paymentCompleted() {
     const payerName = (document.getElementById("payerName")?.value || "").trim();
-    const payerIban = (document.getElementById("payerIban")?.value || "").replace(/\\s+/g, "").trim();
+    const payerIban = (document.getElementById("payerIban")?.value || "").replace(/\s+/g, "").trim();
     const paymentReference = (document.getElementById("paymentReference")?.value || "").trim();
 
     if (!payerName) {
@@ -3638,7 +3638,7 @@ function paymentCompleted() {
         return;
     }
 
-    if (!/^TR\\d{24}$/i.test(payerIban)) {
+    if (!/^TR\d{24}$/i.test(payerIban)) {
         alert("Lütfen ödemeyi gönderen IBAN'ı eksiksiz girin. Örnek: TR00 0000 0000 0000 0000 0000 00");
         document.getElementById("payerIban")?.focus();
         return;
