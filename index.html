@@ -205,6 +205,40 @@ body.locked .container{display:none;}
     width: 100%;
 }
 
+
+.payment-verification-box {
+    border: 1px solid #dfe3e8;
+    border-radius: 10px;
+    padding: 13px 14px;
+    margin: 14px 0 10px;
+    background: #f8f9fa;
+}
+.payment-verification-box strong {
+    display: block;
+    margin-bottom: 6px;
+}
+.payment-verification-box p {
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin: 0 0 12px;
+    color: #555;
+}
+.payment-verification-box label {
+    display: block;
+    font-size: 12px;
+    margin: 9px 0 5px;
+    color: #555;
+}
+.payment-verification-box input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 11px;
+    border: 1px solid #d5d9de;
+    border-radius: 7px;
+    background: #fff;
+    font: inherit;
+}
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
 
@@ -394,7 +428,27 @@ function openRequestModalFromPayment() {
 
         <div class="payment-warning">
             <strong>Önemli:</strong> Ödeme yaptıktan sonra “Ödemeyi Yaptım” butonuna basarak
-            erişim kodu talebinizi iletin. Ödeme kontrolünden sonra erişim kodunuz tarafınıza verilecektir.
+            erişim kodu talebinizi iletin. Bildirdiğiniz ad-soyad ve gönderen IBAN,
+            banka hesabındaki ödeme hareketiyle karşılaştırılır. Ödeme doğrulanmadan erişim kodu verilmez.
+        </div>
+
+        <div class="payment-verification-box">
+            <strong>🔐 Ödeme doğrulaması</strong>
+            <p>
+                Güvenlik nedeniyle yalnızca “ödemeyi yaptım” demeniz erişim kodu verilmesi için yeterli değildir.
+                Ödeme yaptıktan sonra, ödemeyi gönderen kişinin <strong>ad-soyadını</strong> ve
+                <strong>ödemeyi gönderdiği IBAN'ı</strong> bildirmeniz gerekir.
+                Bu bilgiler banka hesabındaki ödeme hareketiyle karşılaştırılarak kontrol edilir.
+                <strong>Ödeme banka hesabında doğrulanmadan erişim kodu verilmez.</strong>
+            </p>
+            <label for="payerName">Ödemeyi yapan kişi / hesap sahibi</label>
+            <input type="text" id="payerName" placeholder="Ad Soyad" autocomplete="name">
+
+            <label for="payerIban">Ödemeyi gönderen IBAN</label>
+            <input type="text" id="payerIban" placeholder="TR00 0000 0000 0000 0000 0000 00" autocomplete="off">
+
+            <label for="paymentReference">İşlem / açıklama (varsa)</label>
+            <input type="text" id="paymentReference" placeholder="Banka işlem numarası veya ödeme açıklaması" autocomplete="off">
         </div>
 
         <div id="ibanCopyMessage" class="iban-copy-message" aria-live="polite"></div>
@@ -3574,12 +3628,41 @@ function copyPaymentIban(event) {
 }
 
 function paymentCompleted() {
+    const payerName = (document.getElementById("payerName")?.value || "").trim();
+    const payerIban = (document.getElementById("payerIban")?.value || "").replace(/\\s+/g, "").trim();
+    const paymentReference = (document.getElementById("paymentReference")?.value || "").trim();
+
+    if (!payerName) {
+        alert("Lütfen ödemeyi yapan kişinin ad-soyadını girin.");
+        document.getElementById("payerName")?.focus();
+        return;
+    }
+
+    if (!/^TR\\d{24}$/i.test(payerIban)) {
+        alert("Lütfen ödemeyi gönderen IBAN'ı eksiksiz girin. Örnek: TR00 0000 0000 0000 0000 0000 00");
+        document.getElementById("payerIban")?.focus();
+        return;
+    }
+
+    // Bilgileri mevcut talep formuna aktarılabilirse aktar.
+    const reqName = document.getElementById("reqAdSoyad");
+    if (reqName && !reqName.value.trim()) reqName.value = payerName;
+
+    // Bu bilgiler daha sonra sunucu/Firebase tarafında ödeme doğrulama kaydına
+    // bağlanabilecek şekilde tarayıcı oturumunda tutulur.
+    try {
+        sessionStorage.setItem("bk_payer_name", payerName);
+        sessionStorage.setItem("bk_payer_iban", payerIban);
+        sessionStorage.setItem("bk_payment_reference", paymentReference);
+        sessionStorage.setItem("bk_payment_status", "verification_required");
+    } catch (e) {}
+
     closePaymentModal();
 
     if (typeof openRequestModal === "function") {
         openRequestModal();
     } else {
-        alert("Ödeme bildirimi için iletişim formunu kullanabilirsiniz.");
+        alert("Ödeme bildiriminiz alındı. Ancak erişim kodu, ödeme banka hesabında doğrulandıktan sonra verilir.");
     }
 }
 
