@@ -1006,6 +1006,7 @@ function openRequestModalFromPayment() {
             errorMsg.style.display = 'block';
             return;
         }
+
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             errorMsg.textContent = 'Lütfen geçerli bir e-posta adresi giriniz.';
             errorMsg.style.display = 'block';
@@ -1015,14 +1016,14 @@ function openRequestModalFromPayment() {
         let paymentPayerName = '';
         let paymentPayerIban = '';
         let paymentReference = '';
-        let paymentStatus = 'ödeme bilgisi girilmedi';
-        let paymentAmount = (typeof PAYMENT_SETTINGS !== 'undefined') ? PAYMENT_SETTINGS.amount : '';
+        let paymentAmount = (typeof PAYMENT_SETTINGS !== 'undefined')
+            ? PAYMENT_SETTINGS.amount
+            : '';
 
         try {
             paymentPayerName = sessionStorage.getItem('bk_payer_name') || '';
             paymentPayerIban = sessionStorage.getItem('bk_payer_iban') || '';
             paymentReference = sessionStorage.getItem('bk_payment_reference') || '';
-            paymentStatus = sessionStorage.getItem('bk_payment_status') || paymentStatus;
         } catch (e) {}
 
         if (!paymentPayerName || !paymentPayerIban) {
@@ -1034,49 +1035,55 @@ function openRequestModalFromPayment() {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Gönderiliyor...';
 
+        const mailData = {
+            ad_soyad: adSoyad,
+            email: email,
+            telefon: telefon,
+            to_email: 'bilirkisi.destek@gmail.com',
+            odemeyi_yapan: paymentPayerName,
+            gonderen_iban: paymentPayerIban,
+            islem_aciklamasi: paymentReference || 'Belirtilmedi',
+            odeme_tutari: paymentAmount,
+            odeme_durumu: 'DOĞRULAMA BEKLENİYOR',
+            message:
+                'YENİ ÖDEME / ERİŞİM KODU TALEBİ\n\n' +
+                'Ad Soyad: ' + adSoyad + '\n' +
+                'E-posta: ' + email + '\n' +
+                'Telefon: ' + telefon + '\n\n' +
+                'ÖDEME BİLGİLERİ\n' +
+                'Ödemeyi yapan: ' + paymentPayerName + '\n' +
+                'Gönderen IBAN: ' + paymentPayerIban + '\n' +
+                'İşlem/Açıklama: ' + (paymentReference || 'Belirtilmedi') + '\n' +
+                'Tutar: ' + paymentAmount + '\n' +
+                'Durum: DOĞRULAMA BEKLENİYOR\n\n' +
+                'NOT: Erişim kodu banka hesabındaki gerçek ödeme kontrol edilmeden verilmemelidir.'
+        };
+
         try {
-            await waitForFirebase();
-            const { db, collection, addDoc, serverTimestamp } = window.__fb;
+            if (!window.emailjs) {
+                throw new Error('EmailJS kütüphanesi yüklenemedi.');
+            }
 
-            // Mevcut Firebase yapısını BOZMAMAK için eski kayıt alanları korunuyor.
-            // Ödeme yapan kişi / gönderen IBAN / açıklama bilgileri EmailJS ile
-            // ayrıca e-posta bildirimi olarak gönderiliyor.
-            await addDoc(collection(db, 'kod_talepleri'), {
-                adSoyad,
-                email,
-                telefon,
-                tarih: serverTimestamp(),
-                durum: 'beklemede'
-            });
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, mailData);
 
+            // EmailJS başarılıysa Firebase yalnızca ek kayıt olarak denenir.
+            // Firebase reddetse bile ödeme bildirimi kaybolmaz.
             try {
-                if (window.emailjs && EMAILJS_PUBLIC_KEY.indexOf('BURAYA') === -1) {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                        ad_soyad: adSoyad,
-                        email: email,
-                        telefon: telefon,
-                        to_email: 'bilirkisi.destek@gmail.com',
-                        odemeyi_yapan: paymentPayerName,
-                        gonderen_iban: paymentPayerIban,
-                        islem_aciklamasi: paymentReference || 'Belirtilmedi',
-                        odeme_tutari: paymentAmount,
-                        odeme_durumu: 'DOĞRULAMA BEKLENİYOR',
-                        message:
-                            'YENİ ÖDEME / ERİŞİM KODU TALEBİ\n\n' +
-                            'Ad Soyad: ' + adSoyad + '\n' +
-                            'E-posta: ' + email + '\n' +
-                            'Telefon: ' + telefon + '\n\n' +
-                            'ÖDEME BİLGİLERİ\n' +
-                            'Ödemeyi yapan: ' + paymentPayerName + '\n' +
-                            'Gönderen IBAN: ' + paymentPayerIban + '\n' +
-                            'İşlem/Açıklama: ' + (paymentReference || 'Belirtilmedi') + '\n' +
-                            'Tutar: ' + paymentAmount + '\n' +
-                            'Durum: DOĞRULAMA BEKLENİYOR\n\n' +
-                            'NOT: Erişim kodu banka hesabındaki gerçek ödeme kontrol edilmeden verilmemelidir.'
-                    });
-                }
-            } catch (mailErr) {
-                console.warn('E-posta bildirimi gönderilemedi (Firestore kaydı yine de alındı):', mailErr);
+                await waitForFirebase();
+                const { db, collection, addDoc, serverTimestamp } = window.__fb;
+
+                await addDoc(collection(db, 'kod_talepleri'), {
+                    adSoyad,
+                    email,
+                    telefon,
+                    tarih: serverTimestamp(),
+                    durum: 'beklemede'
+                });
+            } catch (firebaseErr) {
+                console.warn(
+                    'Firebase kayıt hatası; EmailJS bildirimi başarıyla gönderildi:',
+                    firebaseErr
+                );
             }
 
             try {
@@ -1088,16 +1095,23 @@ function openRequestModalFromPayment() {
 
             document.getElementById('requestFormArea').style.display = 'none';
             document.getElementById('requestSuccessArea').style.display = 'block';
+
         } catch (e) {
-            console.error('Kod talebi gönderme hatası:', e);
+            console.error('EmailJS gönderim hatası:', e);
+
             let detay = '';
-            if (e && e.code === 'permission-denied') {
-                detay = ' Firebase yetki kuralı isteği reddetti.';
+            if (e && e.text) {
+                detay = ' (' + e.text + ')';
             } else if (e && e.message) {
-                detay = ' Hata: ' + e.message;
+                detay = ' (' + e.message + ')';
             }
-            errorMsg.textContent = 'Talebiniz gönderilemedi.' + detay + ' Lütfen tekrar deneyin.';
+
+            errorMsg.textContent =
+                'Talep gönderilemedi. E-posta servisi yanıt vermedi' +
+                detay +
+                '. Lütfen tekrar deneyin.';
             errorMsg.style.display = 'block';
+
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Talebi Gönder';
