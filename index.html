@@ -1038,15 +1038,13 @@ function openRequestModalFromPayment() {
             await waitForFirebase();
             const { db, collection, addDoc, serverTimestamp } = window.__fb;
 
+            // Mevcut Firebase yapısını BOZMAMAK için eski kayıt alanları korunuyor.
+            // Ödeme yapan kişi / gönderen IBAN / açıklama bilgileri EmailJS ile
+            // ayrıca e-posta bildirimi olarak gönderiliyor.
             await addDoc(collection(db, 'kod_talepleri'), {
                 adSoyad,
                 email,
                 telefon,
-                odemeyiYapanAdSoyad: paymentPayerName,
-                gonderenIban: paymentPayerIban,
-                islemAciklamasi: paymentReference,
-                odemeTutari: paymentAmount,
-                odemeDurumu: 'DOĞRULAMA BEKLENİYOR',
                 tarih: serverTimestamp(),
                 durum: 'beklemede'
             });
@@ -1091,8 +1089,14 @@ function openRequestModalFromPayment() {
             document.getElementById('requestFormArea').style.display = 'none';
             document.getElementById('requestSuccessArea').style.display = 'block';
         } catch (e) {
-            console.error(e);
-            errorMsg.textContent = 'Talebiniz gönderilemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin.';
+            console.error('Kod talebi gönderme hatası:', e);
+            let detay = '';
+            if (e && e.code === 'permission-denied') {
+                detay = ' Firebase yetki kuralı isteği reddetti.';
+            } else if (e && e.message) {
+                detay = ' Hata: ' + e.message;
+            }
+            errorMsg.textContent = 'Talebiniz gönderilemedi.' + detay + ' Lütfen tekrar deneyin.';
             errorMsg.style.display = 'block';
         } finally {
             submitBtn.disabled = false;
