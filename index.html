@@ -2,7 +2,10 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>BİLİRKİŞİ RAPOR TASLAĞI </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilirkişi Rapor Aracı | Profesyonel Taslak Hazırlama Sistemi</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Bilirkişiler için profesyonel rapor taslağı hazırlama aracı. Bu site Adalet Bakanlığı Bilirkişilik Daire Başkanlığı'nın resmi bir sistemi değildir.">
     <style>
         body { font-family: 'Times New Roman', serif; background: #eef2f3; padding: 20px; line-height: 1.6; color: #111; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 40px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
@@ -72,7 +75,7 @@
 
 /* Erişim Kodu Kilidi */
 #accessLockOverlay{position:fixed;inset:0;background:linear-gradient(135deg,#1e293b,#0f172a);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:sans-serif;}
-.lock-card{background:#fff;border-radius:12px;padding:36px 32px;max-width:400px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center;}
+.lock-card{background:#fff;border-radius:12px;padding:36px 32px;max-width:440px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center;}
 .lock-card h2{margin:0 0 8px;font-size:1.25rem;color:#1e293b;}
 .lock-card p{margin:0 0 20px;font-size:.88rem;color:#64748b;line-height:1.5;}
 .lock-card input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:6px;font-size:1rem;text-align:center;letter-spacing:2px;box-sizing:border-box;margin-bottom:12px;}
@@ -142,6 +145,18 @@ body.locked .container{display:none;}
     outline-offset:3px;
     border-radius:6px;
 }
+.lock-features{text-align:left;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px;margin:0 0 18px;font-size:.84rem;color:#334155;}
+.lock-features li{margin:6px 0;list-style:none;}
+.lock-disclaimer{font-size:.7rem;color:#94a3b8;margin-top:16px;line-height:1.5;border-top:1px solid #e2e8f0;padding-top:12px;}
+
+/* Alt bilgi (footer) */
+.site-footer{margin-top:28px;padding-top:18px;border-top:1px solid #cbd5e1;font-family:sans-serif;font-size:.76rem;color:#94a3b8;text-align:center;line-height:1.7;}
+.site-footer a,.site-footer button{color:#64748b;text-decoration:underline;cursor:pointer;background:none;border:none;font-size:inherit;padding:0;margin:0 6px;width:auto;display:inline;font-weight:normal;}
+.site-footer button:hover{color:#334155;}
+.legal-modal-content{max-width:640px;max-height:80vh;overflow-y:auto;text-align:left;}
+.legal-modal-content h4{margin:18px 0 6px;color:#1e293b;font-size:.95rem;}
+.legal-modal-content p{margin:0 0 8px;font-size:.83rem;color:#334155;line-height:1.6;}
+.legal-modal-content h4:first-child{margin-top:0;}
 </style>
 
 </head>
@@ -180,12 +195,20 @@ body.locked .container{display:none;}
 
 <div id="accessLockOverlay">
     <div class="lock-card">
-        <h2>🔒 Bilirkişi Rapor Aracı</h2>
-        <p id="lockMessage">Bu araç yalnızca erişim kodu satın alan kullanıcılara açıktır. Lütfen size iletilen erişim kodunu giriniz.</p>
+        <h2>⚖️ Bilirkişi Rapor Aracı</h2>
+        <p id="lockMessage">Branşınıza özel hazır şablonlarla, dakikalar içinde eksiksiz bilirkişi raporu taslağı hazırlayın.</p>
+        <ul class="lock-features">
+            <li>✓ 45+ branşa özel hazır rapor şablonu ve teknik inceleme adımları</li>
+            <li>✓ Tek tıkla Word / PDF rapor çıktısı</li>
+            <li>✓ Bilirkişi Asistanı (yapay zeka destekli yazım yardımı)</li>
+            <li>✓ Taslağınız otomatik kaydedilir, sekme kapansa da kaybolmaz</li>
+            <li>✓ Ücret/masraf bildirimi, heyet desteği, ek rapor desteği</li>
+        </ul>
         <input type="text" id="accessCodeInput" placeholder="ERİŞİM KODU" autocomplete="off" onkeydown="if(event.key==='Enter')checkAccessCode()">
         <button type="button" id="accessSubmitBtn" onclick="checkAccessCode()">GİRİŞ YAP</button>
         <div class="lock-error" id="lockError">Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.</div>
         <button type="button" class="request-code-link" onclick="openRequestModal()">Erişim kodunuz yok mu? Kod talep edin</button>
+        <div class="lock-disclaimer">Bu site Adalet Bakanlığı Bilirkişilik Daire Başkanlığı'nın resmi bir sistemi değildir; bağımsız bir taslak hazırlama aracıdır. Üretilen içeriklerin doğruluğunu kontrol etmek ve nihai raporu onaylamak bilirkişinin sorumluluğundadır.</div>
     </div>
 </div>
 
@@ -489,6 +512,31 @@ body.locked .container{display:none;}
     </div>
     
     <div id="output"></div>
+
+    <div class="site-footer">
+        Bu site Adalet Bakanlığı Bilirkişilik Daire Başkanlığı'nın resmi bir sistemi değildir; bağımsız bir taslak hazırlama aracıdır.<br>
+        <button type="button" onclick="openLegalModal()">Gizlilik Politikası &amp; KVKK</button> ·
+        <button type="button" onclick="openLegalModal()">Kullanım Şartları</button> ·
+        İletişim: <a href="mailto:bilirkisi.destek@gmail.com" style="text-decoration:underline;">bilirkisi.destek@gmail.com</a>
+    </div>
+</div>
+
+<!-- Gizlilik / KVKK / Kullanım Şartları Modalı -->
+<div class="modal-backdrop" id="legalModalBackdrop">
+    <div class="modal-box legal-modal-content">
+        <button type="button" class="modal-close" onclick="closeLegalModal()">✕</button>
+
+        <h4>KVKK Aydınlatma Metni</h4>
+        <p>6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca, "Erişim kodu talep edin" formu aracılığıyla paylaştığınız ad-soyad, e-posta ve telefon numarası bilgileri; yalnızca erişim kodu talebinizin değerlendirilmesi ve sizinle iletişime geçilmesi amacıyla işlenir ve Google Firebase altyapısında güvenli şekilde saklanır. Bilgileriniz üçüncü taraflarla paylaşılmaz ve pazarlama amacıyla kullanılmaz. Kişisel verilerinize ilişkin bilgi talep etme, düzeltme veya silinmesini isteme haklarınız için bilirkisi.destek@gmail.com adresinden bizimle iletişime geçebilirsiniz.</p>
+
+        <h4>Gizlilik Politikası</h4>
+        <p>Bu araç üzerinde hazırladığınız rapor taslakları, doldurduğunuz form alanları ve Bilirkişi Asistanı'na yönelttiğiniz sorular yalnızca kendi tarayıcınızda (cihazınızın yerel belleğinde) saklanır; bu içerikler hiçbir şekilde sunucularımıza gönderilmez, kaydedilmez veya görüntülenmez. Veritabanımıza kaydedilen tek kişisel veri, "Erişim kodu talep edin" formunu doldurduğunuzda paylaştığınız ad-soyad, e-posta ve telefon bilgisidir.</p>
+
+        <h4>Kullanım Şartları</h4>
+        <p>Bu site, bilirkişilerin rapor taslağı hazırlamasına yardımcı olan bağımsız bir araçtır; Adalet Bakanlığı veya Bilirkişilik Daire Başkanlığı ile herhangi bir bağlantısı yoktur. Araç tarafından üretilen taslak metinler, otomatik metin önerileri ve Bilirkişi Asistanı çıktıları nihai rapor niteliğinde değildir ve hukuki tavsiye teşkil etmez; içeriğin doğruluğunu ve mevzuata uygunluğunu kontrol etmek, nihai raporu onaylamak tamamen bilirkişinin sorumluluğundadır. Erişim kodu kişisel ve devredilemezdir; paylaşılması veya kötüye kullanılması halinde erişim önceden bildirim yapılmaksızın iptal edilebilir. Hizmet bedeli ve iade koşulları hakkında bilgi almak için bilirkisi.destek@gmail.com üzerinden iletişime geçebilirsiniz.</p>
+
+        <button type="button" class="modal-submit" onclick="closeLegalModal()" style="margin-top:16px;">Kapat</button>
+    </div>
 </div>
 
 <script>
@@ -685,6 +733,13 @@ body.locked .container{display:none;}
     }
     function closeRequestModal() {
         document.getElementById('requestModalBackdrop').classList.remove('open');
+    }
+
+    function openLegalModal() {
+        document.getElementById('legalModalBackdrop').classList.add('open');
+    }
+    function closeLegalModal() {
+        document.getElementById('legalModalBackdrop').classList.remove('open');
     }
 
     async function submitCodeRequest() {
