@@ -2518,32 +2518,72 @@ function openRequestModalFromPayment() {
         }
     };
 
+    let itirazRowCount = 0;
+
+    function addItirazCevapRow() {
+        itirazRowCount += 1;
+        const id = itirazRowCount;
+        const list = document.getElementById('itiraz-cevap-list');
+        if (!list) return id;
+        const wrap = document.createElement('div');
+        wrap.className = 'step';
+        wrap.id = 'itiraz-row-' + id;
+        wrap.innerHTML =
+            '<div style="font-weight:700;margin-bottom:8px;color:#6b21a8;">Madde ' + id + '</div>' +
+            '<div class="form-group"><label>İtiraz / talep metni</label>' +
+            '<textarea id="itiraz-madde-' + id + '" placeholder="Bu maddedeki itiraz veya talebi yazınız..."></textarea></div>' +
+            '<div class="form-group"><label>Bilirkişi cevabı / değerlendirme</label>' +
+            '<textarea id="itiraz-cevap-' + id + '" placeholder="Bu maddeye teknik cevabınız..."></textarea></div>' +
+            '<button type="button" class="heyet-remove" onclick="removeItirazCevapRow(' + id + ')">Bu maddeyi kaldır</button>';
+        list.appendChild(wrap);
+        return id;
+    }
+
+    function removeItirazCevapRow(id) {
+        const el = document.getElementById('itiraz-row-' + id);
+        if (el) el.remove();
+    }
+
+    function collectItirazCevapPairs() {
+        const pairs = [];
+        const list = document.getElementById('itiraz-cevap-list');
+        if (!list) return pairs;
+        list.querySelectorAll('[id^="itiraz-row-"]').forEach(row => {
+            const id = row.id.replace('itiraz-row-', '');
+            const it = (document.getElementById('itiraz-madde-' + id) || {}).value || '';
+            const cv = (document.getElementById('itiraz-cevap-' + id) || {}).value || '';
+            if (String(it).trim() || String(cv).trim()) {
+                pairs.push({ itiraz: String(it).trim(), cevap: String(cv).trim() });
+            }
+        });
+        return pairs;
+    }
+
     function toggleEkRaporAlani() {
-        let tur = document.getElementById('raporTuru').value;
-        let container = document.getElementById('ek-rapor-container');
+        const tur = document.getElementById('raporTuru').value;
+        const container = document.getElementById('ek-rapor-container');
         if (tur === 'ek') {
-            container.innerHTML = `
-                <div class="section-title" style="background: #9333ea;">EK RAPOR – İTİRAZLARIN DEĞERLENDİRİLMESİ</div>
-                <div class="form-group">
-                    <label>Önceki Rapor Tarihi:</label>
-                    <input type="text" id="oncekiRaporTarihi" placeholder="Örn: 10.08.2026">
-                </div>
-                <div class="form-group">
-                    <label>Tarafların İtiraz / Talep Maddeleri:</label>
-                    <textarea id="itirazMetni" placeholder="İtirazları mümkünse madde madde yazınız..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>İtirazlara İlişkin Yeni Belge / Delil Varsa:</label>
-                    <textarea id="yeniDeliller" placeholder="Ek rapor kapsamında sunulan yeni belge veya delilleri yazınız..."></textarea>
-                </div>
-                <div class="form-group" style="background:#faf5ff;border:1px solid #d8b4fe;border-radius:8px;padding:12px 14px;">
-                    <label>İTİRAZLARA İLİŞKİN BİLİRKİŞİ DEĞERLENDİRMESİ / CEVABI:</label>
-                    <div style="font-size:.8rem;color:#64748b;margin-bottom:8px;">Yukarıdaki itiraz maddelerinin her birine ayrı ayrı, teknik gerekçeleriyle cevap veriniz — itirazı haklı buluyorsanız bunu, katılmıyorsanız gerekçenizi buraya yazınız.</div>
-                    <textarea id="itirazCevabi" style="min-height:110px;" placeholder="Örn: 1 No'lu itiraza ilişkin: ... hususu incelenmiş olup, itiraz teknik açıdan yerinde görülmüştür/görülmemiştir, şöyle ki: ..."></textarea>
-                </div>
-            `;
+            container.innerHTML =
+                '<div class="section-title" style="background:#9333ea;">EK RAPOR – MADDE MADDE İTİRAZ / CEVAP</div>' +
+                '<div class="form-group"><label>Önceki Rapor Tarihi</label>' +
+                '<input type="text" id="oncekiRaporTarihi" placeholder="Örn: 10.08.2026"></div>' +
+                '<div class="form-group"><label>Yeni belge / delil (varsa)</label>' +
+                '<textarea id="yeniDeliller" placeholder="Ek raporda sunulan yeni belge veya delilleri yazınız..."></textarea></div>' +
+                '<div class="form-group"><label>Önceki kanaat durumu</label>' +
+                '<select id="oncekiKanaatDurumu">' +
+                '<option value="">Seçiniz</option>' +
+                '<option value="korunuyor">Önceki teknik kanaat korunuyor</option>' +
+                '<option value="kismen">Kısmen değişiyor</option>' +
+                '<option value="degisiyor">Önceki kanaat değişiyor</option>' +
+                '</select></div>' +
+                '<div style="font-size:.82rem;color:#6b21a8;margin:8px 0 10px;line-height:1.45;">Her itirazı ayrı madde ekleyin; her maddenin altında o itiraza özel teknik cevabı yazın.</div>' +
+                '<div id="itiraz-cevap-list"></div>' +
+                '<button type="button" class="heyet-add" onclick="addItirazCevapRow()">+ İtiraz maddesi ekle</button>';
+            itirazRowCount = 0;
+            addItirazCevapRow();
+            addItirazCevapRow();
         } else {
-            container.innerHTML = "";
+            container.innerHTML = '';
         }
     }
 
@@ -3883,14 +3923,37 @@ Not: Sözleşme fiyat farkı formülü ve teminat kesintileri ayrıca uygulanmal
 
         if (raporTuru === 'ek') {
             const onceki = document.getElementById('oncekiRaporTarihi') ? document.getElementById('oncekiRaporTarihi').value.trim() : "";
-            const itiraz = document.getElementById('itirazMetni') ? capitalizeSentences(document.getElementById('itirazMetni').value.trim()) : "";
             const yeni = document.getElementById('yeniDeliller') ? capitalizeSentences(document.getElementById('yeniDeliller').value.trim()) : "";
-            const itirazCevap = document.getElementById('itirazCevabi') ? capitalizeSentences(document.getElementById('itirazCevabi').value.trim()) : "";
+            const kanaatSel = document.getElementById('oncekiKanaatDurumu');
+            const kanaatVal = kanaatSel ? kanaatSel.value : '';
+            const kanaatMap = {
+                korunuyor: 'Önceki teknik kanaat korunmaktadır.',
+                kismen: 'Önceki teknik kanaat kısmen değişmektedir.',
+                degisiyor: 'Önceki teknik kanaat değişmektedir.'
+            };
             report += `EK RAPORUN DAYANAĞI:\n`;
             if (onceki) report += `Önceki rapor tarihi: ${onceki}\n`;
-            report += `İTİRAZ / TALEPLER:\n${itiraz || "Belirtilmemiştir."}\n\n`;
-            if (yeni) report += `YENİ BELGE / DELİLLER:\n${yeni}\n\n`;
-            report += `İTİRAZLARA İLİŞKİN BİLİRKİŞİ DEĞERLENDİRMESİ / CEVABI:\n${itirazCevap || "Belirtilmemiştir."}\n\n`;
+            if (yeni) report += `\nYENİ BELGE / DELİLLER:\n${yeni}\n`;
+            report += `\nİTİRAZ MADDELERİ VE BİLİRKİŞİ CEVAPLARI:\n\n`;
+            const pairs = (typeof collectItirazCevapPairs === 'function') ? collectItirazCevapPairs() : [];
+            if (pairs.length === 0) {
+                const itiraz = document.getElementById('itirazMetni') ? capitalizeSentences(document.getElementById('itirazMetni').value.trim()) : "";
+                const itirazCevap = document.getElementById('itirazCevabi') ? capitalizeSentences(document.getElementById('itirazCevabi').value.trim()) : "";
+                if (itiraz || itirazCevap) {
+                    report += `İtiraz/Talep:\n${itiraz || "Belirtilmemiştir."}\n\n`;
+                    report += `Cevap:\n${itirazCevap || "Belirtilmemiştir."}\n\n`;
+                } else {
+                    report += `Belirtilmemiştir.\n\n`;
+                }
+            } else {
+                pairs.forEach((p, i) => {
+                    report += `Madde ${i + 1} — İtiraz/Talep:\n${capitalizeSentences(p.itiraz) || "Belirtilmemiştir."}\n\n`;
+                    report += `Madde ${i + 1} — Bilirkişi cevabı:\n${capitalizeSentences(p.cevap) || "Belirtilmemiştir."}\n\n`;
+                });
+            }
+            if (kanaatVal && kanaatMap[kanaatVal]) {
+                report += `ÖNCEKİ KANAATE İLİŞKİN SONUÇ:\n${kanaatMap[kanaatVal]}\n\n`;
+            }
         }
 
         let bolumNo = 2;
@@ -3964,10 +4027,15 @@ Not: Sözleşme fiyat farkı formülü ve teminat kesintileri ayrıca uygulanmal
         }
 
         const eksikBelge = document.getElementById('eksikBelgeSinirlilik') ? capitalizeSentences(document.getElementById('eksikBelgeSinirlilik').value.trim()) : "";
+        report += `${bolumNo}. EKSİK BELGE / İNCELEME SINIRLILIĞI:\n`;
         if (eksikBelge) {
-            report += `${bolumNo}. VARSA EKSİK BELGE / İNCELEME SINIRLILIĞI:\n${eksikBelge}\nBelirtilen eksiklik/sınırlılık dolayısıyla oluşabilecek kanaat farklılığından bilirkişi sorumlu tutulamaz; ilgili belge/bilginin sonradan sunulması halinde ek rapor düzenlenmesi gerekebilir.\n\n`;
-            bolumNo++;
+            report += `${eksikBelge}\n`;
+        } else {
+            report += `İnceleme, dosyada mevcut belge, bilgi ve bildirilen teknik verilerle sınırlı tutulmuştur. Bu kapsam dışında kalan hususlar hakkında kesin teknik sonuç oluşturulmamıştır.\n`;
         }
+        report += `Belirtilen sınırlılık dolayısıyla oluşabilecek kanaat farklılığından bilirkişi sorumlu tutulamaz; ilgili belge/bilginin sonradan sunulması halinde ek rapor düzenlenmesi gerekebilir.\n\n`;
+        bolumNo++;
+
 
         report += `Arz olunur.\n\n`;
         if (raporTarihi) report += `${raporTarihi}\n\n`;
