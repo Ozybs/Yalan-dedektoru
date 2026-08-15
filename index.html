@@ -266,6 +266,21 @@ body.locked .container{display:none;}
 .calc-actions button{width:auto;flex:none;padding:9px 12px;font-size:.8rem;background:#15803d}
 .calc-result{margin-top:12px;padding:12px;background:#fff;border:1px solid #bbf7d0;border-radius:6px;font-size:.85rem;line-height:1.55;white-space:pre-wrap;display:none}
 @media(max-width:600px){.calc-grid{grid-template-columns:1fr}}
+
+/* Yönetim paneli */
+#adminPanel{display:none;position:fixed;inset:0;z-index:10050;background:#0f172a;color:#e2e8f0;overflow:auto;font-family:sans-serif;padding:20px}
+#adminPanel.open{display:block}
+.admin-wrap{max-width:900px;margin:0 auto}
+.admin-wrap h2{margin:0 0 12px;color:#fff}
+.admin-login{background:#1e293b;padding:20px;border-radius:10px;max-width:400px}
+.admin-login input{width:100%;padding:10px;margin:6px 0 12px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#fff;box-sizing:border-box}
+.admin-login button,.admin-btn{padding:10px 14px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer}
+.admin-btn.danger{background:#b91c1c}
+.admin-btn.ok{background:#15803d}
+.admin-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:14px 16px;margin:12px 0}
+.admin-card .meta{font-size:.82rem;color:#94a3b8;line-height:1.55}
+.admin-card .actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.admin-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
 
@@ -357,8 +372,9 @@ function openRequestModalFromPayment() {
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
     import {
         getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot,
-        arrayUnion, serverTimestamp, collection, addDoc
+        arrayUnion, serverTimestamp, collection, addDoc, getDocs, query, orderBy, Timestamp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
     // Firebase Console'dan aldığınız proje bilgileri
     const firebaseConfig = {
@@ -375,13 +391,42 @@ function openRequestModalFromPayment() {
 
     // Aşağıdaki normal (module olmayan) scriptlerin Firestore'u kullanabilmesi için
     // gerekli fonksiyonları global alana (window) açıyoruz.
-    window.__fb = { db, doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, serverTimestamp, collection, addDoc };
+    const auth = getAuth(app);
+    window.__fb = {
+        db, auth, doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, serverTimestamp,
+        collection, addDoc, getDocs, query, orderBy, Timestamp,
+        signInWithEmailAndPassword, signOut, onAuthStateChanged
+    };
     window.__fbReady = true;
     document.dispatchEvent(new Event('firebase-ready'));
 </script>
 
 <!-- EmailJS (kod talep formu bildirimleri için) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+
+<!-- YÖNETİM PANELİ -->
+<div id="adminPanel">
+  <div class="admin-wrap">
+    <div class="admin-top">
+      <h2>Yönetim — Ödeme / Kod</h2>
+      <div>
+        <button type="button" class="admin-btn" onclick="loadAdminRequests()">Yenile</button>
+        <button type="button" class="admin-btn danger" onclick="adminLogout()">Çıkış</button>
+      </div>
+    </div>
+    <div id="adminLoginBox" class="admin-login">
+      <p style="margin:0 0 8px;color:#94a3b8;font-size:.85rem;">Firebase yönetici girişi</p>
+      <label>E-posta</label>
+      <input type="email" id="adminEmail" value="bilirkisi.destek@gmail.com" autocomplete="username">
+      <label>Şifre</label>
+      <input type="password" id="adminPassword" autocomplete="current-password">
+      <button type="button" class="admin-btn" onclick="adminLogin()">Giriş</button>
+      <div id="adminLoginErr" style="color:#f87171;font-size:.8rem;margin-top:8px;"></div>
+    </div>
+    <div id="adminListBox" style="display:none;"></div>
+  </div>
+</div>
 
 <div id="accessLockOverlay">
     <div class="lock-card">
@@ -399,6 +444,7 @@ function openRequestModalFromPayment() {
         <div class="lock-error" id="lockError">Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.</div>
         <button type="button" class="request-code-link payment-open-btn" onclick="openPaymentModal(event)">💳 ÖDEME YAP / ERİŞİM KODU AL</button>
         <button type="button" class="request-code-link" onclick="openRequestModal()">Erişim kodunuz yok mu? Kod talep edin</button>
+        <button type="button" class="request-code-link" style="margin-top:10px;color:#64748b;font-size:.72rem;" onclick="openAdminPanel()">Yönetim</button>
         <div class="lock-disclaimer">Bu site Adalet Bakanlığı Bilirkişilik Daire Başkanlığı'nın resmi bir sistemi değildir; bağımsız bir taslak hazırlama aracıdır. Üretilen içeriklerin doğruluğunu kontrol etmek ve nihai raporu onaylamak bilirkişinin sorumluluğundadır.</div>
     </div>
 </div>
@@ -908,6 +954,210 @@ function openRequestModalFromPayment() {
         showLockScreen(message);
     }
 
+
+    // ====================================================================
+    // YÖNETİM: onay → bitisTarihi + maxDevices ile kod oluştur
+    // ====================================================================
+    function parsePaketFromAciklama(text) {
+        const t = String(text || '');
+        const out = { label: '', months: 1, simultaneous: 1, maxDevices: 2, price: '' };
+        const mLabel = t.match(/Paket:\s*([^|]+)/i);
+        if (mLabel) out.label = mLabel[1].trim();
+        const mPrice = t.match(/Tutar:\s*([0-9.\s]+)\s*TL/i);
+        if (mPrice) out.price = mPrice[1].replace(/\s/g, '').trim();
+        const mSim = t.match(/Eşzamanlı PC:\s*(\d+)/i);
+        if (mSim) out.simultaneous = parseInt(mSim[1], 10);
+        const mMax = t.match(/Max cihaz:\s*(\d+)/i);
+        if (mMax) out.maxDevices = parseInt(mMax[1], 10);
+        const low = out.label.toLowerCase();
+        if (low.indexOf('yıllık') >= 0 || low.indexOf('yillik') >= 0) out.months = 12;
+        else out.months = 1;
+        if (low.indexOf('heyet') >= 0 || low.indexOf('ofis') >= 0) {
+            if (!mMax) out.maxDevices = 5;
+            if (!mSim) out.simultaneous = 3;
+        }
+        return out;
+    }
+
+    function generateAccessCode() {
+        const part = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+        return 'BK-' + part() + '-' + part();
+    }
+
+    function openAdminPanel() {
+        const p = document.getElementById('adminPanel');
+        if (p) p.classList.add('open');
+        try {
+            if (window.__fb && window.__fb.auth && window.__fb.auth.currentUser) {
+                document.getElementById('adminLoginBox').style.display = 'none';
+                document.getElementById('adminListBox').style.display = 'block';
+                loadAdminRequests();
+            }
+        } catch (e) {}
+    }
+
+    function closeAdminPanel() {
+        const p = document.getElementById('adminPanel');
+        if (p) p.classList.remove('open');
+    }
+
+    async function adminLogin() {
+        const err = document.getElementById('adminLoginErr');
+        err.textContent = '';
+        const email = (document.getElementById('adminEmail').value || '').trim();
+        const pass = document.getElementById('adminPassword').value || '';
+        try {
+            await waitForFirebase();
+            const { auth, signInWithEmailAndPassword } = window.__fb;
+            await signInWithEmailAndPassword(auth, email, pass);
+            document.getElementById('adminLoginBox').style.display = 'none';
+            document.getElementById('adminListBox').style.display = 'block';
+            loadAdminRequests();
+        } catch (e) {
+            err.textContent = 'Giriş başarısız: ' + (e.message || e);
+        }
+    }
+
+    async function adminLogout() {
+        try {
+            await waitForFirebase();
+            const { auth, signOut } = window.__fb;
+            await signOut(auth);
+        } catch (e) {}
+        document.getElementById('adminListBox').style.display = 'none';
+        document.getElementById('adminLoginBox').style.display = 'block';
+        closeAdminPanel();
+    }
+
+    async function loadAdminRequests() {
+        const box = document.getElementById('adminListBox');
+        box.innerHTML = '<p style="color:#94a3b8;">Yükleniyor...</p>';
+        try {
+            await waitForFirebase();
+            const { db, collection, getDocs, query, orderBy } = window.__fb;
+            let snap;
+            try {
+                snap = await getDocs(query(collection(db, 'kod_talepleri'), orderBy('tarih', 'desc')));
+            } catch (e) {
+                snap = await getDocs(collection(db, 'kod_talepleri'));
+            }
+            if (snap.empty) {
+                box.innerHTML = '<p>Talep yok.</p>';
+                return;
+            }
+            let html = '';
+            snap.forEach(docSnap => {
+                const d = docSnap.data();
+                const id = docSnap.id;
+                const paket = parsePaketFromAciklama(d.islem_aciklamasi);
+                let tarihStr = '-';
+                try {
+                    if (d.tarih && d.tarih.toDate) tarihStr = d.tarih.toDate().toLocaleString('tr-TR');
+                } catch (e) {}
+                const durum = d.durum || '-';
+                const kod = d.erisim_kodu || '';
+                html += '<div class="admin-card">' +
+                    '<div><b>' + (d.adSoyad || '-') + '</b> · <span style="color:#fbbf24;">' + durum + '</span></div>' +
+                    '<div class="meta">' +
+                    'E-posta: ' + (d.email || '-') + '<br>' +
+                    'Telefon: ' + (d.telefon || '-') + '<br>' +
+                    'Tarih: ' + tarihStr + '<br>' +
+                    'Tutar: ' + (d.odeme_tutari || '-') + '<br>' +
+                    'Ödeyen: ' + (d.odemeyi_yapan || '-') + '<br>' +
+                    'IBAN: ' + (d.gonderen_iban || '-') + '<br>' +
+                    'Açıklama: ' + (d.islem_aciklamasi || '-') + '<br>' +
+                    'Paket (çözümlenen): ' + (paket.label || '—') + ' · ' + paket.months + ' ay · max ' + paket.maxDevices + ' cihaz<br>' +
+                    (kod ? ('Erişim Kodu: <b>' + kod + '</b><br>') : '') +
+                    '</div>';
+                if (durum === 'beklemede') {
+                    html += '<div class="actions">' +
+                        '<button type="button" class="admin-btn ok" onclick="approvePaymentRequest(\'' + id + '\')">ONAYLA → KOD OLUŞTUR</button>' +
+                        '<button type="button" class="admin-btn danger" onclick="rejectPaymentRequest(\'' + id + '\')">REDDET</button>' +
+                        '</div>';
+                }
+                html += '</div>';
+            });
+            box.innerHTML = html;
+        } catch (e) {
+            console.error(e);
+            box.innerHTML = '<p style="color:#f87171;">Liste alınamadı: ' + (e.message || e) + '</p>';
+        }
+    }
+
+    async function approvePaymentRequest(talepId) {
+        if (!confirm('Ödeme bankada göründü mü? Onaylayıp erişim kodu oluşturulsun mu?')) return;
+        try {
+            await waitForFirebase();
+            const { db, doc, getDoc, setDoc, updateDoc, Timestamp } = window.__fb;
+            const talepRef = doc(db, 'kod_talepleri', talepId);
+            const talepSnap = await getDoc(talepRef);
+            if (!talepSnap.exists()) {
+                alert('Talep bulunamadı.');
+                return;
+            }
+            const d = talepSnap.data();
+            const paket = parsePaketFromAciklama(d.islem_aciklamasi);
+            const months = paket.months || 1;
+            const maxDevices = paket.maxDevices || 2;
+            const code = generateAccessCode();
+            const bitis = new Date();
+            bitis.setMonth(bitis.getMonth() + months);
+
+            await setDoc(doc(db, 'erisim_kodlari', code), {
+                deviceIds: [],
+                activeSessionId: '',
+                durum: 'aktif',
+                maxDevices: maxDevices,
+                simultaneous: paket.simultaneous || 1,
+                paket: paket.label || '',
+                months: months,
+                bitisTarihi: Timestamp.fromDate(bitis),
+                baslangicTarihi: Timestamp.fromDate(new Date()),
+                musteriEmail: d.email || '',
+                musteriAdSoyad: d.adSoyad || '',
+                talepId: talepId
+            });
+
+            await updateDoc(talepRef, {
+                durum: 'dogrulandi',
+                odeme_durumu: 'DOGRULANDI',
+                erisim_kodu: code
+            });
+
+            alert('Kod oluşturuldu:\\n\\n' + code +
+                  '\\n\\nBitiş: ' + bitis.toLocaleDateString('tr-TR') +
+                  '\\nMax cihaz: ' + maxDevices +
+                  '\\n\\nBu kodu müşteriye iletin.');
+            loadAdminRequests();
+        } catch (e) {
+            console.error(e);
+            alert('Onay hatası: ' + (e.message || e));
+        }
+    }
+
+    async function rejectPaymentRequest(talepId) {
+        if (!confirm('Talep reddedilsin mi?')) return;
+        try {
+            await waitForFirebase();
+            const { db, doc, updateDoc } = window.__fb;
+            await updateDoc(doc(db, 'kod_talepleri', talepId), {
+                durum: 'reddedildi',
+                odeme_durumu: 'REDDEDILDI'
+            });
+            loadAdminRequests();
+        } catch (e) {
+            alert('Red hatası: ' + (e.message || e));
+        }
+    }
+
+    // ?yonetim=1 ile paneli aç
+    if (/(?:\\?|&)yonetim=1(?:&|$)/.test(location.search)) {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(openAdminPanel, 400);
+        });
+    }
+
+
     async function checkAccessCode() {
         const input = document.getElementById('accessCodeInput');
         const submitBtn = document.getElementById('accessSubmitBtn');
@@ -935,12 +1185,36 @@ function openRequestModalFromPayment() {
             }
 
             const data = snap.data();
+
+            // Süre kontrolü
+            if (data.bitisTarihi) {
+                let bitisMs = null;
+                try {
+                    if (typeof data.bitisTarihi.toDate === 'function') bitisMs = data.bitisTarihi.toDate().getTime();
+                    else if (data.bitisTarihi.seconds) bitisMs = data.bitisTarihi.seconds * 1000;
+                    else bitisMs = new Date(data.bitisTarihi).getTime();
+                } catch (e) { bitisMs = null; }
+                if (bitisMs && Date.now() > bitisMs) {
+                    errorBox.textContent = 'Bu erişim kodunun süresi dolmuştur. Yenileme için ödeme / üyelik talebi gönderiniz.';
+                    errorBox.style.display = 'block';
+                    return;
+                }
+            }
+            if (data.durum && String(data.durum).toLowerCase() === 'pasif') {
+                errorBox.textContent = 'Bu erişim kodu pasif durumdadır.';
+                errorBox.style.display = 'block';
+                return;
+            }
+
             const deviceIds = Array.isArray(data.deviceIds) ? data.deviceIds : [];
             const myDeviceId = getDeviceId();
             const alreadyKnownDevice = deviceIds.includes(myDeviceId);
+            const maxDevices = (typeof data.maxDevices === 'number' && data.maxDevices > 0)
+                ? data.maxDevices
+                : 3;
 
-            if (!alreadyKnownDevice && deviceIds.length >= 3) {
-                errorBox.textContent = 'Bu kod için tanımlı cihaz limitine ulaşıldı (maksimum 3 cihaz).';
+            if (!alreadyKnownDevice && deviceIds.length >= maxDevices) {
+                errorBox.textContent = 'Bu kod için tanımlı cihaz limitine ulaşıldı (maksimum ' + maxDevices + ' cihaz).';
                 errorBox.style.display = 'block';
                 return;
             }
@@ -992,7 +1266,35 @@ function openRequestModalFromPayment() {
             const { db, doc, getDoc } = window.__fb;
             const ref = doc(db, 'erisim_kodlari', code);
             const snap = await getDoc(ref);
-            if (snap.exists() && snap.data().activeSessionId === sessionId) {
+            if (!snap.exists()) {
+                try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
+                showLockScreen('Erişim kodu bulunamadı. Tekrar giriş yapınız.');
+                return;
+            }
+            const d = snap.data();
+            if (d.bitisTarihi) {
+                let bitisMs = null;
+                try {
+                    if (typeof d.bitisTarihi.toDate === 'function') bitisMs = d.bitisTarihi.toDate().getTime();
+                    else if (d.bitisTarihi.seconds) bitisMs = d.bitisTarihi.seconds * 1000;
+                    else bitisMs = new Date(d.bitisTarihi).getTime();
+                } catch (e) {}
+                if (bitisMs && Date.now() > bitisMs) {
+                    try {
+                        localStorage.removeItem(ACCESS_STORAGE_KEY);
+                        localStorage.removeItem(ACTIVE_CODE_KEY);
+                        localStorage.removeItem(SESSION_ID_KEY);
+                    } catch (e) {}
+                    showLockScreen('Üyelik süreniz dolmuştur. Yenileme için ödeme yapıp yeni kod alınız.');
+                    return;
+                }
+            }
+            if (d.durum && String(d.durum).toLowerCase() === 'pasif') {
+                try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
+                showLockScreen('Erişim kodunuz pasif durumdadır.');
+                return;
+            }
+            if (d.activeSessionId === sessionId) {
                 unlockSite();
                 watchSession(code, sessionId);
             } else {
@@ -1176,8 +1478,8 @@ function openRequestModalFromPayment() {
                         gonderen_iban: paymentPayerIban,
                         islem_aciklamasi: aciklama,
                         odeme_tutari: selectedMembership
-                            ? formatPlanPrice(selectedMembership.price)
-                            : (paymentAmount || ''),
+                            ? String(selectedMembership.price)
+                            : String(paymentAmount || '').replace(/[^0-9.,]/g, ''),
                         odeme_durumu: 'DOGRULAMA_BEKLENIYOR'
                     });
                 })();
