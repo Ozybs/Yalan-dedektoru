@@ -253,6 +253,19 @@ body.locked .container{display:none;}
 .plan-card small{font-size:.73rem;color:#475569;line-height:1.4}
 .selected-plan-box{margin-top:10px;padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;font-size:.84rem;line-height:1.5}
 @media(max-width:600px){.plan-grid{grid-template-columns:1fr}}
+
+/* Branş sayısal hesap panelleri */
+.calc-panel{margin-top:14px;padding:14px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;font-family:sans-serif}
+.calc-panel h4{margin:0 0 6px;color:#14532d;font-size:.95rem}
+.calc-panel .calc-note{font-size:.78rem;color:#166534;margin:0 0 12px;line-height:1.45}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.calc-grid .full{grid-column:1/-1}
+.calc-grid label{font-size:.78rem;font-weight:600;color:#14532d;display:block;margin-bottom:3px}
+.calc-grid input,.calc-grid select{width:100%;padding:7px 8px;border:1px solid #86efac;border-radius:5px;box-sizing:border-box;font-size:.88rem}
+.calc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.calc-actions button{width:auto;flex:none;padding:9px 12px;font-size:.8rem;background:#15803d}
+.calc-result{margin-top:12px;padding:12px;background:#fff;border:1px solid #bbf7d0;border-radius:6px;font-size:.85rem;line-height:1.55;white-space:pre-wrap;display:none}
+@media(max-width:600px){.calc-grid{grid-template-columns:1fr}}
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
 
@@ -260,21 +273,13 @@ body.locked .container{display:none;}
 // ÖDEME AYARLARI — IBAN/BANKA/ALICI BİLGİLERİNİ DAHA SONRA BURADAN DEĞİŞTİR
 // ================================================================
 const PAYMENT_SETTINGS = {
-    amount: "4.900 TL",
+    amount: "—",
     bankName: "BANKA ADI BURAYA",
     iban: "TR00 0000 0000 0000 0000 0000 00",
-    accountName: "ALICI BİLGİSİ BURAYA"
+    accountName: "ALICI BİLGİSİ BURAYA",
+    description: "ERİŞİM KODU"
 };
-
-function openPaymentModal() {
-    const modal = document.getElementById("paymentModalBackdrop");
-    if (!modal) return;
-    document.getElementById("paymentAmount").textContent = PAYMENT_SETTINGS.amount;
-    document.getElementById("paymentBankName").textContent = PAYMENT_SETTINGS.bankName;
-    document.getElementById("paymentIban").textContent = PAYMENT_SETTINGS.iban;
-    document.getElementById("paymentAccountName").textContent = PAYMENT_SETTINGS.accountName;
-    modal.style.display = "flex";
-}
+/* openPaymentModal ana tanımı dosya sonunda (paket seçimli) */
 
 function closePaymentModal() {
     const modal = document.getElementById("paymentModalBackdrop");
@@ -437,7 +442,7 @@ function openRequestModalFromPayment() {
 
         <div class="payment-price-card">
             <span>Ödenecek Tutar</span>
-            <strong id="paymentAmount">4.900 TL</strong>
+            <strong id="paymentAmount">Paket seçiniz</strong>
         </div>
 
         <div class="payment-bank-card">
@@ -1055,9 +1060,26 @@ function openRequestModalFromPayment() {
         let paymentPayerName = '';
         let paymentPayerIban = '';
         let paymentReference = '';
-        let paymentAmount = (typeof PAYMENT_SETTINGS !== 'undefined')
-            ? PAYMENT_SETTINGS.amount
-            : '';
+        let selectedMembership = getSelectedMembershipPlan();
+        if (!selectedMembership) {
+            try {
+                const raw = sessionStorage.getItem('bk_membership_plan');
+                if (raw) selectedMembership = JSON.parse(raw);
+            } catch (e) {}
+        }
+        let paymentAmount = '';
+        if (selectedMembership && selectedMembership.price) {
+            paymentAmount = formatPlanPrice(selectedMembership.price);
+        } else if (typeof PAYMENT_SETTINGS !== 'undefined' && PAYMENT_SETTINGS.amount && PAYMENT_SETTINGS.amount !== '—') {
+            paymentAmount = PAYMENT_SETTINGS.amount;
+        } else {
+            try { paymentAmount = sessionStorage.getItem('bk_payment_amount') || ''; } catch (e) {}
+        }
+        if (!paymentAmount) {
+            errorMsg.textContent = 'Lütfen önce ödeme ekranından üyelik paketi seçiniz.';
+            errorMsg.style.display = 'block';
+            return;
+        }
 
         try {
             paymentPayerName = sessionStorage.getItem('bk_payer_name') || '';
@@ -1071,7 +1093,9 @@ function openRequestModalFromPayment() {
             return;
         }
 
-        let selectedMembership = window.__selectedMembershipPlan;
+        if (!selectedMembership) {
+            selectedMembership = window.__selectedMembershipPlan;
+        }
         if (!selectedMembership) {
             try { selectedMembership = JSON.parse(sessionStorage.getItem('bk_membership_plan') || 'null'); } catch (e) {}
         }
@@ -2238,7 +2262,9 @@ function openRequestModalFromPayment() {
                 <label>${label}</label>
                 <textarea id="branchSpecial" placeholder="Bu branşa özgü önemli teknik bilgileri kısa ve somut şekilde giriniz..."></textarea>
             </div>
+            <div id="branchCalcPanelHost"></div>
         `;
+        try { renderBranchCalcPanel(selectedKey); } catch (e) { console.warn('calc panel', e); }
 
         let stepsHTML = "";
         branchData.adimlar.forEach((s, i) => {
@@ -3005,6 +3031,381 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         result.appendChild(apply);
     }
 
+
+    // ====================================================================
+    // BRANŞ SAYISAL HESAP PANELLERİ (trafik, gayrimenkul, hesap, aktüerya, inşaat, sgk, ihale)
+    // ====================================================================
+    function numVal(id) {
+        const el = document.getElementById(id);
+        if (!el) return NaN;
+        const t = String(el.value || '').replace(',', '.').replace(/[^\d.\-]/g, '');
+        const n = parseFloat(t);
+        return isFinite(n) ? n : NaN;
+    }
+
+    function fmtTR(n, dig) {
+        if (!isFinite(n)) return '—';
+        const d = (dig === undefined) ? 2 : dig;
+        return n.toLocaleString('tr-TR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    }
+
+    function setCalcResult(text) {
+        const box = document.getElementById('calcResultBox');
+        if (!box) return;
+        box.style.display = 'block';
+        box.textContent = text;
+    }
+
+    function applyCalcToBranchSpecial(text) {
+        const ta = document.getElementById('branchSpecial');
+        if (!ta) return;
+        const prev = ta.value.trim();
+        ta.value = prev ? (prev + '\n\n' + text) : text;
+        alert('Hesap sonucu "Branşa Özel Teknik Bilgiler" alanına eklendi. İsterseniz düzenleyebilirsiniz.');
+    }
+
+    function renderBranchCalcPanel(key) {
+        const host = document.getElementById('branchCalcPanelHost');
+        if (!host) return;
+        host.innerHTML = '';
+        const map = {
+            trafik: renderTrafikCalc,
+            gayrimenkul: renderGayrimenkulCalc,
+            hesap: renderHesapCalc,
+            aktuer: renderAktuerCalc,
+            insaat: renderInsaatCalc,
+            sgk: renderSgkCalc,
+            ihale: renderIhaleCalc
+        };
+        const fn = map[key];
+        if (fn) host.innerHTML = fn();
+    }
+
+    function renderTrafikCalc() {
+        return `<div class="calc-panel">
+            <h4>🚦 Trafik — Hız / Fren İzi Hesabı</h4>
+            <p class="calc-note">Basitleştirilmiş kinematik tahmin. μ ve iz uzunluğu saha/tutanak verisine dayanmalıdır. Sonuç taslaktır; nihai değerlendirme bilirkişiye aittir.</p>
+            <div class="calc-grid">
+                <div><label>Fren izi uzunluğu (m)</label><input type="text" id="tr_iz" placeholder="örn. 28.5"></div>
+                <div><label>Sürtünme katsayısı μ</label><input type="text" id="tr_mu" placeholder="örn. 0.70"></div>
+                <div><label>Eğim (%) (+yokuş / −iniş)</label><input type="text" id="tr_egim" placeholder="0" value="0"></div>
+                <div><label>Reaksiyon süresi (sn)</label><input type="text" id="tr_reak" placeholder="1.5" value="1.5"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runTrafikCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runTrafikCalc() {
+        const s = numVal('tr_iz');
+        const mu = numVal('tr_mu');
+        const egim = numVal('tr_egim');
+        const rt = numVal('tr_reak');
+        if (![s, mu].every(isFinite) || s <= 0 || mu <= 0) {
+            alert('İz uzunluğu ve μ değerlerini pozitif sayı olarak giriniz.');
+            return;
+        }
+        const g = 9.81;
+        const eg = isFinite(egim) ? egim / 100 : 0;
+        // v = sqrt(2*g*(μ±e)*s)  — yaklaşık
+        const a = g * (mu + eg);
+        if (a <= 0) { alert('Eğim/μ kombinasyonu geçersiz.'); return; }
+        const v_ms = Math.sqrt(2 * a * s);
+        const v_kmh = v_ms * 3.6;
+        const reak = isFinite(rt) && rt > 0 ? rt : 0;
+        const d_reak = v_ms * reak;
+        const text =
+`TRAFIK HIZ TAHMİNİ (FREN İZİ)
+İz uzunluğu: ${fmtTR(s,2)} m
+Sürtünme katsayısı (μ): ${fmtTR(mu,2)}
+Eğim: ${fmtTR(egim,1)} %
+Yaklaşık hız (fren başlangıcı): ${fmtTR(v_kmh,1)} km/s (${fmtTR(v_ms,2)} m/s)
+Reaksiyon süresi: ${fmtTR(reak,2)} sn
+Reaksiyon mesafesi (yaklaşık): ${fmtTR(d_reak,1)} m
+Not: Bu hesap sadeleştirilmiş fiziksel modeldir; yol, lastik, ABS ve ölçüm belirsizlikleri ayrıca değerlendirilmelidir.`;
+        setCalcResult(text);
+    }
+
+    function renderGayrimenkulCalc() {
+        return `<div class="calc-panel">
+            <h4>🏠 Gayrimenkul — Emsal / m² Değer</h4>
+            <p class="calc-note">Basit emsal karşılaştırma. En az bir emsal giriniz; ağırlıklı ortalama m² değeri üretilir.</p>
+            <div class="calc-grid">
+                <div><label>Konu taşınmaz alanı (m²)</label><input type="text" id="gy_alan" placeholder="örn. 120"></div>
+                <div><label>Düzeltme katsayısı (±%)</label><input type="text" id="gy_duz" placeholder="0" value="0"></div>
+                <div><label>Emsal 1 — m² fiyat (TL)</label><input type="text" id="gy_e1" placeholder="örn. 45000"></div>
+                <div><label>Emsal 2 — m² fiyat (TL)</label><input type="text" id="gy_e2" placeholder="opsiyonel"></div>
+                <div><label>Emsal 3 — m² fiyat (TL)</label><input type="text" id="gy_e3" placeholder="opsiyonel"></div>
+                <div><label>Yapı / diğer değer (TL)</label><input type="text" id="gy_yapi" placeholder="0" value="0"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runGayrimenkulCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runGayrimenkulCalc() {
+        const alan = numVal('gy_alan');
+        const duz = numVal('gy_duz');
+        const ems = [numVal('gy_e1'), numVal('gy_e2'), numVal('gy_e3')].filter(isFinite);
+        const yapi = numVal('gy_yapi');
+        if (!isFinite(alan) || alan <= 0 || !ems.length) {
+            alert('Alan ve en az bir emsal m² fiyatı giriniz.');
+            return;
+        }
+        const ort = ems.reduce((a,b)=>a+b,0) / ems.length;
+        const k = 1 + (isFinite(duz) ? duz/100 : 0);
+        const m2 = ort * k;
+        const arsa = alan * m2;
+        const y = isFinite(yapi) ? yapi : 0;
+        const top = arsa + y;
+        const text =
+`GAYRİMENKUL EMSAL / DEĞER HESABI
+Alan: ${fmtTR(alan,2)} m²
+Emsal sayısı: ${ems.length}
+Emsal ort. m²: ${fmtTR(ort,0)} TL
+Düzeltme: ${fmtTR(isFinite(duz)?duz:0,1)} %
+Düzeltilmiş m²: ${fmtTR(m2,0)} TL
+Arazi/bağımsız bölüm değeri: ${fmtTR(arsa,0)} TL
+Yapı / diğer: ${fmtTR(y,0)} TL
+TOPLAM (taslak): ${fmtTR(top,0)} TL
+Not: Emsallerin nitelik, konum ve tarih uyumu ayrıca irdelenmelidir.`;
+        setCalcResult(text);
+    }
+
+    function renderHesapCalc() {
+        return `<div class="calc-panel">
+            <h4>🧮 Hesap — Ana Para / Faiz / Mahsup</h4>
+            <p class="calc-note">Basit faiz modeli. Bileşik faiz veya özel sözleşme formülü varsa sonucu elle düzeltiniz.</p>
+            <div class="calc-grid">
+                <div><label>Ana para (TL)</label><input type="text" id="hs_ana" placeholder="örn. 100000"></div>
+                <div><label>Yıllık faiz oranı (%)</label><input type="text" id="hs_oran" placeholder="örn. 24"></div>
+                <div><label>Gün sayısı</label><input type="text" id="hs_gun" placeholder="örn. 365"></div>
+                <div><label>Mahsup / ödenen (TL)</label><input type="text" id="hs_mahsup" placeholder="0" value="0"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runHesapCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runHesapCalc() {
+        const ana = numVal('hs_ana');
+        const oran = numVal('hs_oran');
+        const gun = numVal('hs_gun');
+        const mah = numVal('hs_mahsup');
+        if (![ana, oran, gun].every(isFinite) || ana < 0 || gun < 0) {
+            alert('Ana para, oran ve gün değerlerini giriniz.');
+            return;
+        }
+        const faiz = ana * (oran/100) * (gun/365);
+        const brut = ana + faiz;
+        const m = isFinite(mah) ? mah : 0;
+        const net = brut - m;
+        const text =
+`HESAP — ANA PARA / FAİZ / MAHSUP
+Ana para: ${fmtTR(ana,2)} TL
+Yıllık oran: ${fmtTR(oran,2)} %
+Gün: ${fmtTR(gun,0)}
+Faiz (basit, 365 gün): ${fmtTR(faiz,2)} TL
+Ara toplam: ${fmtTR(brut,2)} TL
+Mahsup: ${fmtTR(m,2)} TL
+NET BAKİYE (taslak): ${fmtTR(net,2)} TL
+Not: Sözleşme/kanuni faiz türü ve faiz işlemez dönemler ayrıca kontrol edilmelidir.`;
+        setCalcResult(text);
+    }
+
+    function renderAktuerCalc() {
+        return `<div class="calc-panel">
+            <h4>📐 Aktüerya — Basit Tazminat Taslağı</h4>
+            <p class="calc-note">Çok sadeleştirilmiş model (yıllık gelir × süre × oran, kaba iskonto). TRH tablosu yerine geçmez; yalnızca taslak aritmetiktir.</p>
+            <div class="calc-grid">
+                <div><label>Yıllık net gelir (TL)</label><input type="text" id="ak_gelir" placeholder="örn. 240000"></div>
+                <div><label>İşgücü kayıp oranı (%)</label><input type="text" id="ak_oran" placeholder="örn. 40"></div>
+                <div><label>Süre (yıl)</label><input type="text" id="ak_yil" placeholder="örn. 20"></div>
+                <div><label>İskonto oranı (% / yıl)</label><input type="text" id="ak_isk" placeholder="örn. 2" value="2"></div>
+                <div class="full"><label>Destekten yoksun / bakım ek tutar (TL)</label><input type="text" id="ak_ek" placeholder="0" value="0"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runAktuerCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runAktuerCalc() {
+        const gelir = numVal('ak_gelir');
+        const oran = numVal('ak_oran');
+        const yil = numVal('ak_yil');
+        const isk = numVal('ak_isk');
+        const ek = numVal('ak_ek');
+        if (![gelir, oran, yil].every(isFinite) || gelir < 0 || yil <= 0) {
+            alert('Gelir, kayıp oranı ve süre giriniz.');
+            return;
+        }
+        const yillik = gelir * (oran/100);
+        // Basit iskonto: PV = A * (1 - (1+r)^-n) / r
+        const r = (isFinite(isk) ? isk : 0) / 100;
+        let pv;
+        if (r <= 0) pv = yillik * yil;
+        else pv = yillik * (1 - Math.pow(1+r, -yil)) / r;
+        const e = isFinite(ek) ? ek : 0;
+        const top = pv + e;
+        const text =
+`AKTÜERYA — BASİT TAZMİNAT TASLAĞI
+Yıllık net gelir: ${fmtTR(gelir,0)} TL
+Kayıp oranı: ${fmtTR(oran,1)} %
+Yıllık kayıp: ${fmtTR(yillik,0)} TL
+Süre: ${fmtTR(yil,1)} yıl
+İskonto: ${fmtTR(isFinite(isk)?isk:0,2)} %
+Bugünkü değer (taslak): ${fmtTR(pv,0)} TL
+Ek tutar: ${fmtTR(e,0)} TL
+TOPLAM (taslak): ${fmtTR(top,0)} TL
+Not: TRH yaşam tablosu, bakiye ömür ve yargısal parametreler bu modelde yoktur; uzman aktüeryal tablo ile doğrulanmalıdır.`;
+        setCalcResult(text);
+    }
+
+    function renderInsaatCalc() {
+        return `<div class="calc-panel">
+            <h4>🏗️ İnşaat — Metraj / Birim Fiyat</h4>
+            <p class="calc-note">Kalem bazlı basit tutar. Birden fazla kalem için sonucu not alıp alanına ekleyebilirsiniz.</p>
+            <div class="calc-grid">
+                <div><label>Miktar</label><input type="text" id="in_mik" placeholder="örn. 85"></div>
+                <div><label>Birim</label><input type="text" id="in_birim" placeholder="m² / m³ / adet" value="m²"></div>
+                <div><label>Birim fiyat (TL)</label><input type="text" id="in_fiyat" placeholder="örn. 2500"></div>
+                <div><label>Fire / zayiat (%)</label><input type="text" id="in_fire" placeholder="0" value="0"></div>
+                <div class="full"><label>Kalem açıklaması</label><input type="text" id="in_ack" placeholder="örn. Beton C30 döşeme"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runInsaatCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runInsaatCalc() {
+        const mik = numVal('in_mik');
+        const fiyat = numVal('in_fiyat');
+        const fire = numVal('in_fire');
+        const birim = (document.getElementById('in_birim')?.value || '').trim() || 'birim';
+        const ack = (document.getElementById('in_ack')?.value || '').trim() || 'Kalem';
+        if (![mik, fiyat].every(isFinite) || mik < 0 || fiyat < 0) {
+            alert('Miktar ve birim fiyat giriniz.');
+            return;
+        }
+        const f = isFinite(fire) ? fire : 0;
+        const mik2 = mik * (1 + f/100);
+        const tutar = mik2 * fiyat;
+        const text =
+`İNŞAAT METRAJ / KEŞİF KALEMİ
+Açıklama: ${ack}
+Miktar: ${fmtTR(mik,3)} ${birim}
+Fire: ${fmtTR(f,1)} %
+Hesaba esas miktar: ${fmtTR(mik2,3)} ${birim}
+Birim fiyat: ${fmtTR(fiyat,2)} TL
+TUTAR (taslak): ${fmtTR(tutar,2)} TL`;
+        setCalcResult(text);
+    }
+
+    function renderSgkCalc() {
+        return `<div class="calc-panel">
+            <h4>📋 SGK — Prim / Gün Taslağı</h4>
+            <p class="calc-note">Eksik gün × günlük kazanç tipi basit hesap. Resmi tahakkak yerine geçmez.</p>
+            <div class="calc-grid">
+                <div><label>Eksik / ihtilaflı gün</label><input type="text" id="sg_gun" placeholder="örn. 90"></div>
+                <div><label>Prime esas günlük kazanç (TL)</label><input type="text" id="sg_pek" placeholder="örn. 1000"></div>
+                <div><label>İşveren prim oranı (%)</label><input type="text" id="sg_isv" placeholder="örn. 20.5" value="20.5"></div>
+                <div><label>İşçi prim oranı (%)</label><input type="text" id="sg_isci" placeholder="örn. 14" value="14"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runSgkCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runSgkCalc() {
+        const gun = numVal('sg_gun');
+        const pek = numVal('sg_pek');
+        const isv = numVal('sg_isv');
+        const isci = numVal('sg_isci');
+        if (![gun, pek].every(isFinite) || gun < 0 || pek < 0) {
+            alert('Gün ve PEK giriniz.');
+            return;
+        }
+        const matrah = gun * pek;
+        const i1 = matrah * ((isFinite(isv)?isv:0)/100);
+        const i2 = matrah * ((isFinite(isci)?isci:0)/100);
+        const text =
+`SGK GÜN / PRİM TASLAĞI
+Gün: ${fmtTR(gun,0)}
+Günlük PEK: ${fmtTR(pek,2)} TL
+Matrah: ${fmtTR(matrah,2)} TL
+İşveren prim: ${fmtTR(i1,2)} TL
+İşçi prim: ${fmtTR(i2,2)} TL
+TOPLAM PRİM (taslak): ${fmtTR(i1+i2,2)} TL
+Not: Teşvik, tavan-taban ve dönem mevzuatı ayrıca uygulanmalıdır.`;
+        setCalcResult(text);
+    }
+
+    function renderIhaleCalc() {
+        return `<div class="calc-panel">
+            <h4>📑 İhale — Hakediş / Fiyat Farkı Taslağı</h4>
+            <p class="calc-note">Basit oranlı tutar. Sözleşme formülü farklıysa sonucu düzeltiniz.</p>
+            <div class="calc-grid">
+                <div><label>Sözleşme bedeli (TL)</label><input type="text" id="ih_soz" placeholder="örn. 5000000"></div>
+                <div><label>Gerçekleşen imalat oranı (%)</label><input type="text" id="ih_oran" placeholder="örn. 40"></div>
+                <div><label>Önceki hakediş toplamı (TL)</label><input type="text" id="ih_once" placeholder="0" value="0"></div>
+                <div><label>Fiyat farkı (TL)</label><input type="text" id="ih_ff" placeholder="0" value="0"></div>
+                <div><label>Kesinti toplamı (TL)</label><input type="text" id="ih_kes" placeholder="0" value="0"></div>
+            </div>
+            <div class="calc-actions">
+                <button type="button" onclick="runIhaleCalc()">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function runIhaleCalc() {
+        const soz = numVal('ih_soz');
+        const oran = numVal('ih_oran');
+        const once = numVal('ih_once');
+        const ff = numVal('ih_ff');
+        const kes = numVal('ih_kes');
+        if (![soz, oran].every(isFinite) || soz < 0) {
+            alert('Sözleşme bedeli ve imalat oranı giriniz.');
+            return;
+        }
+        const hak = soz * (oran/100);
+        const o = isFinite(once)?once:0;
+        const f = isFinite(ff)?ff:0;
+        const k = isFinite(kes)?kes:0;
+        const odenecek = hak + f - o - k;
+        const text =
+`İHALE HAKEDİŞ TASLAĞI
+Sözleşme: ${fmtTR(soz,0)} TL
+İmalat oranı: ${fmtTR(oran,2)} %
+Hakediş (oranlı): ${fmtTR(hak,2)} TL
+Fiyat farkı: ${fmtTR(f,2)} TL
+Önceki hakediş: ${fmtTR(o,2)} TL
+Kesintiler: ${fmtTR(k,2)} TL
+ÖDENECEK (taslak): ${fmtTR(odenecek,2)} TL
+Not: Sözleşme fiyat farkı formülü ve teminat kesintileri ayrıca uygulanmalıdır.`;
+        setCalcResult(text);
+    }
+
+
     function compileReportText() {
         const raporTuru = document.getElementById('raporTuru').value;
         const mahkeme = document.getElementById('mahkemeAdi').value.trim();
@@ -3031,7 +3432,14 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             }
         });
         const ekler = eklerLines.join("\n");
-        const branchSpecial = document.getElementById('branchSpecial') ? capitalizeSentences(document.getElementById('branchSpecial').value.trim()) : "";
+        let branchSpecial = document.getElementById('branchSpecial') ? capitalizeSentences(document.getElementById('branchSpecial').value.trim()) : "";
+        const calcBox = document.getElementById('calcResultBox');
+        if (calcBox && calcBox.style.display !== 'none' && calcBox.textContent.trim()) {
+            const calcTxt = calcBox.textContent.trim();
+            if (branchSpecial.indexOf(calcTxt) === -1) {
+                branchSpecial = branchSpecial ? (branchSpecial + '\n\n' + calcTxt) : calcTxt;
+            }
+        }
         const selectedKey = document.getElementById('bransSecim').value;
         const bkAd = document.getElementById('bilirkişiAd') ? document.getElementById('bilirkişiAd').value.trim() : "";
         const bkUnvan = document.getElementById('bilirkişiUnvan') ? document.getElementById('bilirkişiUnvan').value.trim() : "";
@@ -3709,12 +4117,56 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
    SADECE BU BÖLÜMÜ DEĞİŞTİRECEĞİZ.
    ========================================================= */
 const PAYMENT_SETTINGS = {
-    amount: "4.900 TL",
+    amount: "—",
     bankName: "BANKA ADI BURAYA",
     iban: "IBAN BURAYA EKLENECEK",
     accountName: "ALICI BİLGİSİ BURAYA",
     description: "ERİŞİM KODU"
 };
+
+function formatPlanPrice(price) {
+    return Number(price).toLocaleString('tr-TR') + ' TL';
+}
+
+function getSelectedMembershipPlan() {
+    if (window.__selectedMembershipPlan && window.__selectedMembershipPlan.price) {
+        return window.__selectedMembershipPlan;
+    }
+    try {
+        const raw = sessionStorage.getItem('bk_membership_plan');
+        if (raw) {
+            const p = JSON.parse(raw);
+            if (p && p.price) {
+                window.__selectedMembershipPlan = p;
+                return p;
+            }
+        }
+    } catch (e) {}
+    return null;
+}
+
+function applySelectedPlanToPaymentUI(plan) {
+    if (!plan) return;
+    const amountText = formatPlanPrice(plan.price);
+    PAYMENT_SETTINGS.amount = amountText;
+    PAYMENT_SETTINGS.description = 'ERİŞİM KODU - ' + (plan.label || '');
+    const amountEl = document.getElementById('paymentAmount');
+    if (amountEl) amountEl.textContent = amountText;
+    const descEl = document.getElementById('paymentDescription');
+    if (descEl) descEl.textContent = PAYMENT_SETTINGS.description;
+    const box = document.getElementById('selectedPlanBox');
+    if (box) {
+        box.style.display = 'block';
+        box.innerHTML = '<b>Seçilen Paket: ' + plan.label + '</b><br>Ücret: ' + amountText +
+            '<br>Aynı anda kullanım: ' + plan.simultaneous + ' PC<br>En fazla farklı PC: ' + plan.maxDevices +
+            ' PC<br>Üyelik süresi: ' + plan.period;
+    }
+    try {
+        sessionStorage.setItem('bk_membership_plan', JSON.stringify(plan));
+        sessionStorage.setItem('bk_payment_amount', amountText);
+        sessionStorage.setItem('bk_payment_amount_number', String(plan.price));
+    } catch (e) {}
+}
 
 function openPaymentModal(event) {
     if (event) {
@@ -3728,11 +4180,20 @@ function openPaymentModal(event) {
         return false;
     }
 
-    document.getElementById("paymentAmount").textContent = PAYMENT_SETTINGS.amount;
+    const plan = getSelectedMembershipPlan();
+    if (plan) {
+        applySelectedPlanToPaymentUI(plan);
+    } else {
+        PAYMENT_SETTINGS.amount = '—';
+        const amountEl = document.getElementById('paymentAmount');
+        if (amountEl) amountEl.textContent = 'Paket seçiniz';
+    }
+
     document.getElementById("paymentBankName").textContent = PAYMENT_SETTINGS.bankName;
     document.getElementById("paymentIban").textContent = PAYMENT_SETTINGS.iban;
     document.getElementById("paymentAccountName").textContent = PAYMENT_SETTINGS.accountName;
-    document.getElementById("paymentDescription").textContent = PAYMENT_SETTINGS.description;
+    const descEl = document.getElementById("paymentDescription");
+    if (descEl) descEl.textContent = PAYMENT_SETTINGS.description;
 
     const msg = document.getElementById("ibanCopyMessage");
     if (msg) msg.textContent = "";
@@ -3774,6 +4235,13 @@ function copyPaymentIban(event) {
 }
 
 function paymentCompleted() {
+    const selectedPlan = getSelectedMembershipPlan();
+    if (!selectedPlan) {
+        alert("Lütfen önce üyelik paketini seçin (Bireysel / Heyet-Ofis, Aylık veya Yıllık).");
+        return;
+    }
+    applySelectedPlanToPaymentUI(selectedPlan);
+
     const payerName = (document.getElementById("payerName")?.value || "").trim();
     const payerIban = (document.getElementById("payerIban")?.value || "").replace(/\s+/g, "").trim();
     const paymentReference = (document.getElementById("paymentReference")?.value || "").trim();
@@ -3821,19 +4289,25 @@ const MEMBERSHIP_PLANS = {
   committee_yearly: {key:'committee_yearly',category:'Heyet / Ofis',period:'Yıllık',price:12900,simultaneous:3,maxDevices:5,months:12,label:'Heyet / Ofis Yıllık'}
 };
 window.__selectedMembershipPlan = null;
+
+function selectMembershipPlan(planKey, btnEl) {
+  const p = MEMBERSHIP_PLANS[planKey];
+  if (!p) return;
+  document.querySelectorAll('.plan-card').forEach(function(x){ x.classList.remove('selected'); });
+  if (btnEl) btnEl.classList.add('selected');
+  else {
+    const match = document.querySelector('.plan-card[data-plan="'+planKey+'"]');
+    if (match) match.classList.add('selected');
+  }
+  window.__selectedMembershipPlan = p;
+  applySelectedPlanToPaymentUI(p);
+}
+
 document.querySelectorAll('.plan-card').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    const p=MEMBERSHIP_PLANS[btn.dataset.plan];
-    if(!p)return;
-    document.querySelectorAll('.plan-card').forEach(x=>x.classList.remove('selected'));
-    btn.classList.add('selected');
-    window.__selectedMembershipPlan=p;
-    try{sessionStorage.setItem('bk_membership_plan',JSON.stringify(p));}catch(e){}
-    const box=document.getElementById('selectedPlanBox');
-    if(box){
-      box.style.display='block';
-      box.innerHTML='<b>Seçilen Paket: '+p.label+'</b><br>Ücret: '+p.price.toLocaleString('tr-TR')+' TL<br>Aynı anda kullanım: '+p.simultaneous+' PC<br>En fazla farklı PC: '+p.maxDevices+' PC<br>Üyelik süresi: '+p.period;
-    }
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    selectMembershipPlan(btn.dataset.plan, btn);
   });
 });
 
