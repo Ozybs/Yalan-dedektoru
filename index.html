@@ -1034,7 +1034,7 @@ function openRequestModalFromPayment() {
         box.innerHTML = '<p style="color:#94a3b8;">Yükleniyor...</p>';
         try {
             await waitForFirebase();
-            const { db, collection, getDocs, query, orderBy } = window.__fb;
+            const { db, collection, getDocs, query, orderBy, doc, getDoc } = window.__fb;
             let snap;
             try {
                 snap = await getDocs(query(collection(db, 'kod_talepleri'), orderBy('tarih', 'desc')));
@@ -1045,17 +1045,44 @@ function openRequestModalFromPayment() {
                 box.innerHTML = '<p>Talep yok.</p>';
                 return;
             }
+            const rows = [];
+            snap.forEach(docSnap => rows.push({ id: docSnap.id, d: docSnap.data() }));
             let html = '';
-            snap.forEach(docSnap => {
-                const d = docSnap.data();
-                const id = docSnap.id;
+            for (const row of rows) {
+                const d = row.d;
+                const id = row.id;
                 const paket = parsePaketFromAciklama(d.islem_aciklamasi);
                 let tarihStr = '-';
                 try {
                     if (d.tarih && d.tarih.toDate) tarihStr = d.tarih.toDate().toLocaleString('tr-TR');
                 } catch (e) {}
                 const durum = d.durum || '-';
-                const kod = d.erisim_kodu || '';
+                const kod = d.erisim_kodu || d.erisimKodu || '';
+                let bitisStr = '—';
+                let maxDevStr = '—';
+                let kodDurum = '';
+                if (kod) {
+                    try {
+                        const ks = await getDoc(doc(db, 'erisim_kodlari', String(kod).toUpperCase()));
+                        if (ks.exists()) {
+                            const kd = ks.data();
+                            if (kd.bitisTarihi) {
+                                try {
+                                    if (kd.bitisTarihi.toDate) bitisStr = kd.bitisTarihi.toDate().toLocaleString('tr-TR');
+                                    else bitisStr = String(kd.bitisTarihi);
+                                } catch (e) { bitisStr = String(kd.bitisTarihi); }
+                            } else {
+                                bitisStr = 'YOK (süre yazılmamış)';
+                            }
+                            maxDevStr = (kd.maxDevices != null) ? String(kd.maxDevices) : 'YOK';
+                            kodDurum = kd.durum || '';
+                        } else {
+                            bitisStr = 'Kod belgesi bulunamadı';
+                        }
+                    } catch (e) {
+                        bitisStr = 'Okunamadı';
+                    }
+                }
                 html += '<div class="admin-card">' +
                     '<div><b>' + (d.adSoyad || '-') + '</b> · <span style="color:#fbbf24;">' + durum + '</span></div>' +
                     '<div class="meta">' +
@@ -1068,19 +1095,69 @@ function openRequestModalFromPayment() {
                     'Açıklama: ' + (d.islem_aciklamasi || '-') + '<br>' +
                     'Paket (çözümlenen): ' + (paket.label || '—') + ' · ' + paket.months + ' ay · max ' + paket.maxDevices + ' cihaz<br>' +
                     (kod ? ('Erişim Kodu: <b>' + kod + '</b><br>') : '') +
+                    (kod ? ('Bitiş tarihi: <b style="color:#4ade80">' + bitisStr + '</b><br>') : '') +
+                    (kod ? ('Max cihaz (kod): ' + maxDevStr + (kodDurum ? ' · durum: ' + kodDurum : '') + '<br>') : '') +
                     '</div>';
                 if (durum === 'beklemede') {
                     html += '<div class="actions">' +
                         '<button type="button" class="admin-btn ok" onclick="approvePaymentRequest(\'' + id + '\')">ONAYLA → KOD OLUŞTUR</button>' +
                         '<button type="button" class="admin-btn danger" onclick="rejectPaymentRequest(\'' + id + '\')">REDDET</button>' +
                         '</div>';
+                } else if (kod) {
+                    html += '<div class="actions">' +
+                        '<button type="button" class="admin-btn ok" onclick="ensureExpiryOnCode(\'' + id + '\',\'' + String(kod).replace(/'/g, '') + '\')">SÜRE / LİMİT YAZ (bitisTarihi)</button>' +
+                        '</div>';
                 }
                 html += '</div>';
-            });
+            }
             box.innerHTML = html;
         } catch (e) {
             console.error(e);
             box.innerHTML = '<p style="color:#f87171;">Liste alınamadı: ' + (e.message || e) + '</p>';
+        }
+    }
+
+    async function ensureExpiryOnCode(talepId, code) {
+        try {
+            await waitForFirebase();
+            const { db, doc, getDoc, setDoc, Timestamp } = window.__fb;
+            const codeId = String(code || '').toUpperCase();
+            if (!codeId) { alert('Kod yok'); return; }
+            let months = 1, maxDevices = 2, simultaneous = 1, label = '';
+            try {
+                const ts = await getDoc(doc(db, 'kod_talepleri', talepId));
+                if (ts.exists()) {
+                    const paket = parsePaketFromAciklama(ts.data().islem_aciklamasi);
+                    months = paket.months || 1;
+                    maxDevices = paket.maxDevices || 2;
+                    simultaneous = paket.simultaneous || 1;
+                    label = paket.label || '';
+                }
+            } catch (e) {}
+            const bitis = new Date();
+            bitis.setMonth(bitis.getMonth() + months);
+            const ref = doc(db, 'erisim_kodlari', codeId);
+            const existing = await getDoc(ref);
+            const payload = {
+                bitisTarihi: Timestamp.fromDate(bitis),
+                maxDevices: maxDevices,
+                simultaneous: simultaneous,
+                months: months,
+                paket: label,
+                durum: 'aktif'
+            };
+            if (existing.exists()) {
+                await setDoc(ref, payload, { merge: true });
+            } else {
+                payload.deviceIds = [];
+                payload.activeSessionId = '';
+                await setDoc(ref, payload);
+            }
+            alert('Yazıldı:\nKod: ' + codeId + '\nBitiş: ' + bitis.toLocaleString('tr-TR') + '\nMax cihaz: ' + maxDevices);
+            loadAdminRequests();
+        } catch (e) {
+            console.error(e);
+            alert('Süre yazılamadı: ' + (e.message || e));
         }
     }
 
@@ -1121,7 +1198,8 @@ function openRequestModalFromPayment() {
             await updateDoc(talepRef, {
                 durum: 'dogrulandi',
                 odeme_durumu: 'DOGRULANDI',
-                erisim_kodu: code
+                erisim_kodu: code,
+                erisimKodu: code
             });
 
             alert('Kod oluşturuldu:\\n\\n' + code +
