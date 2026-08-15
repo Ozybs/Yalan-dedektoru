@@ -1156,6 +1156,16 @@ function openRequestModalFromPayment() {
                 const fbWrite = (async () => {
                     await waitForFirebase();
                     const { db, collection, addDoc, serverTimestamp } = window.__fb;
+                    // Sadece kuralların kabul ettiği temel alanlar.
+                    // Paket bilgisi islem_aciklamasi içine gömülür (rules uyumu).
+                    const paketOzet = selectedMembership
+                        ? ('Paket: ' + selectedMembership.label +
+                           ' | Tutar: ' + formatPlanPrice(selectedMembership.price) +
+                           ' | Eşzamanlı PC: ' + selectedMembership.simultaneous +
+                           ' | Max cihaz: ' + selectedMembership.maxDevices)
+                        : '';
+                    const aciklama = [paymentReference || 'Belirtilmedi', paketOzet]
+                        .filter(Boolean).join(' | ');
                     return addDoc(collection(db, 'kod_talepleri'), {
                         adSoyad,
                         email,
@@ -1164,16 +1174,11 @@ function openRequestModalFromPayment() {
                         durum: 'beklemede',
                         odemeyi_yapan: paymentPayerName,
                         gonderen_iban: paymentPayerIban,
-                        islem_aciklamasi: paymentReference || 'Belirtilmedi',
-                        odeme_tutari: String(selectedMembership.price),
-                        odeme_durumu: 'DOĞRULAMA BEKLENİYOR',
-                        uyelik_paketi: selectedMembership.label,
-                        uyelik_tipi: selectedMembership.category,
-                        uyelik_suresi: selectedMembership.period,
-                        uyelik_tutari: String(selectedMembership.price),
-                        ayni_anda_pc: Number(selectedMembership.simultaneous),
-                        maksimum_cihaz: Number(selectedMembership.maxDevices),
-                        uyelik_ay: Number(selectedMembership.months)
+                        islem_aciklamasi: aciklama,
+                        odeme_tutari: selectedMembership
+                            ? formatPlanPrice(selectedMembership.price)
+                            : (paymentAmount || ''),
+                        odeme_durumu: 'DOGRULAMA_BEKLENIYOR'
                     });
                 })();
                 await Promise.race([fbWrite, fbTimeout]);
@@ -1182,6 +1187,11 @@ function openRequestModalFromPayment() {
                     'Firebase kayıt hatası; EmailJS bildirimi başarıyla gönderildi:',
                     firebaseErr
                 );
+                try {
+                    alert('Mail gönderildi ama Firebase kaydı yapılamadı:\n' +
+                          (firebaseErr && firebaseErr.message ? firebaseErr.message : firebaseErr) +
+                          '\n\nRules veya bağlantıyı kontrol edin. Mail geldiyse ödemeyi oradan takip edebilirsiniz.');
+                } catch (e) {}
             }
 
             try {
