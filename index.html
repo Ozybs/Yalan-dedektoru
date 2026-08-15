@@ -239,6 +239,20 @@ body.locked .container{display:none;}
     font: inherit;
 }
 
+
+.membership-plans{margin:12px 0 16px}
+.membership-plans h3{margin:0 0 6px}
+.membership-note{font-size:.82rem;color:#475569;line-height:1.45;margin:0 0 10px}
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan-card{border:2px solid #cbd5e1;background:#fff;border-radius:10px;padding:12px;text-align:left;cursor:pointer;color:#0f172a}
+.plan-card:hover{border-color:#64748b}
+.plan-card.selected{border-color:#0f172a;box-shadow:0 0 0 2px #e2e8f0}
+.plan-card b,.plan-card span,.plan-card strong,.plan-card small{display:block}
+.plan-card span{font-size:.78rem;color:#64748b;margin-top:2px}
+.plan-card strong{font-size:1.18rem;margin:5px 0}
+.plan-card small{font-size:.73rem;color:#475569;line-height:1.4}
+.selected-plan-box{margin-top:10px;padding:10px;border:1px solid #cbd5e1;border-radius:8px;background:#f8fafc;font-size:.84rem;line-height:1.5}
+@media(max-width:600px){.plan-grid{grid-template-columns:1fr}}
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
 
@@ -391,7 +405,32 @@ function openRequestModalFromPayment() {
     <div class="modal-box payment-box" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
         <button type="button" class="modal-close" onclick="closePaymentModal()" aria-label="Kapat">✕</button>
 
-        <h3 id="paymentTitle">💳 Erişim Kodu İçin Ödeme</h3>
+        
+<div id="membershipPlans" class="membership-plans">
+  <h3>📦 Üyelik Paketinizi Seçin</h3>
+  <p class="membership-note">Ödeme yapmadan önce paket seçmeniz gerekir. Seçtiğiniz paket ödeme talebinize kaydedilir ve yönetici onayında bu pakete göre erişim süresi ve cihaz limitleri uygulanır.</p>
+  <div class="plan-grid">
+    <button type="button" class="plan-card" data-plan="individual_monthly">
+      <b>BİREYSEL</b><span>Aylık</span><strong>590 TL</strong>
+      <small>Aynı anda 1 PC<br>En fazla 2 farklı PC</small>
+    </button>
+    <button type="button" class="plan-card" data-plan="individual_yearly">
+      <b>BİREYSEL</b><span>Yıllık</span><strong>4.900 TL</strong>
+      <small>Aynı anda 1 PC<br>En fazla 2 farklı PC</small>
+    </button>
+    <button type="button" class="plan-card" data-plan="committee_monthly">
+      <b>HEYET / OFİS</b><span>Aylık</span><strong>1.490 TL</strong>
+      <small>Aynı anda 3 PC<br>En fazla 5 farklı PC</small>
+    </button>
+    <button type="button" class="plan-card" data-plan="committee_yearly">
+      <b>HEYET / OFİS</b><span>Yıllık</span><strong>12.900 TL</strong>
+      <small>Aynı anda 3 PC<br>En fazla 5 farklı PC</small>
+    </button>
+  </div>
+  <div id="selectedPlanBox" class="selected-plan-box" style="display:none"></div>
+</div>
+
+<h3 id="paymentTitle">💳 Erişim Kodu İçin Ödeme</h3>
         <p class="payment-intro">
             Aşağıdaki banka bilgilerine havale/EFT/FAST ile ödeme yapabilirsiniz.
         </p>
@@ -1032,10 +1071,27 @@ function openRequestModalFromPayment() {
             return;
         }
 
+        let selectedMembership = window.__selectedMembershipPlan;
+        if (!selectedMembership) {
+            try { selectedMembership = JSON.parse(sessionStorage.getItem('bk_membership_plan') || 'null'); } catch (e) {}
+        }
+        if (!selectedMembership || !selectedMembership.label) {
+            errorMsg.textContent = 'Lütfen önce Bireysel veya Heyet / Ofis üyelik paketlerinden birini seçiniz.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.textContent = 'Gönderiliyor...';
 
         const mailData = {
+            uyelik_paketi: selectedMembership.label,
+            uyelik_tipi: selectedMembership.category,
+            uyelik_suresi: selectedMembership.period,
+            uyelik_tutari: String(selectedMembership.price),
+            ayni_anda_pc: String(selectedMembership.simultaneous),
+            maksimum_cihaz: String(selectedMembership.maxDevices),
+
             ad_soyad: adSoyad,
             email: email,
             telefon: telefon,
@@ -1069,16 +1125,34 @@ function openRequestModalFromPayment() {
             // EmailJS başarılıysa Firebase yalnızca ek kayıt olarak denenir.
             // Firebase reddetse bile ödeme bildirimi kaybolmaz.
             try {
-                await waitForFirebase();
-                const { db, collection, addDoc, serverTimestamp } = window.__fb;
-
-                await addDoc(collection(db, 'kod_talepleri'), {
-                    adSoyad,
-                    email,
-                    telefon,
-                    tarih: serverTimestamp(),
-                    durum: 'beklemede'
-                });
+                // Firebase yalnızca ek kayıt. EmailJS gönderimini asla engellemez.
+                const fbTimeout = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Firebase kayıt zaman aşımı')), 7000)
+                );
+                const fbWrite = (async () => {
+                    await waitForFirebase();
+                    const { db, collection, addDoc, serverTimestamp } = window.__fb;
+                    return addDoc(collection(db, 'kod_talepleri'), {
+                        adSoyad,
+                        email,
+                        telefon,
+                        tarih: serverTimestamp(),
+                        durum: 'beklemede',
+                        odemeyi_yapan: paymentPayerName,
+                        gonderen_iban: paymentPayerIban,
+                        islem_aciklamasi: paymentReference || 'Belirtilmedi',
+                        odeme_tutari: String(selectedMembership.price),
+                        odeme_durumu: 'DOĞRULAMA BEKLENİYOR',
+                        uyelik_paketi: selectedMembership.label,
+                        uyelik_tipi: selectedMembership.category,
+                        uyelik_suresi: selectedMembership.period,
+                        uyelik_tutari: String(selectedMembership.price),
+                        ayni_anda_pc: Number(selectedMembership.simultaneous),
+                        maksimum_cihaz: Number(selectedMembership.maxDevices),
+                        uyelik_ay: Number(selectedMembership.months)
+                    });
+                })();
+                await Promise.race([fbWrite, fbTimeout]);
             } catch (firebaseErr) {
                 console.warn(
                     'Firebase kayıt hatası; EmailJS bildirimi başarıyla gönderildi:',
@@ -1091,6 +1165,7 @@ function openRequestModalFromPayment() {
                 sessionStorage.removeItem('bk_payer_iban');
                 sessionStorage.removeItem('bk_payment_reference');
                 sessionStorage.removeItem('bk_payment_status');
+                sessionStorage.removeItem('bk_membership_plan');
             } catch (e) {}
 
             document.getElementById('requestFormArea').style.display = 'none';
@@ -3738,6 +3813,30 @@ function paymentCompleted() {
 }
 
 /* Modal dışına tıklanınca kapat */
+
+const MEMBERSHIP_PLANS = {
+  individual_monthly: {key:'individual_monthly',category:'Bireysel',period:'Aylık',price:590,simultaneous:1,maxDevices:2,months:1,label:'Bireysel Aylık'},
+  individual_yearly: {key:'individual_yearly',category:'Bireysel',period:'Yıllık',price:4900,simultaneous:1,maxDevices:2,months:12,label:'Bireysel Yıllık'},
+  committee_monthly: {key:'committee_monthly',category:'Heyet / Ofis',period:'Aylık',price:1490,simultaneous:3,maxDevices:5,months:1,label:'Heyet / Ofis Aylık'},
+  committee_yearly: {key:'committee_yearly',category:'Heyet / Ofis',period:'Yıllık',price:12900,simultaneous:3,maxDevices:5,months:12,label:'Heyet / Ofis Yıllık'}
+};
+window.__selectedMembershipPlan = null;
+document.querySelectorAll('.plan-card').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    const p=MEMBERSHIP_PLANS[btn.dataset.plan];
+    if(!p)return;
+    document.querySelectorAll('.plan-card').forEach(x=>x.classList.remove('selected'));
+    btn.classList.add('selected');
+    window.__selectedMembershipPlan=p;
+    try{sessionStorage.setItem('bk_membership_plan',JSON.stringify(p));}catch(e){}
+    const box=document.getElementById('selectedPlanBox');
+    if(box){
+      box.style.display='block';
+      box.innerHTML='<b>Seçilen Paket: '+p.label+'</b><br>Ücret: '+p.price.toLocaleString('tr-TR')+' TL<br>Aynı anda kullanım: '+p.simultaneous+' PC<br>En fazla farklı PC: '+p.maxDevices+' PC<br>Üyelik süresi: '+p.period;
+    }
+  });
+});
+
 document.addEventListener("click", function(event) {
     const modal = document.getElementById("paymentModalBackdrop");
     if (modal && event.target === modal) {
