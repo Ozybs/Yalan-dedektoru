@@ -3467,9 +3467,21 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     function numVal(id) {
         const el = document.getElementById(id);
         if (!el) return NaN;
-        const t = String(el.value || '').replace(',', '.').replace(/[^\d.\-]/g, '');
-        const n = parseFloat(t);
-        return isFinite(n) ? n : NaN;
+        let t = String(el.value ?? '').trim().replace(/[^0-9,.-]/g, '');
+        if (!t) return NaN;
+        const comma = t.lastIndexOf(',');
+        const dot = t.lastIndexOf('.');
+        if (comma >= 0 && dot >= 0) {
+            if (comma > dot) t = t.replace(/\./g, '').replace(',', '.');
+            else t = t.replace(/,/g, '');
+        } else if (comma >= 0) {
+            const decimals = t.length - comma - 1;
+            t = decimals === 3 && comma > 0 ? t.replace(',', '') : t.replace(',', '.');
+        } else if ((t.match(/\./g) || []).length > 1) {
+            t = t.replace(/\./g, '');
+        }
+        const n = Number(t);
+        return Number.isFinite(n) ? n : NaN;
     }
 
     function fmtTR(n, dig) {
@@ -3497,6 +3509,279 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const host = document.getElementById('branchCalcPanelHost');
         if (!host) return;
         host.innerHTML = '';
+
+    // ====================================================================
+    // EK BRANŞ-SPECIFIC SAYISAL HESAPLAMALAR
+    // Bu paneller sabit hukuki oran/parametre içermez; bilirkişi kendi
+    // dosyasındaki ölçüm, fiyat, oran ve dayanak değerlerini girer.
+    // ====================================================================
+    const specialCalcConfigs = {
+        ziraat: {
+            title: "🌾 Ziraat — Verim / Gelir Kaybı",
+            note: "Alan, verim, ürün fiyatı ve gider üzerinden şeffaf taslak hesap. Verim ve fiyatın dosya/ölçüm dayanağı ayrıca belirtilmelidir.",
+            fields: [["alan","Alan (da)","örn. 100"],["verim","Verim (kg/da)","örn. 450"],["fiyat","Ürün fiyatı (TL/kg)","örn. 12"],["gider","Toplam gider (TL)","0"],["kayip","Verim kaybı (%)","0"]],
+            calc: "ziraat"
+        },
+        enerji: {
+            title: "⚡ Enerji — Üretim / Verim / Kayıp",
+            note: "Kapasite, çalışma süresi, kapasite/verim faktörü ve birim enerji değeri ile şeffaf üretim/kayıp hesabı. Teknik üretim modeli ayrıca doğrulanmalıdır.",
+            fields: [["guc","Kurulu güç (kW)","örn. 1000"],["saat","Çalışma süresi (saat)","örn. 2000"],["faktor","Verim / kapasite faktörü (%)","örn. 20"],["fiyat","Birim enerji değeri (TL/kWh)","örn. 3"],["kayip","Üretim kaybı (%)","0"]],
+            calc: "enerji"
+        },
+        lojistik: {
+            title: "🚚 Lojistik — Navlun / Depolama / Gecikme",
+            note: "Dosyadaki miktar, birim navlun, depolama ve gecikme maliyetlerini ayrı gösterir; sözleşmesel bedeller ayrıca doğrulanmalıdır.",
+            fields: [["miktar","Taşınan miktar","örn. 100"],["navlun","Birim navlun (TL)","örn. 500"],["depoGun","Depolama günü","0"],["depoGunluk","Günlük depolama (TL)","0"],["gecikme","Gecikme günü","0"],["gecikmeGunluk","Günlük gecikme zararı (TL)","0"]],
+            calc: "lojistik"
+        },
+        ekonomi: {
+            title: "📈 Ekonomi — Değer Değişimi / Faiz",
+            note: "Dosyada kabul edilen oran ve dönemi kullanarak şeffaf taslak hesap yapar. Enflasyon, kur veya faiz oranı otomatik olarak varsayılmaz.",
+            fields: [["ana","Başlangıç tutarı (TL)","örn. 100000"],["oran","Yıllık değişim/faiz oranı (%)","örn. 20"],["gun","Gün","365"],["mahsup","Mahsup/ödenen (TL)","0"]],
+            calc: "ekonomi"
+        },
+        turizm: {
+            title: "🏨 Turizm — Gelir / Gider / Kârlılık",
+            note: "Oda/gece, doluluk, ortalama fiyat ve giderlerden dönemsel taslak gelir-kârlılık hesabı.",
+            fields: [["oda","Oda sayısı","örn. 50"],["gece","Dönem gecesi","örn. 30"],["doluluk","Doluluk (%)","örn. 70"],["fiyat","Ortalama oda fiyatı (TL)","örn. 3000"],["diger","Diğer gelir (TL)","0"],["gider","Toplam gider (TL)","0"]],
+            calc: "turizm"
+        },
+        muzik: {
+            title: "🎵 Müzik — Dijital Platform Geliri / Hak Payı",
+            note: "Platformdan bildirilen toplam gelir ve hak sahibine ait oran üzerinden taslak pay hesabı. Platformun gerçek ödeme formülü ayrıca dosyaya göre değerlendirilmelidir.",
+            fields: [["gelir","Toplam platform geliri (TL)","örn. 100000"],["pay","Hak sahibi payı (%)","örn. 50"],["icra","İcracı/diğer pay (%)","0"],["mahsup","Mahsup/ödenen (TL)","0"]],
+            calc: "muzik"
+        },
+        mobilya: {
+            title: "🪑 Mobilya — Metraj / Maliyet / Hakediş",
+            note: "Adet, birim maliyet, işçilik ve diğer giderleri şeffaf biçimde toplar. Proje metrajı ayrıca doğrulanmalıdır.",
+            fields: [["adet","Adet","örn. 10"],["malzeme","Birim malzeme maliyeti (TL)","örn. 5000"],["iscilik","Birim işçilik (TL)","örn. 1500"],["diger","Toplam diğer gider (TL)","0"],["hak","Ödenen/hakediş (TL)","0"]],
+            calc: "mobilya"
+        },
+        petrol: {
+            title: "🛢️ Petrol — Üretim / Sızıntı / Temizlik Maliyeti",
+            note: "Hacim, birim değer, sızıntı oranı ve temizlik maliyetini ayrı hesaplar. Teknik sızıntı oranı ölçüm/dayanak gerektirir.",
+            fields: [["hacim","Toplam hacim (birim)","örn. 10000"],["fiyat","Birim değer (TL)","örn. 30"],["kacak","Kaçak/sızıntı (%)","örn. 2"],["temiz","Temizlik birim maliyeti (TL)","örn. 5"]],
+            calc: "petrol"
+        },
+        elektrik: {
+            title: "🔌 Elektrik — Tüketim / Enerji Maliyeti / Kayıp",
+            note: "Güç, çalışma süresi, birim enerji bedeli ve kayıp oranı ile taslak tüketim/maliyet hesabı.",
+            fields: [["guc","Güç (kW)","örn. 100"],["saat","Çalışma süresi (saat)","örn. 1000"],["fiyat","Birim enerji bedeli (TL/kWh)","örn. 3"],["kayip","Kayıp (%)","0"]],
+            calc: "elektrik"
+        },
+        maden: {
+            title: "⛏️ Maden — Üretim / Tenör / Geri Kazanım",
+            note: "Üretim miktarı, tenör, geri kazanım ve birim değer üzerinden şeffaf taslak hesap. Jeolojik/metalurjik kabuller ayrıca dayandırılmalıdır.",
+            fields: [["ton","Üretim (ton)","örn. 1000"],["tenor","Tenör (%)","örn. 5"],["geri","Geri kazanım (%)","örn. 90"],["deger","Kazanılan birim değer (TL/kg)","örn. 100"],["maliyet","Toplam maliyet (TL)","0"]],
+            calc: "maden"
+        },
+        harita: {
+            title: "📐 Harita — Alan / Tecavüz Oranı / Değer",
+            note: "Ölçülen toplam alan ile tecavüz/uyuşmazlık alanını karşılaştırır; koordinat ve ölçüm yöntemi ayrıca raporlanmalıdır.",
+            fields: [["alan","Toplam alan (m²)","örn. 1000"],["tecavuz","Uyuşmazlık/tecavüz alanı (m²)","örn. 50"],["birim","Birim değer (TL/m²)","0"]],
+            calc: "harita"
+        },
+        makine: {
+            title: "⚙️ Makine — Enerji Tüketimi / Maliyet",
+            note: "Makine gücü, çalışma süresi ve birim enerji bedeli üzerinden taslak tüketim/maliyet hesabı.",
+            fields: [["guc","Güç (kW)","örn. 100"],["saat","Çalışma süresi (saat)","örn. 1000"],["fiyat","Birim enerji bedeli (TL/kWh)","örn. 3"],["verim","Verim (%)","100"]],
+            calc: "makine"
+        },
+        gemiinsaa: {
+            title: "🚢 Gemi İnşaatı — Süre / Kapasite / Gelir Kaybı",
+            note: "Teslim gecikmesi veya operasyonel kayıp için kullanıcı tarafından verilen dönemsel değerlerle taslak hesap.",
+            fields: [["gun","Gecikme günü","0"],["gunluk","Günlük kayıp/maliyet (TL)","0"],["ek","Ek maliyet (TL)","0"],["odeme","Ödenen/mahsup (TL)","0"]],
+            calc: "gemiinsaa"
+        },
+        biyomedikal: {
+            title: "🏥 Biyomedikal — Cihaz / Arıza / Duruş Maliyeti",
+            note: "Cihaz adedi, birim değer, arıza oranı ve duruş maliyeti üzerinden taslak hesap. Tıbbi/teknik uygunluk ayrıca incelenmelidir.",
+            fields: [["adet","Cihaz adedi","örn. 10"],["birim","Birim cihaz değeri (TL)","örn. 100000"],["oran","Arıza oranı (%)","örn. 10"],["gun","Duruş günü","0"],["gunluk","Günlük operasyon maliyeti (TL)","0"]],
+            calc: "biyomedikal"
+        },
+        patent: {
+            title: "📜 Patent — Lisans / Royalti Hesap Dayanağı",
+            note: "Gerçekleşen ciro, dosyada kabul edilen royalti oranı ve mahsupları şeffaf biçimde hesaplar. Oran ve ekonomik dayanak bilirkişi tarafından dosyadan belirlenmelidir.",
+            fields: [["ciro","İlgili dönem cirosu (TL)","örn. 1000000"],["royalti","Royalti oranı (%)","örn. 5"],["donem","Dönem katsayısı / oranı (%)","100"],["mahsup","Ödenen / mahsup edilen (TL)","0"]],
+            calc: "patent"
+        },
+        cevre: {
+            title: "🌱 Çevre — Çevresel Zarar / Rehabilitasyon Maliyeti",
+            note: "Ölçülen kirlilik/zarar miktarı ile dosyada dayanaklandırılan birim zarar ve rehabilitasyon maliyetlerini ayrı gösterir; sabit çevre katsayısı içermez.",
+            fields: [["miktar","Etkilenen/kirlenen miktar","örn. 1000"],["birimZarar","Birim zarar değeri (TL)","0"],["alan","Rehabilitasyon alanı (m²)","0"],["birimRehab","Birim rehabilitasyon maliyeti (TL/m²)","0"],["bertaraf","Bertaraf/temizlik diğer maliyetleri (TL)","0"]],
+            calc: "cevre"
+        },
+        kulturvarliklari: {
+            title: "🏛️ Kültür Varlıkları — Değerleme / Restorasyon Maliyeti",
+            note: "Adet/alan, birim değer, durum katsayısı ve belgelenmiş restorasyon maliyetlerini ayrı gösterir. Kültür varlığının niteliği ve değerleme yöntemi ayrıca dayanaklandırılmalıdır.",
+            fields: [["adet","Adet / birim","örn. 1"],["birim","Birim değer (TL)","0"],["durum","Durum/değer katsayısı (%)","100"],["rest","Restorasyon/koruma maliyeti (TL)","0"],["mahsup","Ödenen/mahsup edilen (TL)","0"]],
+            calc: "kulturvarliklari"
+        },
+        veteriner: {
+            title: "🐾 Veteriner — Hayvan Zayiatı / Tedavi Maliyeti",
+            note: "Hayvan sayısı, birim değer, zayiat oranı ve tedavi giderlerini şeffaf biçimde hesaplar. Irk, yaş, verim ve piyasa değerinin dosya dayanağı ayrıca gösterilmelidir.",
+            fields: [["adet","Hayvan sayısı","örn. 100"],["birim","Hayvan başına değer (TL)","örn. 25000"],["zayiat","Zayiat oranı (%)","örn. 10"],["tedavi","Toplam tedavi/ilaç maliyeti (TL)","0"],["kurtarilan","Kurtarılan/elde edilen değer (TL)","0"]],
+            calc: "veteriner"
+        },
+        orman: {
+            title: "🌲 Orman — Ağaç / Hacim / Değerleme",
+            note: "Ağaç sayısı, ağaç başına hacim, birim hacim değeri ve belgelenmiş ek maliyetleri ayrı hesaplar. Tür, çap, boy, hacim ve emsal değerler arazi/ölçüm dayanağına bağlanmalıdır.",
+            fields: [["adet","Ağaç sayısı","örn. 100"],["hacim","Ağaç başına hacim (m³)","örn. 0.5"],["birim","Birim hacim değeri (TL/m³)","örn. 5000"],["maliyet","Ağaçlandırma/rehabilitasyon maliyeti (TL)","0"],["mahsup","Kurtarılan/mahsup edilen değer (TL)","0"]],
+            calc: "orman"
+        },
+        spor: {
+            title: "🏟️ Spor — Transfer / Sözleşme Bedeli",
+            note: "Sözleşme/transfer bedeli, ödenen tutar ve dosyada kabul edilen ek bedel veya kesintileri şeffaf biçimde gösterir. Sözleşmesel ve federatif dayanak ayrıca belirtilmelidir.",
+            fields: [["bedel","Sözleşme / transfer bedeli (TL)","örn. 1000000"],["odeme","Ödenen tutar (TL)","0"],["ek","Dosyada kabul edilen ek bedel/zarar (TL)","0"],["kesinti","Kesinti/mahsup (TL)","0"]],
+            calc: "spor"
+        },
+        kimya: {
+            title: "🧪 Kimya — Parti / Saflık / Kayıp",
+            note: "Parti miktarı ve ölçülen saflık üzerinden etkin miktar hesabı; referans saflık ve parasal değer verilirse fark ayrıca gösterilir.",
+            fields: [["miktar","Parti miktarı (kg)","örn. 1000"],["saflik","Ölçülen saflık (%)","örn. 95"],["ref","Referans saflık (%)","100"],["deger","Birim değer (TL/kg)","0"]],
+            calc: "kimya"
+        }
+    };
+
+    function renderSpecialCalc(key) {
+        const c = specialCalcConfigs[key];
+        if (!c) return '';
+        const fields = c.fields.map(f => `<div><label>${f[1]}</label><input type="text" id="sp_${f[0]}" placeholder="${f[2]}" value="${f[2]==='0'?'0':''}"></div>`).join('');
+        return `<div class="calc-panel">
+            <h4>${c.title}</h4>
+            <p class="calc-note">${c.note}</p>
+            <div class="calc-grid">${fields}</div>
+            <div class="calc-actions">
+                <button type="button" onclick="runSpecialCalc('${key}')">Hesapla</button>
+                <button type="button" onclick="applyCalcToBranchSpecial(document.getElementById('calcResultBox').textContent)">Sonucu branş alanına ekle</button>
+            </div>
+            <div class="calc-result" id="calcResultBox"></div>
+        </div>`;
+    }
+
+    function sp(id) { return numVal('sp_' + id); }
+    function runSpecialCalc(key) {
+        const inputs = Array.from(document.querySelectorAll('#branchCalcPanelHost input[id^=\"sp_\"]'));
+        const missing = inputs.filter(el => el.getAttribute('placeholder') !== '0' && !Number.isFinite(numVal(el.id)));
+        if (missing.length) {
+            alert('Lütfen hesaplama için gerekli alanları doldurunuz.');
+            return;
+        }
+        const n = x => isFinite(x) ? x : 0;
+        let out = '';
+        switch(key) {
+            case 'ziraat': {
+                const alan=n(sp('alan')), verim=n(sp('verim')), fiyat=n(sp('fiyat')), gider=n(sp('gider')), kayip=n(sp('kayip'));
+                const brut=alan*verim*fiyat, kayipT=brut*kayip/100, net=brut-gider-kayipT;
+                out=`ZİRAAT — VERİM / GELİR KAYBI\nAlan: ${fmtTR(alan,2)} da\nVerim: ${fmtTR(verim,2)} kg/da\nÜrün fiyatı: ${fmtTR(fiyat,2)} TL/kg\nBrüt gelir: ${fmtTR(brut,2)} TL\nGider: ${fmtTR(gider,2)} TL\nVerim kaybı: ${fmtTR(kayip,2)} % → ${fmtTR(kayipT,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL`; break;
+            }
+            case 'enerji': {
+                const g=n(sp('guc')), s=n(sp('saat')), f=n(sp('faktor'))/100, p=n(sp('fiyat')), k=n(sp('kayip'))/100;
+                const uret=g*s*f, kayip=uret*k, deger=uret*p, kayipDeger=kayip*p;
+                out=`ENERJİ — ÜRETİM / KAYIP\nKurulu güç: ${fmtTR(g,2)} kW\nSüre: ${fmtTR(s,2)} saat\nVerim/kapasite faktörü: ${fmtTR(f*100,2)} %\nTahmini üretim: ${fmtTR(uret,2)} kWh\nÜretim değeri: ${fmtTR(deger,2)} TL\nKayıp oranı: ${fmtTR(k*100,2)} %\nTahmini kayıp: ${fmtTR(kayip,2)} kWh / ${fmtTR(kayipDeger,2)} TL`; break;
+            }
+            case 'lojistik': {
+                const q=n(sp('miktar')), nav=n(sp('navlun')), dg=n(sp('depoGun')), dp=n(sp('depoGunluk')), gec=n(sp('gecikme')), gp=n(sp('gecikmeGunluk'));
+                const navT=q*nav, depo=dg*dp, gecT=gec*gp;
+                out=`LOJİSTİK — MALİYET\nTaşınan miktar: ${fmtTR(q,2)}\nNavlun: ${fmtTR(navT,2)} TL\nDepolama: ${fmtTR(depo,2)} TL\nGecikme: ${fmtTR(gecT,2)} TL\nTOPLAM TASLAK: ${fmtTR(navT+depo+gecT,2)} TL`; break;
+            }
+            case 'ekonomi': {
+                const a=n(sp('ana')), r=n(sp('oran')), g=n(sp('gun')), m=n(sp('mahsup'));
+                const faiz=a*r/100*g/365, toplam=a+faiz-m;
+                out=`EKONOMİ — DEĞER DEĞİŞİMİ / FAİZ\nBaşlangıç: ${fmtTR(a,2)} TL\nOran: ${fmtTR(r,2)} %\nGün: ${fmtTR(g,0)}\nBasit dönemsel fark: ${fmtTR(faiz,2)} TL\nMahsup: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(toplam,2)} TL\nNot: Uygulanacak oran ve yöntem dosya dayanağına göre belirlenmelidir.`; break;
+            }
+            case 'turizm': {
+                const oda=n(sp('oda')), gece=n(sp('gece')), dol=n(sp('doluluk'))/100, fiyat=n(sp('fiyat')), dig=n(sp('diger')), gider=n(sp('gider'));
+                const sat=oda*gece*dol, gelir=sat*fiyat+dig, kar=gelir-gider;
+                out=`TURİZM — GELİR / KÂRLILIK\nSatılan oda/gece: ${fmtTR(sat,2)}\nOda geliri: ${fmtTR(sat*fiyat,2)} TL\nDiğer gelir: ${fmtTR(dig,2)} TL\nToplam gelir: ${fmtTR(gelir,2)} TL\nGider: ${fmtTR(gider,2)} TL\nNET TASLAK: ${fmtTR(kar,2)} TL`; break;
+            }
+            case 'muzik': {
+                const g=n(sp('gelir')), p=n(sp('pay'))/100, i=n(sp('icra'))/100, m=n(sp('mahsup'));
+                const hak=g*p, icra=g*i, net=hak-m;
+                out=`MÜZİK — GELİR / HAK PAYI\nToplam platform geliri: ${fmtTR(g,2)} TL\nHak sahibi payı: ${fmtTR(hak,2)} TL\nİcracı/diğer pay: ${fmtTR(icra,2)} TL\nMahsup: ${fmtTR(m,2)} TL\nNET TASLAK HAK PAYI: ${fmtTR(net,2)} TL`; break;
+            }
+            case 'mobilya': {
+                const a=n(sp('adet')), mat=n(sp('malzeme')), isc=n(sp('iscilik')), d=n(sp('diger')), h=n(sp('hak'));
+                const toplam=a*(mat+isc)+d, bakiye=toplam-h;
+                out=`MOBİLYA — METRAJ / MALİYET\nAdet: ${fmtTR(a,2)}\nMalzeme: ${fmtTR(a*mat,2)} TL\nİşçilik: ${fmtTR(a*isc,2)} TL\nDiğer: ${fmtTR(d,2)} TL\nToplam: ${fmtTR(toplam,2)} TL\nÖdenen/hakediş: ${fmtTR(h,2)} TL\nBAKİYE TASLAK: ${fmtTR(bakiye,2)} TL`; break;
+            }
+            case 'petrol': {
+                const h=n(sp('hacim')), f=n(sp('fiyat')), k=n(sp('kacak'))/100, t=n(sp('temiz'));
+                const kayip=h*k, deger=kayip*f, tem=kayip*t;
+                out=`PETROL — SIZINTI / MALİYET\nToplam hacim: ${fmtTR(h,2)}\nSızıntı oranı: ${fmtTR(k*100,2)} %\nTahmini kayıp hacmi: ${fmtTR(kayip,2)}\nÜrün değer kaybı: ${fmtTR(deger,2)} TL\nTemizlik maliyeti: ${fmtTR(tem,2)} TL\nTOPLAM TASLAK: ${fmtTR(deger+tem,2)} TL`; break;
+            }
+            case 'elektrik':
+            case 'makine': {
+                const g=n(sp('guc')), s=n(sp('saat')), p=n(sp('fiyat'));
+                if (key==='elektrik') {
+                    const k=n(sp('kayip'))/100, e=g*s, kay=e*k;
+                    out=`ELEKTRİK — TÜKETİM / KAYIP\nGüç: ${fmtTR(g,2)} kW\nSüre: ${fmtTR(s,2)} saat\nTüketim: ${fmtTR(e,2)} kWh\nBirim bedel: ${fmtTR(p,2)} TL/kWh\nMaliyet: ${fmtTR(e*p,2)} TL\nKayıp: ${fmtTR(kay,2)} kWh / ${fmtTR(kay*p,2)} TL`;
+                } else {
+                    const v=n(sp('verim'))/100, e=v>0?g*s/v:g*s;
+                    out=`MAKİNE — ENERJİ TÜKETİMİ\nGüç: ${fmtTR(g,2)} kW\nSüre: ${fmtTR(s,2)} saat\nVerim: ${fmtTR(v*100,2)} %\nTahmini tüketim: ${fmtTR(e,2)} kWh\nTahmini maliyet: ${fmtTR(e*p,2)} TL`;
+                } break;
+            }
+            case 'maden': {
+                const t=n(sp('ton')), te=n(sp('tenor'))/100, ge=n(sp('geri'))/100, d=n(sp('deger')), m=n(sp('maliyet'));
+                const metal=t*1000*te*ge, gelir=metal*d;
+                out=`MADEN — ÜRETİM / TENÖR\nÜretim: ${fmtTR(t,2)} ton\nTenör: ${fmtTR(te*100,2)} %\nGeri kazanım: ${fmtTR(ge*100,2)} %\nTahmini kazanılan miktar: ${fmtTR(metal,2)} kg\nBirim değer: ${fmtTR(d,2)} TL/kg\nGelir: ${fmtTR(gelir,2)} TL\nMaliyet: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(gelir-m,2)} TL`; break;
+            }
+            case 'harita': {
+                const a=n(sp('alan')), t=n(sp('tecavuz')), b=n(sp('birim'));
+                const oran=a>0?t/a*100:0, deger=t*b;
+                out=`HARİTA — ALAN / TECAVÜZ\nToplam alan: ${fmtTR(a,2)} m²\nUyuşmazlık/tecavüz alanı: ${fmtTR(t,2)} m²\nOran: ${fmtTR(oran,2)} %\nBirim değer: ${fmtTR(b,2)} TL/m²\nAlan karşılığı değer: ${fmtTR(deger,2)} TL`;
+                break;
+            }
+            case 'gemiinsaa': {
+                const g=n(sp('gun')), d=n(sp('gunluk')), e=n(sp('ek')), o=n(sp('odeme')), toplam=g*d+e-o;
+                out=`GEMİ İNŞAATI — SÜRE / KAYIP\nGecikme: ${fmtTR(g,0)} gün\nGünlük kayıp/maliyet: ${fmtTR(d,2)} TL\nGecikme karşılığı: ${fmtTR(g*d,2)} TL\nEk maliyet: ${fmtTR(e,2)} TL\nMahsup: ${fmtTR(o,2)} TL\nNET TASLAK: ${fmtTR(toplam,2)} TL`; break;
+            }
+            case 'biyomedikal': {
+                const a=n(sp('adet')), b=n(sp('birim')), r=n(sp('oran'))/100, g=n(sp('gun')), d=n(sp('gunluk'));
+                const ariza=a*r, deger=ariza*b, durus=g*d;
+                out=`BİYOMEDİKAL — ARIZA / DURUŞ\nCihaz: ${fmtTR(a,0)}\nArıza oranı: ${fmtTR(r*100,2)} %\nTahmini arızalı cihaz: ${fmtTR(ariza,2)}\nCihaz değer karşılığı: ${fmtTR(deger,2)} TL\nDuruş maliyeti: ${fmtTR(durus,2)} TL\nTOPLAM TASLAK: ${fmtTR(deger+durus,2)} TL`; break;
+            }
+            case 'kimya': {
+                const m=n(sp('miktar')), s=n(sp('saflik'))/100, r=n(sp('ref'))/100, d=n(sp('deger'));
+                const etkin=m*s, fark=Math.max(0,m*r-etkin), deger=fark*d;
+                out=`KİMYA — PARTİ / SAFLIK\nParti: ${fmtTR(m,2)} kg\nÖlçülen saflık: ${fmtTR(s*100,2)} %\nReferans saflık: ${fmtTR(r*100,2)} %\nEtkin miktar: ${fmtTR(etkin,2)} kg\nFark miktarı: ${fmtTR(fark,2)} kg\nBirim değer: ${fmtTR(d,2)} TL/kg\nFarkın değer karşılığı: ${fmtTR(deger,2)} TL`; break;
+            }
+            case 'patent': {
+                const c=n(sp('ciro')), r=n(sp('royalti'))/100, d=n(sp('donem'))/100, m=n(sp('mahsup'));
+                const royalty=c*r*d, net=royalty-m;
+                out=`PATENT — LİSANS / ROYALTI\nİlgili dönem cirosu: ${fmtTR(c,2)} TL\nRoyalti oranı: ${fmtTR(r*100,2)} %\nDönem katsayısı: ${fmtTR(d*100,2)} %\nHesaplanan royalti: ${fmtTR(royalty,2)} TL\nMahsup/ödenen: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL\nNot: Oran ve dönem katsayısı dosya/sözleşme dayanağına göre belirlenmelidir.`; break;
+            }
+            case 'cevre': {
+                const m=n(sp('miktar')), bz=n(sp('birimZarar')), a=n(sp('alan')), br=n(sp('birimRehab')), b=n(sp('bertaraf'));
+                const zarar=m*bz, rehab=a*br, toplam=zarar+rehab+b;
+                out=`ÇEVRE — ZARAR / REHABİLİTASYON\nEtkilenen/kirlenen miktar: ${fmtTR(m,2)}\nBirim zarar değeri: ${fmtTR(bz,2)} TL\nZarar karşılığı: ${fmtTR( zarar,2)} TL\nRehabilitasyon alanı: ${fmtTR(a,2)} m²\nBirim rehabilitasyon maliyeti: ${fmtTR(br,2)} TL/m²\nRehabilitasyon: ${fmtTR(rehab,2)} TL\nBertaraf/temizlik: ${fmtTR(b,2)} TL\nTOPLAM TASLAK: ${fmtTR(toplam,2)} TL`; break;
+            }
+            case 'kulturvarliklari': {
+                const a=n(sp('adet')), b=n(sp('birim')), d=n(sp('durum'))/100, r=n(sp('rest')), m=n(sp('mahsup'));
+                const deger=a*b*d, toplam=deger+r-m;
+                out=`KÜLTÜR VARLIKLARI — DEĞERLEME / RESTORASYON\nAdet/birim: ${fmtTR(a,2)}\nBirim değer: ${fmtTR(b,2)} TL\nDurum/değer katsayısı: ${fmtTR(d*100,2)} %\nDurum düzeltilmiş değer: ${fmtTR(deger,2)} TL\nRestorasyon/koruma: ${fmtTR(r,2)} TL\nMahsup: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(toplam,2)} TL\nNot: Değerleme yöntemi ve katsayı dosya dayanağına göre belirlenmelidir.`; break;
+            }
+            case 'veteriner': {
+                const a=n(sp('adet')), b=n(sp('birim')), z=n(sp('zayiat'))/100, t=n(sp('tedavi')), k=n(sp('kurtarilan'));
+                const kayip=a*z, zayiatDegeri=kayip*b, net=zayiatDegeri+t-k;
+                out=`VETERİNER — ZAYİAT / TEDAVİ\nHayvan sayısı: ${fmtTR(a,0)}\nBirim değer: ${fmtTR(b,2)} TL\nZayiat oranı: ${fmtTR(z*100,2)} %\nTahmini zayiat: ${fmtTR(kayip,2)}\nZayiat değer karşılığı: ${fmtTR(zayiatDegeri,2)} TL\nTedavi/ilaç: ${fmtTR(t,2)} TL\nKurtarılan/elde edilen değer: ${fmtTR(k,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL`; break;
+            }
+            case 'orman': {
+                const a=n(sp('adet')), h=n(sp('hacim')), b=n(sp('birim')), r=n(sp('maliyet')), m=n(sp('mahsup'));
+                const hacim=a*h, deger=hacim*b, net=deger+r-m;
+                out=`ORMAN — AĞAÇ / HACİM / DEĞER\nAğaç sayısı: ${fmtTR(a,0)}\nAğaç başına hacim: ${fmtTR(h,3)} m³\nToplam hacim: ${fmtTR(hacim,3)} m³\nBirim hacim değeri: ${fmtTR(b,2)} TL/m³\nHacim değer karşılığı: ${fmtTR(deger,2)} TL\nAğaçlandırma/rehabilitasyon: ${fmtTR(r,2)} TL\nMahsup/kurtarılan değer: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL`; break;
+            }
+            case 'spor': {
+                const b=n(sp('bedel')), o=n(sp('odeme')), e=n(sp('ek')), k=n(sp('kesinti'));
+                const net=b+e-o-k;
+                out=`SPOR — TRANSFER / SÖZLEŞME\nSözleşme/transfer bedeli: ${fmtTR(b,2)} TL\nÖdenen: ${fmtTR(o,2)} TL\nEk bedel/zarar: ${fmtTR(e,2)} TL\nKesinti/mahsup: ${fmtTR(k,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL\nNot: Sözleşme ve ilgili düzenlemelerdeki bedel/ceza hükümleri ayrıca değerlendirilmelidir.`; break;
+            }
+            default: out='Bu branş için hesaplama tanımı bulunamadı.';
+        }
+        setCalcResult(out);
+    }
+
         const map = {
             trafik: renderTrafikCalc,
             gayrimenkul: renderGayrimenkulCalc,
@@ -3504,7 +3789,28 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             aktuer: renderAktuerCalc,
             insaat: renderInsaatCalc,
             sgk: renderSgkCalc,
-            ihale: renderIhaleCalc
+            ihale: renderIhaleCalc,
+            ziraat: () => renderSpecialCalc('ziraat'),
+            enerji: () => renderSpecialCalc('enerji'),
+            lojistik: () => renderSpecialCalc('lojistik'),
+            ekonomi: () => renderSpecialCalc('ekonomi'),
+            turizm: () => renderSpecialCalc('turizm'),
+            muzik: () => renderSpecialCalc('muzik'),
+            mobilya: () => renderSpecialCalc('mobilya'),
+            petrol: () => renderSpecialCalc('petrol'),
+            elektrik: () => renderSpecialCalc('elektrik'),
+            maden: () => renderSpecialCalc('maden'),
+            harita: () => renderSpecialCalc('harita'),
+            makine: () => renderSpecialCalc('makine'),
+            gemiinsaa: () => renderSpecialCalc('gemiinsaa'),
+            biyomedikal: () => renderSpecialCalc('biyomedikal'),
+            kimya: () => renderSpecialCalc('kimya'),
+            patent: () => renderSpecialCalc('patent'),
+            cevre: () => renderSpecialCalc('cevre'),
+            kulturvarliklari: () => renderSpecialCalc('kulturvarliklari'),
+            veteriner: () => renderSpecialCalc('veteriner'),
+            orman: () => renderSpecialCalc('orman'),
+            spor: () => renderSpecialCalc('spor')
         };
         const fn = map[key];
         if (fn) host.innerHTML = fn();
@@ -3551,7 +3857,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 İz uzunluğu: ${fmtTR(s,2)} m
 Sürtünme katsayısı (μ): ${fmtTR(mu,2)}
 Eğim: ${fmtTR(egim,1)} %
-Yaklaşık hız (fren başlangıcı): ${fmtTR(v_kmh,1)} km/s (${fmtTR(v_ms,2)} m/s)
+Yaklaşık hız (fren başlangıcı): ${fmtTR(v_kmh,1)} km/h (${fmtTR(v_ms,2)} m/s)
 Reaksiyon süresi: ${fmtTR(reak,2)} sn
 Reaksiyon mesafesi (yaklaşık): ${fmtTR(d_reak,1)} m
 Not: Bu hesap sadeleştirilmiş fiziksel modeldir; yol, lastik, ABS ve ölçüm belirsizlikleri ayrıca değerlendirilmelidir.`;
