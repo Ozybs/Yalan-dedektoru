@@ -372,7 +372,7 @@ function openRequestModalFromPayment() {
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
     import {
         getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot,
-        arrayUnion, serverTimestamp, collection, addDoc, getDocs, query, orderBy, Timestamp
+        arrayUnion, serverTimestamp, runTransaction, collection, addDoc, getDocs, query, orderBy, Timestamp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
@@ -393,7 +393,7 @@ function openRequestModalFromPayment() {
     // gerekli fonksiyonları global alana (window) açıyoruz.
     const auth = getAuth(app);
     window.__fb = {
-        db, auth, doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, serverTimestamp,
+        db, auth, doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, serverTimestamp, runTransaction,
         collection, addDoc, getDocs, query, orderBy, Timestamp,
         signInWithEmailAndPassword, signOut, onAuthStateChanged
     };
@@ -881,7 +881,7 @@ function openRequestModalFromPayment() {
 
 <script>
     // ====================================================================
-    // ERİŞİM KODU SİSTEMİ (Firestore tabanlı — cihaz limiti + tekil oturum)
+    // ERİŞİM KODU SİSTEMİ (Firestore tabanlı — cihaz limiti + eşzamanlı oturum)
     // ====================================================================
     // Kodlar artık kodun içinde DEĞİL, Firebase Console > Firestore Database
     // içindeki "erisim_kodlari" koleksiyonunda tutulur. Yeni kod eklemek için:
@@ -914,22 +914,82 @@ function openRequestModalFromPayment() {
     }
 
     let activeSessionUnsub = null;
+    let sessionHeartbeat = null;
+    let expiryTimer = null;
+    const SESSION_TTL_MS = 15 * 60 * 1000;
+    const SESSION_HEARTBEAT_MS = 2 * 60 * 1000;
 
-    function showLockScreen(message) {
-        const overlay = document.getElementById('accessLockOverlay');
-        const msgBox = document.getElementById('lockMessage');
-        if (message && msgBox) msgBox.textContent = message;
-        overlay.style.display = 'flex';
-        document.body.classList.add('locked');
+    function clearSessionTimers() {
+        if (sessionHeartbeat) { clearInterval(sessionHeartbeat); sessionHeartbeat = null; }
+        if (expiryTimer) { clearInterval(expiryTimer); expiryTimer = null; }
     }
 
-    function unlockSite() {
-        document.getElementById('accessLockOverlay').style.display = 'none';
-        document.body.classList.remove('locked');
+    function toMillis(v) {
+        try {
+            if (!v) return null;
+            if (typeof v.toDate === 'function') return v.toDate().getTime();
+            if (typeof v.toMillis === 'function') return v.toMillis();
+            if (v.seconds != null) return Number(v.seconds) * 1000;
+            const n = new Date(v).getTime();
+            return Number.isFinite(n) ? n : null;
+        } catch (e) { return null; }
     }
 
-    // Bir kod için gerçek zamanlı dinleyici kurar: başka bir cihaz aynı kodla
-    // giriş yaparsa (activeSessionId değişirse) bu cihazdaki oturumu otomatik kilitler.
+    function getExpiryMs(data) { return toMillis(data && data.bitisTarihi); }
+
+    function startExpiryMonitor(data) {
+        if (expiryTimer) clearInterval(expiryTimer);
+        const check = () => {
+            const ms = getExpiryMs(data);
+            if (ms && Date.now() >= ms) {
+                forceLockOut('Üyelik süreniz dolmuştur. Yenileme için ödeme yapıp yeni kod alınız.');
+            }
+        };
+        check();
+        expiryTimer = setInterval(check, 15000);
+    }
+
+    async function releaseCurrentSession(codeId, sessionId) {
+        try {
+            await waitForFirebase();
+            const { db, doc, runTransaction, serverTimestamp } = window.__fb;
+            const ref = doc(db, 'erisim_kodlari', codeId);
+            await runTransaction(db, async tx => {
+                const snap = await tx.get(ref);
+                if (!snap.exists()) return;
+                const d = snap.data();
+                const sessions = { ...(d.activeSessions || {}) };
+                const times = { ...(d.activeSessionsAt || {}) };
+                if (sessions[getDeviceId()] === sessionId) {
+                    delete sessions[getDeviceId()];
+                    delete times[getDeviceId()];
+                    tx.update(ref, { activeSessions: sessions, activeSessionsAt: times, activeSessionId: '' , activeSessionAt: serverTimestamp() });
+                }
+            });
+        } catch (e) { console.warn('Oturum kapatma:', e); }
+    }
+
+    async function startSessionHeartbeat(codeId, mySessionId) {
+        clearSessionTimers();
+        sessionHeartbeat = setInterval(async () => {
+            try {
+                const { db, doc, runTransaction, serverTimestamp } = window.__fb;
+                const ref = doc(db, 'erisim_kodlari', codeId);
+                await runTransaction(db, async tx => {
+                    const snap = await tx.get(ref);
+                    if (!snap.exists()) return;
+                    const d = snap.data();
+                    const deviceId = getDeviceId();
+                    if ((d.activeSessions || {})[deviceId] !== mySessionId) return;
+                    const sessions = { ...(d.activeSessions || {}) };
+                    const times = { ...(d.activeSessionsAt || {}) };
+                    times[deviceId] = serverTimestamp();
+                    tx.update(ref, { activeSessions: sessions, activeSessionsAt: times });
+                });
+            } catch (e) { console.warn('Oturum yenileme:', e); }
+        }, SESSION_HEARTBEAT_MS);
+    }
+
     async function watchSession(codeId, mySessionId) {
         await waitForFirebase();
         const { db, doc, onSnapshot } = window.__fb;
@@ -941,18 +1001,22 @@ function openRequestModalFromPayment() {
                 return;
             }
             const data = snap.data();
-            if (data.activeSessionId && data.activeSessionId !== mySessionId) {
-                forceLockOut('Bu kod başka bir cihazda kullanıldığı için oturumunuz sonlandırıldı. Devam etmek için tekrar giriş yapınız.');
+            startExpiryMonitor(data);
+            const deviceId = getDeviceId();
+            const activeSessions = data.activeSessions || {};
+            if (activeSessions[deviceId] !== mySessionId) {
+                forceLockOut('Bu cihazdaki oturum sonlandırıldı. Devam etmek için tekrar giriş yapınız.');
             }
         });
+        startSessionHeartbeat(codeId, mySessionId);
     }
 
     function forceLockOut(message) {
-        try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
+        clearSessionTimers();
+        try { localStorage.removeItem(ACCESS_STORAGE_KEY); localStorage.removeItem(ACTIVE_CODE_KEY); localStorage.removeItem(SESSION_ID_KEY); } catch (e) {}
         if (activeSessionUnsub) { activeSessionUnsub(); activeSessionUnsub = null; }
         showLockScreen(message);
     }
-
 
     // ====================================================================
     // YÖNETİM: onay → bitisTarihi + maxDevices ile kod oluştur
@@ -1150,6 +1214,8 @@ function openRequestModalFromPayment() {
             } else {
                 payload.deviceIds = [];
                 payload.activeSessionId = '';
+                payload.activeSessions = {};
+                payload.activeSessionsAt = {};
                 await setDoc(ref, payload);
             }
             alert('Yazıldı:\nKod: ' + codeId + '\nBitiş: ' + bitis.toLocaleString('tr-TR') + '\nMax cihaz: ' + maxDevices);
@@ -1182,6 +1248,8 @@ function openRequestModalFromPayment() {
             await setDoc(doc(db, 'erisim_kodlari', code), {
                 deviceIds: [],
                 activeSessionId: '',
+                activeSessions: {},
+                activeSessionsAt: {},
                 durum: 'aktif',
                 maxDevices: maxDevices,
                 simultaneous: paket.simultaneous || 1,
@@ -1242,82 +1310,62 @@ function openRequestModalFromPayment() {
         const rawCode = input.value.trim();
         if (!rawCode) return;
         const codeId = rawCode.toUpperCase();
-
         errorBox.style.display = 'none';
         submitBtn.disabled = true;
         submitBtn.textContent = 'KONTROL EDİLİYOR...';
-
         try {
             await waitForFirebase();
-            const { db, doc, getDoc, setDoc, updateDoc, arrayUnion, serverTimestamp } = window.__fb;
+            const { db, doc, runTransaction, serverTimestamp } = window.__fb;
             const ref = doc(db, 'erisim_kodlari', codeId);
-            const snap = await getDoc(ref);
-
-            if (!snap.exists()) {
-                errorBox.textContent = 'Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.';
-                errorBox.style.display = 'block';
-                input.value = '';
-                input.focus();
-                return;
-            }
-
-            const data = snap.data();
-
-            // Süre kontrolü
-            if (data.bitisTarihi) {
-                let bitisMs = null;
-                try {
-                    if (typeof data.bitisTarihi.toDate === 'function') bitisMs = data.bitisTarihi.toDate().getTime();
-                    else if (data.bitisTarihi.seconds) bitisMs = data.bitisTarihi.seconds * 1000;
-                    else bitisMs = new Date(data.bitisTarihi).getTime();
-                } catch (e) { bitisMs = null; }
-                if (bitisMs && Date.now() > bitisMs) {
-                    errorBox.textContent = 'Bu erişim kodunun süresi dolmuştur. Yenileme için ödeme / üyelik talebi gönderiniz.';
-                    errorBox.style.display = 'block';
-                    return;
-                }
-            }
-            if (data.durum && String(data.durum).toLowerCase() === 'pasif') {
-                errorBox.textContent = 'Bu erişim kodu pasif durumdadır.';
-                errorBox.style.display = 'block';
-                return;
-            }
-
-            const deviceIds = Array.isArray(data.deviceIds) ? data.deviceIds : [];
             const myDeviceId = getDeviceId();
-            const alreadyKnownDevice = deviceIds.includes(myDeviceId);
-            const maxDevices = (typeof data.maxDevices === 'number' && data.maxDevices > 0)
-                ? data.maxDevices
-                : 3;
-
-            if (!alreadyKnownDevice && deviceIds.length >= maxDevices) {
-                errorBox.textContent = 'Bu kod için tanımlı cihaz limitine ulaşıldı (maksimum ' + maxDevices + ' cihaz).';
-                errorBox.style.display = 'block';
-                return;
-            }
-
             const newSessionId = (crypto.randomUUID ? crypto.randomUUID() : ('s-' + Date.now() + '-' + Math.random().toString(16).slice(2)));
+            let finalData = null;
 
-            const updatePayload = {
-                activeSessionId: newSessionId,
-                activeSessionAt: serverTimestamp()
-            };
-            if (!alreadyKnownDevice) {
-                updatePayload.deviceIds = arrayUnion(myDeviceId);
-            }
-            await updateDoc(ref, updatePayload);
+            await runTransaction(db, async tx => {
+                const snap = await tx.get(ref);
+                if (!snap.exists()) throw new Error('Kod hatalı. Lütfen kontrol edip tekrar deneyiniz.');
+                const data = snap.data();
+                const bitisMs = getExpiryMs(data);
+                if (bitisMs && Date.now() >= bitisMs) throw new Error('Bu erişim kodunun süresi dolmuştur. Yenileme için ödeme / üyelik talebi gönderiniz.');
+                if (data.durum && String(data.durum).toLowerCase() === 'pasif') throw new Error('Bu erişim kodu pasif durumdadır.');
+
+                const maxDevices = (typeof data.maxDevices === 'number' && data.maxDevices > 0) ? data.maxDevices : 2;
+                const simultaneous = (typeof data.simultaneous === 'number' && data.simultaneous > 0) ? data.simultaneous : 1;
+                const deviceIds = Array.isArray(data.deviceIds) ? [...data.deviceIds] : [];
+                const alreadyKnownDevice = deviceIds.includes(myDeviceId);
+                if (!alreadyKnownDevice && deviceIds.length >= maxDevices) {
+                    throw new Error('Bu kod için tanımlı cihaz limitine ulaşıldı (maksimum ' + maxDevices + ' cihaz).');
+                }
+
+                const sessions = { ...(data.activeSessions || {}) };
+                const times = { ...(data.activeSessionsAt || {}) };
+                const now = Date.now();
+                Object.keys(sessions).forEach(deviceId => {
+                    const t = toMillis(times[deviceId]);
+                    if (!t || now - t > SESSION_TTL_MS) { delete sessions[deviceId]; delete times[deviceId]; }
+                });
+                const myExisting = sessions[myDeviceId];
+                if (!myExisting && Object.keys(sessions).length >= simultaneous) {
+                    throw new Error('Bu üyelikte aynı anda en fazla ' + simultaneous + ' PC kullanılabilir.');
+                }
+                sessions[myDeviceId] = newSessionId;
+                times[myDeviceId] = serverTimestamp();
+                const newDeviceIds = alreadyKnownDevice ? deviceIds : [...deviceIds, myDeviceId];
+                tx.update(ref, { deviceIds: newDeviceIds, activeSessions: sessions, activeSessionsAt: times, activeSessionId: newSessionId, activeSessionAt: serverTimestamp() });
+                finalData = data;
+            });
 
             try {
                 localStorage.setItem(ACCESS_STORAGE_KEY, '1');
                 localStorage.setItem(ACTIVE_CODE_KEY, codeId);
                 localStorage.setItem(SESSION_ID_KEY, newSessionId);
             } catch (e) {}
-
             unlockSite();
+            startExpiryMonitor(finalData || {});
             watchSession(codeId, newSessionId);
         } catch (e) {
             console.error(e);
-            errorBox.textContent = 'Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edip tekrar deneyin.';
+            errorBox.textContent = e.message || 'Bağlantı hatası oluştu. İnternet bağlantınızı kontrol edip tekrar deneyin.';
             errorBox.style.display = 'block';
         } finally {
             submitBtn.disabled = false;
@@ -1332,52 +1380,36 @@ function openRequestModalFromPayment() {
             code = localStorage.getItem(ACTIVE_CODE_KEY);
             sessionId = localStorage.getItem(SESSION_ID_KEY);
         } catch (e) {}
-
-        if (!granted || !code || !sessionId) {
-            showLockScreen();
-            return;
-        }
-
+        if (!granted || !code || !sessionId) { showLockScreen(); return; }
         try {
             await waitForFirebase();
-            const { db, doc, getDoc } = window.__fb;
+            const { db, doc, getDoc, runTransaction, serverTimestamp } = window.__fb;
             const ref = doc(db, 'erisim_kodlari', code);
             const snap = await getDoc(ref);
-            if (!snap.exists()) {
-                try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
-                showLockScreen('Erişim kodu bulunamadı. Tekrar giriş yapınız.');
-                return;
-            }
+            if (!snap.exists()) { forceLockOut('Erişim kodu bulunamadı. Tekrar giriş yapınız.'); return; }
             const d = snap.data();
-            if (d.bitisTarihi) {
-                let bitisMs = null;
-                try {
-                    if (typeof d.bitisTarihi.toDate === 'function') bitisMs = d.bitisTarihi.toDate().getTime();
-                    else if (d.bitisTarihi.seconds) bitisMs = d.bitisTarihi.seconds * 1000;
-                    else bitisMs = new Date(d.bitisTarihi).getTime();
-                } catch (e) {}
-                if (bitisMs && Date.now() > bitisMs) {
-                    try {
-                        localStorage.removeItem(ACCESS_STORAGE_KEY);
-                        localStorage.removeItem(ACTIVE_CODE_KEY);
-                        localStorage.removeItem(SESSION_ID_KEY);
-                    } catch (e) {}
-                    showLockScreen('Üyelik süreniz dolmuştur. Yenileme için ödeme yapıp yeni kod alınız.');
-                    return;
+            const bitisMs = getExpiryMs(d);
+            if (bitisMs && Date.now() >= bitisMs) { forceLockOut('Üyelik süreniz dolmuştur. Yenileme için ödeme yapıp yeni kod alınız.'); return; }
+            if (d.durum && String(d.durum).toLowerCase() === 'pasif') { forceLockOut('Erişim kodunuz pasif durumdadır.'); return; }
+            const deviceId = getDeviceId();
+            let valid = false;
+            await runTransaction(db, async tx => {
+                const current = await tx.get(ref);
+                if (!current.exists()) return;
+                const data = current.data();
+                const sessions = { ...(data.activeSessions || {}) };
+                const times = { ...(data.activeSessionsAt || {}) };
+                const t = toMillis(times[deviceId]);
+                if (sessions[deviceId] === sessionId && t && Date.now() - t <= SESSION_TTL_MS) {
+                    times[deviceId] = serverTimestamp();
+                    tx.update(ref, { activeSessionsAt: times });
+                    valid = true;
                 }
-            }
-            if (d.durum && String(d.durum).toLowerCase() === 'pasif') {
-                try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
-                showLockScreen('Erişim kodunuz pasif durumdadır.');
-                return;
-            }
-            if (d.activeSessionId === sessionId) {
-                unlockSite();
-                watchSession(code, sessionId);
-            } else {
-                try { localStorage.removeItem(ACCESS_STORAGE_KEY); } catch (e) {}
-                showLockScreen('Bu kod başka bir cihazda kullanıldığı için oturumunuz sonlandırıldı. Lütfen tekrar giriş yapınız.');
-            }
+            });
+            if (!valid) { forceLockOut('Bu cihazdaki oturum sonlandırılmış veya zaman aşımına uğramıştır. Lütfen tekrar giriş yapınız.'); return; }
+            unlockSite();
+            startExpiryMonitor(d);
+            watchSession(code, sessionId);
         } catch (e) {
             console.error(e);
             showLockScreen();
@@ -3467,21 +3499,9 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
     function numVal(id) {
         const el = document.getElementById(id);
         if (!el) return NaN;
-        let t = String(el.value ?? '').trim().replace(/[^0-9,.-]/g, '');
-        if (!t) return NaN;
-        const comma = t.lastIndexOf(',');
-        const dot = t.lastIndexOf('.');
-        if (comma >= 0 && dot >= 0) {
-            if (comma > dot) t = t.replace(/\./g, '').replace(',', '.');
-            else t = t.replace(/,/g, '');
-        } else if (comma >= 0) {
-            const decimals = t.length - comma - 1;
-            t = decimals === 3 && comma > 0 ? t.replace(',', '') : t.replace(',', '.');
-        } else if ((t.match(/\./g) || []).length > 1) {
-            t = t.replace(/\./g, '');
-        }
-        const n = Number(t);
-        return Number.isFinite(n) ? n : NaN;
+        const t = String(el.value || '').replace(',', '.').replace(/[^\d.\-]/g, '');
+        const n = parseFloat(t);
+        return isFinite(n) ? n : NaN;
     }
 
     function fmtTR(n, dig) {
@@ -3600,42 +3620,6 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             fields: [["adet","Cihaz adedi","örn. 10"],["birim","Birim cihaz değeri (TL)","örn. 100000"],["oran","Arıza oranı (%)","örn. 10"],["gun","Duruş günü","0"],["gunluk","Günlük operasyon maliyeti (TL)","0"]],
             calc: "biyomedikal"
         },
-        patent: {
-            title: "📜 Patent — Lisans / Royalti Hesap Dayanağı",
-            note: "Gerçekleşen ciro, dosyada kabul edilen royalti oranı ve mahsupları şeffaf biçimde hesaplar. Oran ve ekonomik dayanak bilirkişi tarafından dosyadan belirlenmelidir.",
-            fields: [["ciro","İlgili dönem cirosu (TL)","örn. 1000000"],["royalti","Royalti oranı (%)","örn. 5"],["donem","Dönem katsayısı / oranı (%)","100"],["mahsup","Ödenen / mahsup edilen (TL)","0"]],
-            calc: "patent"
-        },
-        cevre: {
-            title: "🌱 Çevre — Çevresel Zarar / Rehabilitasyon Maliyeti",
-            note: "Ölçülen kirlilik/zarar miktarı ile dosyada dayanaklandırılan birim zarar ve rehabilitasyon maliyetlerini ayrı gösterir; sabit çevre katsayısı içermez.",
-            fields: [["miktar","Etkilenen/kirlenen miktar","örn. 1000"],["birimZarar","Birim zarar değeri (TL)","0"],["alan","Rehabilitasyon alanı (m²)","0"],["birimRehab","Birim rehabilitasyon maliyeti (TL/m²)","0"],["bertaraf","Bertaraf/temizlik diğer maliyetleri (TL)","0"]],
-            calc: "cevre"
-        },
-        kulturvarliklari: {
-            title: "🏛️ Kültür Varlıkları — Değerleme / Restorasyon Maliyeti",
-            note: "Adet/alan, birim değer, durum katsayısı ve belgelenmiş restorasyon maliyetlerini ayrı gösterir. Kültür varlığının niteliği ve değerleme yöntemi ayrıca dayanaklandırılmalıdır.",
-            fields: [["adet","Adet / birim","örn. 1"],["birim","Birim değer (TL)","0"],["durum","Durum/değer katsayısı (%)","100"],["rest","Restorasyon/koruma maliyeti (TL)","0"],["mahsup","Ödenen/mahsup edilen (TL)","0"]],
-            calc: "kulturvarliklari"
-        },
-        veteriner: {
-            title: "🐾 Veteriner — Hayvan Zayiatı / Tedavi Maliyeti",
-            note: "Hayvan sayısı, birim değer, zayiat oranı ve tedavi giderlerini şeffaf biçimde hesaplar. Irk, yaş, verim ve piyasa değerinin dosya dayanağı ayrıca gösterilmelidir.",
-            fields: [["adet","Hayvan sayısı","örn. 100"],["birim","Hayvan başına değer (TL)","örn. 25000"],["zayiat","Zayiat oranı (%)","örn. 10"],["tedavi","Toplam tedavi/ilaç maliyeti (TL)","0"],["kurtarilan","Kurtarılan/elde edilen değer (TL)","0"]],
-            calc: "veteriner"
-        },
-        orman: {
-            title: "🌲 Orman — Ağaç / Hacim / Değerleme",
-            note: "Ağaç sayısı, ağaç başına hacim, birim hacim değeri ve belgelenmiş ek maliyetleri ayrı hesaplar. Tür, çap, boy, hacim ve emsal değerler arazi/ölçüm dayanağına bağlanmalıdır.",
-            fields: [["adet","Ağaç sayısı","örn. 100"],["hacim","Ağaç başına hacim (m³)","örn. 0.5"],["birim","Birim hacim değeri (TL/m³)","örn. 5000"],["maliyet","Ağaçlandırma/rehabilitasyon maliyeti (TL)","0"],["mahsup","Kurtarılan/mahsup edilen değer (TL)","0"]],
-            calc: "orman"
-        },
-        spor: {
-            title: "🏟️ Spor — Transfer / Sözleşme Bedeli",
-            note: "Sözleşme/transfer bedeli, ödenen tutar ve dosyada kabul edilen ek bedel veya kesintileri şeffaf biçimde gösterir. Sözleşmesel ve federatif dayanak ayrıca belirtilmelidir.",
-            fields: [["bedel","Sözleşme / transfer bedeli (TL)","örn. 1000000"],["odeme","Ödenen tutar (TL)","0"],["ek","Dosyada kabul edilen ek bedel/zarar (TL)","0"],["kesinti","Kesinti/mahsup (TL)","0"]],
-            calc: "spor"
-        },
         kimya: {
             title: "🧪 Kimya — Parti / Saflık / Kayıp",
             note: "Parti miktarı ve ölçülen saflık üzerinden etkin miktar hesabı; referans saflık ve parasal değer verilirse fark ayrıca gösterilir.",
@@ -3662,12 +3646,6 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 
     function sp(id) { return numVal('sp_' + id); }
     function runSpecialCalc(key) {
-        const inputs = Array.from(document.querySelectorAll('#branchCalcPanelHost input[id^=\"sp_\"]'));
-        const missing = inputs.filter(el => el.getAttribute('placeholder') !== '0' && !Number.isFinite(numVal(el.id)));
-        if (missing.length) {
-            alert('Lütfen hesaplama için gerekli alanları doldurunuz.');
-            return;
-        }
         const n = x => isFinite(x) ? x : 0;
         let out = '';
         switch(key) {
@@ -3747,36 +3725,6 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
                 const etkin=m*s, fark=Math.max(0,m*r-etkin), deger=fark*d;
                 out=`KİMYA — PARTİ / SAFLIK\nParti: ${fmtTR(m,2)} kg\nÖlçülen saflık: ${fmtTR(s*100,2)} %\nReferans saflık: ${fmtTR(r*100,2)} %\nEtkin miktar: ${fmtTR(etkin,2)} kg\nFark miktarı: ${fmtTR(fark,2)} kg\nBirim değer: ${fmtTR(d,2)} TL/kg\nFarkın değer karşılığı: ${fmtTR(deger,2)} TL`; break;
             }
-            case 'patent': {
-                const c=n(sp('ciro')), r=n(sp('royalti'))/100, d=n(sp('donem'))/100, m=n(sp('mahsup'));
-                const royalty=c*r*d, net=royalty-m;
-                out=`PATENT — LİSANS / ROYALTI\nİlgili dönem cirosu: ${fmtTR(c,2)} TL\nRoyalti oranı: ${fmtTR(r*100,2)} %\nDönem katsayısı: ${fmtTR(d*100,2)} %\nHesaplanan royalti: ${fmtTR(royalty,2)} TL\nMahsup/ödenen: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL\nNot: Oran ve dönem katsayısı dosya/sözleşme dayanağına göre belirlenmelidir.`; break;
-            }
-            case 'cevre': {
-                const m=n(sp('miktar')), bz=n(sp('birimZarar')), a=n(sp('alan')), br=n(sp('birimRehab')), b=n(sp('bertaraf'));
-                const zarar=m*bz, rehab=a*br, toplam=zarar+rehab+b;
-                out=`ÇEVRE — ZARAR / REHABİLİTASYON\nEtkilenen/kirlenen miktar: ${fmtTR(m,2)}\nBirim zarar değeri: ${fmtTR(bz,2)} TL\nZarar karşılığı: ${fmtTR( zarar,2)} TL\nRehabilitasyon alanı: ${fmtTR(a,2)} m²\nBirim rehabilitasyon maliyeti: ${fmtTR(br,2)} TL/m²\nRehabilitasyon: ${fmtTR(rehab,2)} TL\nBertaraf/temizlik: ${fmtTR(b,2)} TL\nTOPLAM TASLAK: ${fmtTR(toplam,2)} TL`; break;
-            }
-            case 'kulturvarliklari': {
-                const a=n(sp('adet')), b=n(sp('birim')), d=n(sp('durum'))/100, r=n(sp('rest')), m=n(sp('mahsup'));
-                const deger=a*b*d, toplam=deger+r-m;
-                out=`KÜLTÜR VARLIKLARI — DEĞERLEME / RESTORASYON\nAdet/birim: ${fmtTR(a,2)}\nBirim değer: ${fmtTR(b,2)} TL\nDurum/değer katsayısı: ${fmtTR(d*100,2)} %\nDurum düzeltilmiş değer: ${fmtTR(deger,2)} TL\nRestorasyon/koruma: ${fmtTR(r,2)} TL\nMahsup: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(toplam,2)} TL\nNot: Değerleme yöntemi ve katsayı dosya dayanağına göre belirlenmelidir.`; break;
-            }
-            case 'veteriner': {
-                const a=n(sp('adet')), b=n(sp('birim')), z=n(sp('zayiat'))/100, t=n(sp('tedavi')), k=n(sp('kurtarilan'));
-                const kayip=a*z, zayiatDegeri=kayip*b, net=zayiatDegeri+t-k;
-                out=`VETERİNER — ZAYİAT / TEDAVİ\nHayvan sayısı: ${fmtTR(a,0)}\nBirim değer: ${fmtTR(b,2)} TL\nZayiat oranı: ${fmtTR(z*100,2)} %\nTahmini zayiat: ${fmtTR(kayip,2)}\nZayiat değer karşılığı: ${fmtTR(zayiatDegeri,2)} TL\nTedavi/ilaç: ${fmtTR(t,2)} TL\nKurtarılan/elde edilen değer: ${fmtTR(k,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL`; break;
-            }
-            case 'orman': {
-                const a=n(sp('adet')), h=n(sp('hacim')), b=n(sp('birim')), r=n(sp('maliyet')), m=n(sp('mahsup'));
-                const hacim=a*h, deger=hacim*b, net=deger+r-m;
-                out=`ORMAN — AĞAÇ / HACİM / DEĞER\nAğaç sayısı: ${fmtTR(a,0)}\nAğaç başına hacim: ${fmtTR(h,3)} m³\nToplam hacim: ${fmtTR(hacim,3)} m³\nBirim hacim değeri: ${fmtTR(b,2)} TL/m³\nHacim değer karşılığı: ${fmtTR(deger,2)} TL\nAğaçlandırma/rehabilitasyon: ${fmtTR(r,2)} TL\nMahsup/kurtarılan değer: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL`; break;
-            }
-            case 'spor': {
-                const b=n(sp('bedel')), o=n(sp('odeme')), e=n(sp('ek')), k=n(sp('kesinti'));
-                const net=b+e-o-k;
-                out=`SPOR — TRANSFER / SÖZLEŞME\nSözleşme/transfer bedeli: ${fmtTR(b,2)} TL\nÖdenen: ${fmtTR(o,2)} TL\nEk bedel/zarar: ${fmtTR(e,2)} TL\nKesinti/mahsup: ${fmtTR(k,2)} TL\nNET TASLAK: ${fmtTR(net,2)} TL\nNot: Sözleşme ve ilgili düzenlemelerdeki bedel/ceza hükümleri ayrıca değerlendirilmelidir.`; break;
-            }
             default: out='Bu branş için hesaplama tanımı bulunamadı.';
         }
         setCalcResult(out);
@@ -3804,13 +3752,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             makine: () => renderSpecialCalc('makine'),
             gemiinsaa: () => renderSpecialCalc('gemiinsaa'),
             biyomedikal: () => renderSpecialCalc('biyomedikal'),
-            kimya: () => renderSpecialCalc('kimya'),
-            patent: () => renderSpecialCalc('patent'),
-            cevre: () => renderSpecialCalc('cevre'),
-            kulturvarliklari: () => renderSpecialCalc('kulturvarliklari'),
-            veteriner: () => renderSpecialCalc('veteriner'),
-            orman: () => renderSpecialCalc('orman'),
-            spor: () => renderSpecialCalc('spor')
+            kimya: () => renderSpecialCalc('kimya')
         };
         const fn = map[key];
         if (fn) host.innerHTML = fn();
@@ -3857,7 +3799,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
 İz uzunluğu: ${fmtTR(s,2)} m
 Sürtünme katsayısı (μ): ${fmtTR(mu,2)}
 Eğim: ${fmtTR(egim,1)} %
-Yaklaşık hız (fren başlangıcı): ${fmtTR(v_kmh,1)} km/h (${fmtTR(v_ms,2)} m/s)
+Yaklaşık hız (fren başlangıcı): ${fmtTR(v_kmh,1)} km/s (${fmtTR(v_ms,2)} m/s)
 Reaksiyon süresi: ${fmtTR(reak,2)} sn
 Reaksiyon mesafesi (yaklaşık): ${fmtTR(d_reak,1)} m
 Not: Bu hesap sadeleştirilmiş fiziksel modeldir; yol, lastik, ABS ve ölçüm belirsizlikleri ayrıca değerlendirilmelidir.`;
