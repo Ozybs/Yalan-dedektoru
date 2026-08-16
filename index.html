@@ -1011,6 +1011,13 @@ function openRequestModalFromPayment() {
         startSessionHeartbeat(codeId, mySessionId);
     }
 
+    // Erişim kodu doğrulandıktan sonra kilit ekranını kaldırır.
+    function unlockSite() {
+        const overlay = document.getElementById('accessLockOverlay');
+        if (overlay) overlay.style.display = 'none';
+        document.body.classList.remove('locked');
+    }
+
     function forceLockOut(message) {
         clearSessionTimers();
         try { localStorage.removeItem(ACCESS_STORAGE_KEY); localStorage.removeItem(ACTIVE_CODE_KEY); localStorage.removeItem(SESSION_ID_KEY); } catch (e) {}
