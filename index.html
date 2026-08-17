@@ -3018,6 +3018,23 @@ function openRequestModalFromPayment() {
         if (target) target.value = target.value ? target.value + "\n\n" + text : text;
     }
 
+    function resetVisualComparison() {
+        const workspace = document.getElementById('visualCompareWorkspace');
+        const stage = document.getElementById('visualCompareStage');
+        const overlay = document.getElementById('overlayControl');
+        const range = document.getElementById('overlayRange');
+        const value = document.getElementById('overlayValue');
+
+        if (stage) stage.innerHTML = '';
+        if (workspace) workspace.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
+        if (range) range.value = '50';
+        if (value) value.textContent = '50';
+
+        const inputs = document.querySelectorAll('#visualCompareWorkspace input[type="file"]');
+        inputs.forEach(input => { input.value = ''; });
+    }
+
     function runDifferenceAnalysis() {
         compareImageDifference();
     }
