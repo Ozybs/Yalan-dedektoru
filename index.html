@@ -682,7 +682,7 @@ function openRequestModalFromPayment() {
 <option value="kripto">10. Kriptoloji, Siber Suçlar ve İleri Adli Bilişim</option>
 <option value="cevre">11. Çevre Mühendisliği, Atık, ÇED ve İmar Kirliliği</option>
 <option value="deniz">12. Denizcilik, Gemi ve Deniz Ulaştırma Mühendisliği</option>
-<option value="aktuer">13. Sigortacılık ve Aktüeryal Tazminat Hesaplamaları</option>
+<option value="aktuer">13. Aktüerya, Sigortacılık ve Tazminat Hesaplamaları Bilirkişiliği</option>
 <option value="tip">14. Adli Tıp, Maluliyet ve Tıbbi Hata (Malpraktis)</option>
 <option value="tekstil">15. Tekstil, Kimya, Deri ve Ürün Analizi</option>
 <option value="patent">16. Patent, Marka, Faydalı Model ve Endüstriyel Tasarım</option>
@@ -2136,7 +2136,7 @@ function openRequestModalFromPayment() {
             ]
         },
         aktuer: {
-            adi: "Sigortacılık ve Aktüeryal Tazminat Hesaplamaları",
+            adi: "Aktüerya, Sigortacılık ve Tazminat Hesaplamaları Bilirkişiliği",
             kanun: "Türk Borçlar Kanunu ve Sigortacılık Mevzuatı",
             adimlar: [
                 { title: "1. Hesap Parametreleri (Yaş, Gelir, Dönem)", guide: "<strong>Ne İşe Yarar:</strong> Aktüeryal hesaba esas tüm girdileri net ve kaynaklı listeler." },
@@ -2190,6 +2190,12 @@ function openRequestModalFromPayment() {
                 { title: "7. Teknik Sonuç ve Sınırlılıklar", guide: "<strong>Ne İşe Yarar:</strong> Hukuki nitelendirme yapmadan teknik benzerlik/farklılık sonucunu bağlar." },
                 { title: "8. Teknik Karşılaştırma, Koruma Kapsamı ve Sınırlılıklar", guide: "<strong>Ne İşe Yarar:</strong> İnceleme bulgularını, kullanılan yöntem ve dayanakları, ulaşılan teknik sonucu ve varsa inceleme sınırlarını tek yerde özetler; hukuki nitelendirme yerine teknik bulguyu esas alır." }
             ]
+        },
+        tip: {
+            title: "⚕️ Adli Tıp — Süre / Maluliyet Parametreleri / Tıbbi Değerlendirme",
+            note: "Tıbbi hesap alanlarını düzenler; otomatik tıbbi kanaat veya maluliyet oranı uydurmaz. Oran/süre yalnızca yetkili mevzuat, kurul raporu ve dosya bulgusuna dayanarak girilmelidir.",
+            fields: [["yas","İnceleme yaşı",""],["gecici","Geçici iş göremezlik (gün)","0"],["sure","İyileşme / tedavi süresi (gün)","0"],["malul","Dosyada belirlenen maluliyet / kayıp oranı (%)","0"],["kusur","Dosyada belirlenen kusur/pay oranı (%)","0"],["gelir","Aylık gelir (TL) — varsa","0"],["not","Tıbbi dayanak / rapor no",""]],
+            calc: "tip"
         },
         ziraat: {
             adi: "Ziraat Mühendisliği, Tarım ve Hayvancılık",
@@ -2801,6 +2807,7 @@ function openRequestModalFromPayment() {
                 <label>${label}</label>
                 <textarea id="branchSpecial" placeholder="Bu branşa özgü önemli teknik bilgileri kısa ve somut şekilde giriniz..."></textarea>
             </div>
+            <div id="branchTechnicalDataHost">${renderTechnicalDataPanel(selectedKey)}</div>
             <div id="branchCalcPanelHost"></div>
         `;
         try { renderBranchCalcPanel(selectedKey); } catch (e) { console.warn('calc panel', e); }
@@ -3195,7 +3202,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         "focus": "poliçe ve hasar kayıtlarının karşılaştırılması ile hasarın teknik kapsamı"
     },
     "aktüerya": {
-        "name": "Aktüerya",
+        "name": "Aktüerya Bilirkişiliği",
         "terms": "yaş, gelir, dönem, yaşam tablosu, iskonto, tazminat, aktüeryal hesap",
         "focus": "hesap parametreleri, dönemsel veriler, aktüeryal varsayımlar ve hesap sonucu"
     },
@@ -3603,6 +3610,70 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         alert('Hesap sonucu "Branşa Özel Teknik Bilgiler" alanına eklendi. İsterseniz düzenleyebilirsiniz.');
     }
 
+    // YAPILANDIRILMIŞ TEKNİK VERİ / ÖLÇÜM KAYDI — 45 BRANŞ
+    const TECHNICAL_PANEL_KEYS = new Set(['grafik','bilisim','trafik','gayrimenkul','hesap','insaat','sesgoruntu','isguvenligi','elektrik','kripto','cevre','deniz','aktuer','tip','tekstil','patent','ziraat','gida','ihale','sgk','maden','makine','kulturvarliklari','veteriner','orman','harita','gemiinsaa','havacilik','petrol','metalurji','mobilya','muzik','turizm','lojistik','ekonomi','gemiinsaa','enerji','biyomedikal','kimya']);
+
+    const TECHNICAL_DATA_CONFIG = {
+        grafik: ["İş / tasarım / dosya kimliği","Baskı / yayın türü / ebat","Program / sürüm / dosya formatı","Renk sistemi / çözünürlük / font","Sayfa / görsel / ölçü bilgileri","Baskı tekniği / malzeme / kâğıt","Baskı adedi / fire / prova","Renk / kalite / kayıt karşılaştırması","Matbaa üretim aşamaları / makine","Maliyet / teklif / birim fiyat dayanağı","Orijinal dosya / metadata / teslim kayıtları","Kullanılan yöntem / teknik sonuç / sınırlılıklar"],
+        bilisim: ["Cihaz / sistem","İmaj / hash","İşletim sistemi / sürüm","Log / zaman aralığı","Delil teslim / muhafaza","Kullanılan araç / yöntem"],
+        trafik: ["Olay tarihi-saat / yer","Araçlar / plakalar","Yol / zemin / hava","Fren izi / ölçüm","Kamera / FPS / zaman","Tutanak / ölçüm yöntemi"],
+        gayrimenkul: ["İl / ilçe / mahalle","Ada / parsel / bağımsız bölüm","Yüzölçümü / nitelik","İmar / kullanım kararı","Emsal satış tarihi / kaynağı","Konum / fiziksel düzeltme"],
+        hesap: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        insaat: ["Proje / ruhsat / sözleşme","Mahallinde ölçülen imalat","Metraj birimi / ölçüm yöntemi","Poz / birim fiyat kaynağı / tarihi","Gerçekleşme / eksik imalat","Test / laboratuvar / malzeme","İş programı / gecikme","Keşif / hakediş dayanağı"],
+        sesgoruntu: ["Orijinal dosya / format / boyut / hash","Metadata / oluşturma-kayıt tarihi","Video çözünürlük / FPS / kare bilgisi","Ses örnekleme / kanal / bitrate","Kayıt cihazı / yazılım / codec","Kurgu / kesme / birleştirme izleri","Ses-görüntü senkronizasyonu","Karşılaştırılan örneklerin kaynağı","Analiz aracı / yöntem"],
+        isguvenligi: ["İşyeri / bölüm / görev","Olay tarihi-saat / yer / olay akışı","Risk değerlendirmesi / tehlike kaydı","Makine / ekipman / koruyucu sistem","Eğitim / talimat / KKD kayıtları","Bakım / periyodik kontrol","Tanık / tutanak / fotoğraf / kamera","Ölçüm / iş hijyeni verileri","Teknik nedensellik / sınırlılıklar"],
+        elektrik: ["Tesis / pano / cihaz","Gerilim / güç / akım","Ölçüm cihazı / kalibrasyon","Topraklama / kaçak akım","Arıza / olay tarihi","Proje / standart / test"],
+        kripto: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        cevre: ["Kaynak / tesis / deşarj noktası","Numune istasyonu / koordinat","Numune alma tarihi-saat / koşullar","Debi / akış ölçümü","Parametre / konsantrasyon / sonuç","Birim ve dönüşüm yöntemi","Emisyon / deşarj / atık türü","İzin / ÇED / mevzuat limiti","Laboratuvar / cihaz / kalibrasyon","Ölçüm belirsizliği / teknik sınırlılık"],
+        deniz: ["Gemi adı / IMO / sefer","Olay tarihi-saat / mevki","Rota / mesafe / baş","Hız / makine devri / seyir durumu","GPS / AIS / VDR / radar kayıtları","Hava / deniz / akıntı koşulları","Yük / draft / trim / stabilite","COLREG / seyir kuralı incelemesi","Yakıt / tüketim / operasyon süresi","Manevra / çatışma / olay rekonstrüksiyonu","Kullanılan kaynak / yöntem / sınırlılıklar"],
+        aktuer: ["Hesap tarihi","Doğum tarihi / yaş / cinsiyet","Gelir ve artış varsayımı","Aktif / pasif dönem","TRH-2010 / yaşam tablosu","İskonto / teknik faiz","Maluliyet / kusur / destek payı","Teminat / ödeme / mahsup","Aktüeryal yöntem / dayanak"],
+        tip: ["Kişi / olay / inceleme tarihi","Tıbbi dosya / epikriz / önceki raporlar","Olay ve başvuru kronolojisi","Muayene bulguları / objektif ölçümler","Görüntüleme / laboratuvar / patoloji","Tanı / tedavi / ilaç / doz / takip","Yaralanma / lezyon / sekel bulguları","Maluliyet / çalışma gücü kaybı değerlendirmesi","Geçici iş göremezlik / iyileşme süresi","Nedensellik / komplikasyon / tıbbi standart","Adli toksikoloji / alkol / madde bulguları (varsa)","DNA / biyolojik inceleme (varsa)","Otopsi / ölüm nedeni-zamanı (varsa)","Aydınlatılmış onam / tıbbi kayıt bütünlüğü","Kullanılan mevzuat / rehber / tıbbi yöntem","Teknik sonuç / belirsizlik / sınırlılıklar"],
+        tekstil: ["Ürün / parti / model / etiket","Elyaf / iplik / kumaş yapısı","Gramaj / kalınlık / yoğunluk","Çözgü / atkı yönü ölçümleri","Yıkama öncesi-sonrası ölçüler","Çekme / boyutsal değişim","Mukavemet / yırtılma / dikiş testi","Renk / sürtme / ter / yıkama haslığı","Kusur türü / kusurlu adet / toplam adet","Numune alma / kondisyonlama koşulları","Test standardı / laboratuvar / cihaz","Sonuç / uygunluk / teknik sınırlılıklar"],
+        patent: ["Başvuru / tescil / sınıf / koruma kapsamı","İstemler / teknik özellikler","Teknik çizim / örnek ürün","Önceki sanat / kaynak / tarih","Benzerlik ve farklılık unsurları","İşlev / yapı / teknik karşılaştırma","Lisans / kullanım / royalty verisi","Arama yöntemi / tarihi","Teknik sonuç / sınırlar"],
+        ziraat: ["Parsel / ürün / çeşit","Alan / ekim tarihi / hasat tarihi","Toprak / sulama / gübreleme","Hastalık / zararlı / iklim etkisi","Bitki sıklığı / gelişim durumu","Verim ölçümü / örnekleme yöntemi","Birim verim / toplam verim","Ürün fiyatı / piyasa kaynağı / tarih","Girdi ve üretim giderleri","Zarar / verim kaybı / kalite kaybı","Tarım kayıtları / laboratuvar sonuçları","Hesap yöntemi / teknik kabuller"],
+        gida: ["Ürün / parti / numune / üretim tarihi","Numune alma / taşıma / muhafaza","Fiziksel / kimyasal / mikrobiyolojik sonuç","Etiket / içerik / alerjen","Saklama sıcaklığı / süre","Hijyen / üretim hattı / HACCP","Laboratuvar / cihaz / kalibrasyon","Standart / limit / mevzuat","Uygunluk değerlendirme yöntemi"],
+        ihale: ["İhale / sözleşme türü","Sözleşme tarihi / süresi","İş kalemi / metraj","Birim fiyat / poz kaynağı","Endeks / fiyat farkı dönemi","Hakediş / kesinti / ödeme","Katsayılar / formül dayanağı"],
+        sgk: ["Sigortalı / işyeri","Hizmet dönemi","Prim günü","PEK / alt-üst sınır","Oran / teşvik / indirim","SGK kayıt / belge kaynağı"],
+        maden: ["Ruhsat / saha / koordinat","Jeolojik birim / cevher zonu","Rezerv / kaynak miktarı","Ortalama tenör / sınır tenör","Üretim miktarı / kapasite","Numune noktaları / numune hazırlama","Laboratuvar analizleri / kalite kontrol","Zenginleştirme yöntemi / geri kazanım","Kayıp / seyrelme / pasa","Ürün miktarı / metal içeriği","Birim satış değeri / maliyet","Ekonomik değer / üretim kaybı hesabı","Kullanılan standart / yöntem / sınırlılıklar"],
+        makine: ["Makine / model / seri no","Kapasite / nominal güç / çalışma saati","Çalışma koşulları / yük oranı","Enerji tüketimi / sayaç ölçümü","Verim / performans göstergeleri","Titreşim / sıcaklık / basınç ölçümleri","Tolerans / aşınma / boşluk ölçümleri","Arıza kodları / hasar bulguları","Bakım / servis / parça geçmişi","Test / kalibrasyon / ölçüm cihazı","Kök neden / arıza mekanizması","Onarım / yenileme maliyeti","Kullanılan standart / teknik sınırlılıklar"],
+        mahalli: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        kulturvarliklari: ["Eser kimliği / envanter / dönem","Malzeme / ölçü / teknik","Hasar / bozulma / fotoğraf","Numune / analiz / laboratuvar","Restorasyon / konservasyon geçmişi","Özgünlük / müdahale izleri","Saklama / sergileme koşulları","Değerleme / maliyet dayanağı","Koruma standardı / yöntem"],
+        psikoloji: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        sosyoloji: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        veteriner: ["Hayvan kimliği / tür / yaş / cinsiyet","Muayene / klinik bulgular / tarih","Laboratuvar / görüntüleme","Tanı / tedavi / ilaç / doz","Aşı / bakım / besleme kayıtları","Ölüm / hasar / nekropsi","Ekonomik değer / piyasa kaynağı","Kayıp / verim düşüşü / giderler","Veteriner yöntem / standart"],
+        orman: ["Bölme / bölmecik / meşcere / koordinat","Alan / bonitet / yaş sınıfı","Ağaç türü / çap / boy / adet","Göğüs yüzeyi / sıklık / kapalılık","Birim alan ağaç serveti / artım","Kabuklu-kabuksuz hacim hesabı","Örnek alan / ölçüm yöntemi","Kesim / işgal / zarar alanı","Ürün çeşitleri / zayiat oranı","Birim fiyat / emval / değerleme tarihi","Yeniden yetiştirme / gelir kaybı","Amenajman / hacim tablosu dayanağı","Hesap yöntemi / teknik sınırlılıklar"],
+        harita: ["İl / ilçe / ada / parsel","Pafta / tapu / kadastro dayanağı","Koordinat sistemi / datum / projeksiyon","Nirengi / poligon / kontrol noktaları","Ölçüm cihazı / doğruluk / kalibrasyon","Parsel köşe koordinatları","Toplam yüzölçümü / hesap yöntemi","Uyuşmazlık / tecavüz alanı","Sınır / aplikasyon / zemin bulguları","Kroki / ortofoto / fotoğraf","Birim değer / ecrimisil / zarar dayanağı","Ölçüm tarihi / yöntem / teknik sınırlılıklar"],
+        lojistik: ["Gönderi / yük / miktar","Çıkış-varış noktası / rota / mesafe","Taşıma türü / araç / kapasite","Navlun / sözleşme / fiyat tarifesi","Yakıt / ek ücret / bekleme","Depolama başlangıç-bitiş / gün sayısı","Depolama birim maliyeti","Planlanan / gerçekleşen teslim tarihi","Gecikme süresi / nedeni","Hasar / eksik / kayıp miktarı","Tazmin / sigorta / ödeme kayıtları","Hesap yöntemi / kaynak / sınırlılıklar"],
+        ekonomi: ["İnceleme konusu / dönem","Başlangıç ve bitiş değerleri","Fiyat / endeks / kur verisi","Faiz oranı / uygulanacak dönem","Basit / bileşik yöntem tercihi","Gün / ay / yıl sayısı","Nominal / reel ayrımı","Mahsup / ödeme / ara dönem akışları","Kaynak veri / tarih / kurum","Hesap formülü / varsayım / sınırlılıklar"],
+        tercume: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        gemiinsaa: ["Gemi adı / IMO / proje no","Teknik şartname / klas kuralları","Boyutlar / deplasman / kapasite","İmalat programı / kritik yol","Metraj / iş kalemleri / gerçekleşme","Malzeme / kaynak / NDT testleri","Makine / sevk / sistem montajları","Deniz tecrübesi / kabul testleri","Gecikme nedenleri / gün hesabı","Günlük işletme / gelir kaybı verisi","Hakediş / ödeme / ek maliyet","Kullanılan standart / proje dokümanı / sınırlılıklar"],
+        havacilik: ["Hava aracı / tescil / model / uçuş no","Olay tarihi-saat / konum / irtifa","Hız / rota / baş / mesafe","Meteoroloji / rüzgâr / görüş","FDR / CVR / ADS-B kayıtları","Yakıt / tüketim / ağırlık","Motor / sistem / arıza kayıtları","Bakım / MEL / teknik kayıtlar","Uçuş rekonstrüksiyonu / hesap yöntemi"],
+        petrol: ["Saha / kuyu / hat kimliği","Üretim dönemi / ölçüm tarihi","Kuyu basıncı / sıcaklık / debi","Üretim miktarı / API gravitesi","Sızıntı noktası / tahmini hacim","Boru / vana / ekipman durumu","Numune / laboratuvar analizleri","Sızıntı yayılım alanı / çevresel etki","Ürün birim değeri / piyasa kaynağı","Temizlik / onarım / bertaraf maliyetleri","Üretim duruşu / gelir kaybı","Ölçüm / hesap yöntemi / sınırlılıklar"],
+        metalurji: ["Malzeme sınıfı / ürün / parti","Numune alma koşulu","Kimyasal bileşim / alaşım oranı","Sertlik / çekme / darbe testleri","Mikroyapı / kaynak / ısıl işlem","Korozyon / çatlak / kırılma","Laboratuvar / cihaz / kalibrasyon","Standart / kabul kriteri","Malzeme hesabı / kök neden yöntemi"],
+        mobilya: ["Ürün / model / adet / proje","Boyut / metraj / malzeme türü","Ahşap / MDF / metal / kumaş özellikleri","Malzeme miktarı / fire oranı","İşçilik süresi / birim işçilik","Birim malzeme fiyatı / kaynak tarihi","Boya / kaplama / aksesuar maliyeti","Kusur / deformasyon / ölçü farkları","İmalat gerçekleşme yüzdesi","Hakediş / ödeme / kalan iş","Birim maliyet / toplam maliyet","Teknik şartname / proje / ölçüm yöntemi"],
+        muzik: ["Eser / eser sahibi / kayıt kimliği","Platform / dönem / rapor tarihi","Dinlenme / görüntülenme / indirme adedi","Platformun bildirdiği brüt gelir","Hak sahibi / icracı / yapımcı pay oranları","Sözleşme / lisans / hak devri kayıtları","Kesinti / vergi / komisyon / mahsup","Bölgesel / platform bazlı gelir dökümü","Örnekleme / kaynak belge doğrulaması","Hesap yöntemi / hak payı dayanağı / sınırlılıklar"],
+        spor: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        turizm: ["İşletme / tesis / dönem","Oda / yatak / kapasite","Doluluk oranı / satılan oda-gece","Ortalama günlük fiyat / paket geliri","Diğer gelirler / hizmet gelirleri","İptal / no-show / indirim kayıtları","Personel / enerji / yiyecek-içecek giderleri","Sabit / değişken gider ayrımı","Dönemsel gelir-gider tablosu","Kârlılık / gelir kaybı yöntemi","Rezervasyon / PMS / muhasebe kayıtları","Hesap yöntemi / piyasa karşılaştırması / sınırlılıklar"],
+        kutuphane: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"],
+        enerji: ["Tesis / kurulu güç","Üretim / tüketim dönemi","Sayaç / ölçüm","Verim / kapasite faktörü","Kayıp / arıza","Tarife / birim enerji bedeli"],
+        biyomedikal: ["Cihaz / model / seri no","Kalibrasyon / bakım","Arıza / hata kodu","Ölçüm / test sonucu","Kullanım / duruş süresi","Servis / üretici kaydı"],
+        kimya: ["Madde / ürün / CAS / parti","Numune alma / saklama / taşıma","Bileşim / saflık / konsantrasyon","Referans spesifikasyon / kabul aralığı","Analiz yöntemi / cihaz / kalibrasyon","Laboratuvar sonucu / ölçüm belirsizliği","SDS / etiket / tehlike sınıfı","Üretim / proses koşulları","Kayıp / fire / atık miktarı","Birim değer / toplam ekonomik kayıp","Uygunsuzluk / kök neden","Kullanılan standart / yöntem / teknik sınırlılıklar"],
+        halkla: ["İnceleme konusu / kimlik","Tarih / dönem","Temel teknik bulgu / ölçüm","Kaynak belge / kayıt","Kullanılan yöntem / kriter"]
+    };
+
+    function renderTechnicalDataPanel(key) {
+        if (!TECHNICAL_PANEL_KEYS.has(key)) return '';
+        const cfg = TECHNICAL_DATA_CONFIG[key] || [];
+        return `<div class="calc-panel" style="background:#eff6ff;border-color:#93c5fd;">` +
+            `<h4>📋 ${escapeHtmlSafe(selectedBranchName() || "Branş")} — Branşa Özel Teknik Veri Kaydı</h4>` +
+            `<p class="calc-note" style="color:#1e40af;">Bu bölüm yalnızca teknik inceleme gerektiren branşlarda gösterilir. Yalnızca dosya, ölçüm, belge veya güvenilir kaynakla desteklenen verileri girin; branşta uygulanmayan alanları ve bilinmeyen verileri boş bırakın.</p>` +
+            `<div class="calc-grid">${cfg.map((label,i)=>`<div><label>${escapeHtmlSafe(label)}</label><input type="text" id="tech_${key}_${i}"></div>`).join("")}</div></div>`;
+    }
+
+    function collectTechnicalData(key) {
+        const cfg=TECHNICAL_DATA_CONFIG[key]||[];
+        return cfg.map((label,i)=>({label,value:(document.getElementById(`tech_${key}_${i}`)?.value||"").trim()})).filter(x=>x.value);
+    }
     function renderBranchCalcPanel(key) {
         const host = document.getElementById('branchCalcPanelHost');
         if (!host) return;
@@ -3669,16 +3740,22 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             calc: "elektrik"
         },
         maden: {
-            title: "⛏️ Maden — Üretim / Tenör / Geri Kazanım",
-            note: "Üretim miktarı, tenör, geri kazanım ve birim değer üzerinden şeffaf taslak hesap. Jeolojik/metalurjik kabuller ayrıca dayandırılmalıdır.",
-            fields: [["ton","Üretim (ton)","örn. 1000"],["tenor","Tenör (%)","örn. 5"],["geri","Geri kazanım (%)","örn. 90"],["deger","Kazanılan birim değer (TL/kg)","örn. 100"],["maliyet","Toplam maliyet (TL)","0"]],
+            title: "⛏️ Maden — Üretim / Tenör / Geri Kazanım / Metal İçeriği",
+            note: "Cevher miktarı, tenör, geri kazanım, kayıp/seyrelme, kazanılan metal ve ekonomik değer birlikte gösterilir. Sınır tenör ve proses kabulleri mutlaka teknik dayanağa bağlanmalıdır.",
+            fields: [["ton","Cevher üretimi (ton)","örn. 1000"],["tenor","Ortalama tenör (%)","örn. 5"],["geri","Geri kazanım (%)","örn. 90"],["deger","Kazanılan metal birim değeri (TL/kg)","örn. 100"],["maliyet","Toplam maliyet (TL)","0"],["kayip","Kayıp / seyrelme (%)","0"],["sinir","Sınır tenör (%) — varsa","0"]],
             calc: "maden"
         },
         harita: {
-            title: "📐 Harita — Alan / Tecavüz Oranı / Değer",
-            note: "Ölçülen toplam alan ile tecavüz/uyuşmazlık alanını karşılaştırır; koordinat ve ölçüm yöntemi ayrıca raporlanmalıdır.",
-            fields: [["alan","Toplam alan (m²)","örn. 1000"],["tecavuz","Uyuşmazlık/tecavüz alanı (m²)","örn. 50"],["birim","Birim değer (TL/m²)","0"]],
+            title: "📐 Harita / Kadastro — Alan / Tecavüz / Sınır / Değer",
+            note: "Parsel alanı, uyuşmazlık/tecavüz alanı, oran, birim değer ve sınır ölçümü birlikte gösterilir. Koordinat, ölçüm yöntemi ve kadastro dayanağı ayrıca kaydedilmelidir.",
+            fields: [["alan","Toplam parsel alanı (m²)","örn. 1000"],["tecavuz","Uyuşmazlık / tecavüz alanı (m²)","örn. 50"],["birim","Birim değer (TL/m²)","0"],["sinir","Sınır/ölçüm farkı (m)","0"],["duzeltme","Değer düzeltmesi (%)","0"]],
             calc: "harita"
+        },
+        insaatdetay: {
+            title: "🏗️ İnşaat — Detaylı Metraj / Keşif / Hakediş",
+            note: "Birden fazla imalat kalemini miktar, birim fiyat, fire ve gerçekleşme oranıyla hesaplar. Proje, keşif özeti ve saha ölçümleri ayrıca dayanaklandırılmalıdır.",
+            fields: [["miktar1","Kalem 1 miktar","örn. 100"],["fiyat1","Kalem 1 birim fiyat (TL)","örn. 2500"],["oran1","Kalem 1 gerçekleşme (%)","100"],["miktar2","Kalem 2 miktar","0"],["fiyat2","Kalem 2 birim fiyat (TL)","0"],["oran2","Kalem 2 gerçekleşme (%)","100"],["miktar3","Kalem 3 miktar","0"],["fiyat3","Kalem 3 birim fiyat (TL)","0"],["oran3","Kalem 3 gerçekleşme (%)","100"],["fire","Ortalama fire (%)","0"],["iscilik","Toplam işçilik (TL)","0"],["diger","Diğer maliyetler (TL)","0"],["odenmis","Önceki hakediş / ödeme (TL)","0"]],
+            calc: "insaatdetay"
         },
         makine: {
             title: "⚙️ Makine — Enerji Tüketimi / Maliyet",
@@ -3687,9 +3764,9 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             calc: "makine"
         },
         gemiinsaa: {
-            title: "🚢 Gemi İnşaatı — Süre / Kapasite / Gelir Kaybı",
-            note: "Teslim gecikmesi veya operasyonel kayıp için kullanıcı tarafından verilen dönemsel değerlerle taslak hesap.",
-            fields: [["gun","Gecikme günü","0"],["gunluk","Günlük kayıp/maliyet (TL)","0"],["ek","Ek maliyet (TL)","0"],["odeme","Ödenen/mahsup (TL)","0"]],
+            title: "🚢 Gemi İnşaatı — Süre / Kapasite / Gecikme / Gelir Kaybı",
+            note: "Proje kapasitesi, planlanan-gerçekleşen süre, gecikme ve günlük ekonomik etkiyi ayrı gösterir. Klas, sözleşme, proje programı ve kabul testleri ayrıca dayanaklandırılmalıdır.",
+            fields: [["kapasite","Planlanan kapasite / teslim birimi","0"],["gercek","Gerçekleşen kapasite / teslim birimi","0"],["gun","Gecikme günü","0"],["gunluk","Günlük gelir kaybı / maliyet (TL)","0"],["ek","Ek maliyet (TL)","0"],["odeme","Ödenen/mahsup (TL)","0"]],
             calc: "gemiinsaa"
         },
         biyomedikal: {
@@ -3703,7 +3780,15 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             note: "Parti miktarı ve ölçülen saflık üzerinden etkin miktar hesabı; referans saflık ve parasal değer verilirse fark ayrıca gösterilir.",
             fields: [["miktar","Parti miktarı (kg)","örn. 1000"],["saflik","Ölçülen saflık (%)","örn. 95"],["ref","Referans saflık (%)","100"],["deger","Birim değer (TL/kg)","0"]],
             calc: "kimya"
-        }
+        },
+        cevre: { title: "🌿 Çevre — Konsantrasyon / Debi / Yük / Arıtma Verimi", note: "Ölçüm verilerinden kütlesel yük ve varsa giriş-çıkış arıtma verimi hesaplar. Birim dönüşümü ve mevzuat limiti ayrıca doğrulanmalıdır.", fields: [["kons","Çıkış konsantrasyonu (mg/L)","örn. 20"],["debi","Debi (m³/saat)","örn. 10"],["sure","Süre (saat)","örn. 24"],["giris","Giriş konsantrasyonu (mg/L) — varsa","0"],["limit","Limit (mg/L)","0"],["gun","Dönem günü","1"]], calc:"cevre" },
+        deniz: { title: "⚓ Denizcilik — Mesafe / Hız / Seyir Süresi / Yakıt", note: "Rota mesafesi, hız, bekleme ve yakıt verilerinden taslak seyir hesabı. Akıntı, rüzgâr, draft, manevra ve VDR/AIS kayıtları ayrıca değerlendirilmelidir.", fields: [["mesafe","Mesafe (deniz mili)","örn. 120"],["hiz","Ortalama hız (knot)","örn. 10"],["yak","Yakıt tüketimi (L/saat)","0"],["ek","Ek/bekleme süreleri (saat)","0"],["akinti","Akıntı etkisi / düzeltme (saat)","0"],["manevra","Manevra/liman süresi (saat)","0"]], calc:"deniz" },
+        havacilik: { title: "✈️ Havacılık — Hız / Süre / Yakıt", note: "Basitleştirilmiş seyir hesabı. FDR/CVR/ADS-B ve uçuş planı esas alınmalıdır.", fields: [["mesafe","Mesafe (km)","örn. 500"],["hiz","Ortalama yer hızı (km/saat)","örn. 500"],["yakit","Yakıt tüketimi (L/saat)","0"],["ek","Ek süre (saat)","0"]], calc:"havacilik" },
+        metalurji: { title: "🔬 Metalurji — Ağırlıklı Bileşim / Parti Karşılaştırması", note: "Birden fazla partinin miktarına göre ağırlıklı bileşimini hesaplar. Kabul kriteri ve laboratuvar standardı ayrıca girilmeli ve kaynaklandırılmalıdır.", fields: [["m1","1. parti miktarı (kg)","0"],["c1","1. parti bileşim (%)","0"],["m2","2. parti miktarı (kg)","0"],["c2","2. parti bileşim (%)","0"],["m3","3. parti miktarı (kg)","0"],["c3","3. parti bileşim (%)","0"],["hedef","Hedef / kabul bileşimi (%)","0"]], calc:"metalurji" },
+        gida: { title: "🥫 Gıda — Numune / Uygunsuzluk / Parti ve Analiz Değerlendirmesi", note: "Numune sayısı, uygunsuzluk oranı ve varsa ölçülen parametre/limit karşılaştırmasını düzenler. Mikrobiyolojik/kimyasal uygunluk yalnızca ilgili mevzuat ve laboratuvar yöntemiyle değerlendirilmelidir.", fields: [["numune","Toplam numune/adet","örn. 100"],["uygunsuz","Uygunsuz numune/adet","örn. 5"],["limit","Kabul limiti (%)","0"],["olcum","Ölçülen değer","0"],["sinir","Mevzuat/standart sınırı","0"]], calc:"gida" },
+        tekstil: { title: "🧵 Tekstil — Boyutsal Değişim / Çekme / Kusur / Gramaj", note: "Çözgü ve atkı yönünde boyutsal değişim, kusur oranı ve varsa gramaj değişimini ayrı gösterir. Numune kondisyonu ve EN/ISO test standardı ayrıca kaydedilmelidir.", fields: [["ilk","İlk boy ölçüsü (mm)","örn. 1000"],["son","Son boy ölçüsü (mm)","örn. 970"],["ilkEn","İlk en ölçüsü (mm)","0"],["sonEn","Son en ölçüsü (mm)","0"],["ilkGram","İlk gramaj (g/m²)","0"],["sonGram","Son gramaj (g/m²)","0"],["kusur","Kusurlu adet","0"],["toplam","Toplam incelenen adet","0"]], calc:"tekstil" },
+        veteriner: { title: "🐾 Veteriner — Değer Kaybı / Gider", note: "Belgeli ekonomik değer ve kayıp oranından taslak hesap; klinik neden ve piyasa değeri ayrıca doğrulanmalıdır.", fields: [["adet","Hayvan adedi","örn. 10"],["birim","Birim değer (TL)","0"],["kayip","Kayıp oranı (%)","0"],["gider","Tedavi/diğer gider (TL)","0"]], calc:"veteriner" },
+        orman: { title: "🌲 Orman — Alan / Servet / Hacim / Artım / Değer", note: "Meşcere alanı, birim servet/hacim, artım ve birim değeri ayrı gösteren taslak hesap. Tür, yaş, çap, hacim tablosu ve amenajman dayanağı ayrıca belirtilmelidir.", fields: [["alan","Alan (ha)","örn. 10"],["hacim","Birim hacim (m³/ha)","örn. 150"],["artim","Birim yıllık artım (m³/ha/yıl)","0"],["yil","Dönem (yıl)","1"],["deger","Birim değer (TL/m³)","0"],["zarar","Zarar oranı (%)","0"]], calc:"orman" },
     };
 
     function renderSpecialCalc(key) {
@@ -3727,6 +3812,9 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
         const n = x => isFinite(x) ? x : 0;
         let out = '';
         switch(key) {
+            case 'tip': {
+                const yas=n(sp('yas')), gec=n(sp('gecici')), sure=n(sp('sure')), mal=n(sp('malul')), kus=n(sp('kus')), gel=n(sp('gelir'));
+                out=`ADLİ TIP — TIBBİ DEĞERLENDİRME PARAMETRELERİ\nYaş: ${fmtTR(yas,0)}\nGeçici iş göremezlik: ${fmtTR(gec,0)} gün\nİyileşme / tedavi süresi: ${fmtTR(sure,0)} gün\nDosyada belirtilen maluliyet/kayıp oranı: ${fmtTR(mal,2)} %\nDosyada belirtilen kusur/pay: ${fmtTR(kus,2)} %\nAylık gelir (varsa): ${fmtTR(gel,2)} TL\nNot: Bu panel tıbbi oran veya nedensellik üretmez; girilen oran ve sürelerin tıbbi rapor/mevzuat dayanağı ayrıca gösterilmelidir.`; break; }
             case 'ziraat': {
                 const alan=n(sp('alan')), verim=n(sp('verim')), fiyat=n(sp('fiyat')), gider=n(sp('gider')), kayip=n(sp('kayip'));
                 const brut=alan*verim*fiyat, kayipT=brut*kayip/100, net=brut-gider-kayipT;
@@ -3779,19 +3867,69 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
                 } break;
             }
             case 'maden': {
-                const t=n(sp('ton')), te=n(sp('tenor'))/100, ge=n(sp('geri'))/100, d=n(sp('deger')), m=n(sp('maliyet'));
-                const metal=t*1000*te*ge, gelir=metal*d;
-                out=`MADEN — ÜRETİM / TENÖR\nÜretim: ${fmtTR(t,2)} ton\nTenör: ${fmtTR(te*100,2)} %\nGeri kazanım: ${fmtTR(ge*100,2)} %\nTahmini kazanılan miktar: ${fmtTR(metal,2)} kg\nBirim değer: ${fmtTR(d,2)} TL/kg\nGelir: ${fmtTR(gelir,2)} TL\nMaliyet: ${fmtTR(m,2)} TL\nNET TASLAK: ${fmtTR(gelir-m,2)} TL`; break;
+                const t=n(sp('ton')), te=n(sp('tenor'))/100, ge=n(sp('geri'))/100, d=n(sp('deger')), m=n(sp('maliyet')), kay=n(sp('kayip'))/100, sin=n(sp('sinir'));
+                const etkinCevher=t*(1-kay), contained=etkinCevher*1000*te, metal=contained*ge, gelir=metal*d;
+                out=`MADEN — ÜRETİM / TENÖR / GERİ KAZANIM
+Cevher üretimi: ${fmtTR(t,2)} ton
+Kayıp / seyrelme: ${fmtTR(kay*100,2)} % → etkin cevher ${fmtTR(etkinCevher,2)} ton
+Ortalama tenör: ${fmtTR(te*100,2)} %
+Teorik metal içeriği: ${fmtTR(contained,2)} kg
+Geri kazanım: ${fmtTR(ge*100,2)} %
+Tahmini kazanılan metal: ${fmtTR(metal,2)} kg
+Birim metal değeri: ${fmtTR(d,2)} TL/kg
+Brüt değer: ${fmtTR(gelir,2)} TL
+Toplam maliyet: ${fmtTR(m,2)} TL
+NET TASLAK: ${fmtTR(gelir-m,2)} TL
+Sınır tenör (varsa): ${fmtTR(sin,2)} %
+Not: Rezerv, sınır tenör ve proses verimi dosyadaki jeolojik/metalurjik dayanaklarla doğrulanmalıdır.`; break;
             }
             case 'harita': {
-                const a=n(sp('alan')), t=n(sp('tecavuz')), b=n(sp('birim'));
-                const oran=a>0?t/a*100:0, deger=t*b;
-                out=`HARİTA — ALAN / TECAVÜZ\nToplam alan: ${fmtTR(a,2)} m²\nUyuşmazlık/tecavüz alanı: ${fmtTR(t,2)} m²\nOran: ${fmtTR(oran,2)} %\nBirim değer: ${fmtTR(b,2)} TL/m²\nAlan karşılığı değer: ${fmtTR(deger,2)} TL`;
+                const a=n(sp('alan')), t=n(sp('tecavuz')), b=n(sp('birim')), sin=n(sp('sinir')), duz=n(sp('duzeltme'));
+                const oran=a>0?t/a*100:0, hamDeger=t*b, duzDeger=hamDeger*(1+duz/100);
+                out=`HARİTA / KADASTRO — ALAN / TECAVÜZ / DEĞER
+Toplam parsel alanı: ${fmtTR(a,2)} m²
+Uyuşmazlık / tecavüz alanı: ${fmtTR(t,2)} m²
+Tecavüz / uyuşmazlık oranı: ${fmtTR(oran,2)} %
+Sınır / ölçüm farkı: ${fmtTR(sin,2)} m
+Birim değer: ${fmtTR(b,2)} TL/m²
+Ham alan karşılığı değer: ${fmtTR(hamDeger,2)} TL
+Değer düzeltmesi: ${fmtTR(duz,2)} %
+Düzeltilmiş değer: ${fmtTR(duzDeger,2)} TL
+Not: Koordinat sistemi, ölçüm yöntemi, dayanak pafta/tapu ve sınır kabulü ayrıca raporlanmalıdır.`;
+                break;
+            }
+            case 'insaatdetay': {
+                let toplam=0, tamamlanan=0;
+                [1,2,3].forEach(i=>{ const q=n(sp('miktar'+i)), f=n(sp('fiyat'+i)), r=Math.max(0,Math.min(100,n(sp('oran'+i)))); const plan=q*f; toplam+=plan; tamamlanan+=plan*r/100; });
+                const fire=Math.max(0,n(sp('fire')))/100;
+                const fireT=toplam*fire;
+                const isc=n(sp('iscilik')), dig=n(sp('diger')), od=n(sp('odenmis'));
+                const planTop=toplam+fireT+isc+dig, kalan=planTop-tamamlanan-od;
+                out=`İNŞAAT — DETAYLI METRAJ / KEŞİF / HAKEDİŞ
+İmalat kalemleri planlanan toplamı: ${fmtTR(toplam,2)} TL
+Fire karşılığı: ${fmtTR(fireT,2)} TL
+Toplam işçilik: ${fmtTR(isc,2)} TL
+Diğer maliyetler: ${fmtTR(dig,2)} TL
+PLANLANAN TOPLAM: ${fmtTR(planTop,2)} TL
+Gerçekleşen imalat karşılığı: ${fmtTR(tamamlanan,2)} TL
+Önceki hakediş / ödeme: ${fmtTR(od,2)} TL
+KALAN TASLAK TUTAR: ${fmtTR(kalan,2)} TL
+Not: Birim fiyatların tarihi, poz/analiz dayanağı, metraj ölçümü, gerçekleşme oranı ve sözleşme hükümleri ayrıca gösterilmelidir.`;
                 break;
             }
             case 'gemiinsaa': {
-                const g=n(sp('gun')), d=n(sp('gunluk')), e=n(sp('ek')), o=n(sp('odeme')), toplam=g*d+e-o;
-                out=`GEMİ İNŞAATI — SÜRE / KAYIP\nGecikme: ${fmtTR(g,0)} gün\nGünlük kayıp/maliyet: ${fmtTR(d,2)} TL\nGecikme karşılığı: ${fmtTR(g*d,2)} TL\nEk maliyet: ${fmtTR(e,2)} TL\nMahsup: ${fmtTR(o,2)} TL\nNET TASLAK: ${fmtTR(toplam,2)} TL`; break;
+                const k=n(sp('kapasite')), ger=n(sp('gercek')), g=n(sp('gun')), d=n(sp('gunluk')), e=n(sp('ek')), o=n(sp('odeme')), toplam=g*d+e-o, fark=k-ger;
+                out=`GEMİ İNŞAATI — SÜRE / KAPASİTE / KAYIP
+Planlanan kapasite/teslim birimi: ${fmtTR(k,2)}
+Gerçekleşen kapasite/teslim birimi: ${fmtTR(ger,2)}
+Kapasite/teslim farkı: ${fmtTR(fark,2)}
+Gecikme: ${fmtTR(g,0)} gün
+Günlük kayıp/maliyet: ${fmtTR(d,2)} TL
+Gecikme karşılığı: ${fmtTR(g*d,2)} TL
+Ek maliyet: ${fmtTR(e,2)} TL
+Mahsup: ${fmtTR(o,2)} TL
+NET TASLAK: ${fmtTR(toplam,2)} TL
+Not: Gecikmenin sözleşmesel ve teknik nedeni ayrıca incelenmelidir.`; break;
             }
             case 'biyomedikal': {
                 const a=n(sp('adet')), b=n(sp('birim')), r=n(sp('oran'))/100, g=n(sp('gun')), d=n(sp('gunluk'));
@@ -3803,6 +3941,58 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
                 const etkin=m*s, fark=Math.max(0,m*r-etkin), deger=fark*d;
                 out=`KİMYA — PARTİ / SAFLIK\nParti: ${fmtTR(m,2)} kg\nÖlçülen saflık: ${fmtTR(s*100,2)} %\nReferans saflık: ${fmtTR(r*100,2)} %\nEtkin miktar: ${fmtTR(etkin,2)} kg\nFark miktarı: ${fmtTR(fark,2)} kg\nBirim değer: ${fmtTR(d,2)} TL/kg\nFarkın değer karşılığı: ${fmtTR(deger,2)} TL`; break;
             }
+            case 'cevre': { const c=n(sp('kons')), d=n(sp('debi')), s=n(sp('sure')), lim=n(sp('limit')); const yuk=c*d*s; out=`ÇEVRE — TEORİK YÜK
+Konsantrasyon: ${fmtTR(c,2)} mg/L
+Debi: ${fmtTR(d,2)} m³/saat
+Süre: ${fmtTR(s,2)} saat
+Girdi çarpımı: ${fmtTR(yuk,2)}
+Limit girdisi: ${fmtTR(lim,2)} mg/L
+Not: Bu çıktı birim dönüşümü yapılmış nihai emisyon kütlesi değildir; birimler ve mevzuat yöntemi ayrıca doğrulanmalıdır.`; break; }
+            case 'deniz': { const m=n(sp('mesafe')), h=n(sp('hiz')), y=n(sp('yak')), ek=n(sp('ek')); const sure=h>0?m/h:0, toplam=sure+ek; out=`DENİZCİLİK — SEYİR
+Mesafe: ${fmtTR(m,2)} deniz mili
+Ortalama hız: ${fmtTR(h,2)} knot
+Temel seyir süresi: ${fmtTR(sure,2)} saat
+Ek süre: ${fmtTR(ek,2)} saat
+Toplam süre: ${fmtTR(toplam,2)} saat
+Yaklaşık yakıt: ${fmtTR(toplam*y,2)} L`; break; }
+            case 'havacilik': { const m=n(sp('mesafe')), h=n(sp('hiz')), y=n(sp('yakit')), ek=n(sp('ek')); const sure=h>0?m/h:0, toplam=sure+ek; out=`HAVACILIK — SEYİR / YAKIT TASLAĞI
+Mesafe: ${fmtTR(m,2)} km
+Yer hızı: ${fmtTR(h,2)} km/saat
+Temel süre: ${fmtTR(sure,2)} saat
+Ek süre: ${fmtTR(ek,2)} saat
+Toplam süre: ${fmtTR(toplam,2)} saat
+Yaklaşık yakıt: ${fmtTR(toplam*y,2)} L`; break; }
+            case 'metalurji': { const m1=n(sp('m1')), c1=n(sp('c1')), m2=n(sp('m2')), c2=n(sp('c2')), m3=n(sp('m3')), c3=n(sp('c3')), hedef=n(sp('hedef')); const mt=m1+m2+m3, ort=mt>0?(m1*c1+m2*c2+m3*c3)/mt:0, fark=hedef?ort-hedef:0; out=`METALURJİ — AĞIRLIKLI BİLEŞİM
+Toplam miktar: ${fmtTR(mt,2)} kg
+Ağırlıklı ortalama bileşim: ${fmtTR(ort,3)} %
+Hedef/kabul bileşimi: ${fmtTR(hedef,3)} %
+Hedefe göre fark: ${fmtTR(fark,3)} puan
+Not: Nihai uygunluk, ilgili malzeme standardı ve laboratuvar sonuçlarıyla belirlenmelidir.`; break; }
+            case 'gida': { const a=n(sp('numune')), u=n(sp('uygunsuz')), l=n(sp('limit')); const oran=a>0?u/a*100:0; out=`GIDA — UYGUNSUZLUK ORANI
+Toplam numune: ${fmtTR(a,0)}
+Uygunsuz numune: ${fmtTR(u,0)}
+Uygunsuzluk oranı: ${fmtTR(oran,2)} %
+Kabul limiti: ${fmtTR(l,2)} %
+Değerlendirme: ${l>0?(oran<=l?'Limit içinde':'Limit üzerinde'):'Limit girilmedi'}`; break; }
+            case 'tekstil': { const i=n(sp('ilk')), s=n(sp('son')), k=n(sp('kusur')), tt=n(sp('toplam')); const cek=i>0?(i-s)/i*100:0, kus=tt>0?k/tt*100:0; out=`TEKSTİL — ÇEKME / KUSUR
+İlk ölçü: ${fmtTR(i,2)} mm
+Son ölçü: ${fmtTR(s,2)} mm
+Çekme oranı: ${fmtTR(cek,2)} %
+Kusurlu: ${fmtTR(k,0)} / ${fmtTR(tt,0)}
+Kusur oranı: ${fmtTR(kus,2)} %`; break; }
+            case 'veteriner': { const a=n(sp('adet')), b=n(sp('birim')), r=n(sp('kayip'))/100, g=n(sp('gider')); const z=a*b*r; out=`VETERİNER — DEĞER KAYBI TASLAĞI
+Hayvan adedi: ${fmtTR(a,0)}
+Birim değer: ${fmtTR(b,2)} TL
+Kayıp oranı: ${fmtTR(r*100,2)} %
+Değer kaybı: ${fmtTR(z,2)} TL
+Gider: ${fmtTR(g,2)} TL
+TOPLAM TASLAK: ${fmtTR(z+g,2)} TL`; break; }
+            case 'orman': { const a=n(sp('alan')), h=n(sp('hacim')), d=n(sp('deger')), r=n(sp('zarar'))/100; const v=a*h, brut=v*d, z=brut*r; out=`ORMAN — HACİM / DEĞER TASLAĞI
+Alan: ${fmtTR(a,2)} ha
+Toplam hacim: ${fmtTR(v,2)} m³
+Brüt değer: ${fmtTR(brut,2)} TL
+Zarar oranı: ${fmtTR(r*100,2)} %
+Zarar karşılığı: ${fmtTR(z,2)} TL`; break; }
             default: out='Bu branş için hesaplama tanımı bulunamadı.';
         }
         setCalcResult(out);
@@ -3813,7 +4003,7 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             gayrimenkul: renderGayrimenkulCalc,
             hesap: renderHesapCalc,
             aktuer: renderAktuerCalc,
-            insaat: renderInsaatCalc,
+            insaat: () => renderInsaatCalc() + renderSpecialCalc('insaatdetay'),
             sgk: renderSgkCalc,
             ihale: renderIhaleCalc,
             ziraat: () => renderSpecialCalc('ziraat'),
@@ -3830,7 +4020,16 @@ Eksik bilgi varsa "mevcut bilgiler kapsamında" gibi sınırlayıcı ifadeler ku
             makine: () => renderSpecialCalc('makine'),
             gemiinsaa: () => renderSpecialCalc('gemiinsaa'),
             biyomedikal: () => renderSpecialCalc('biyomedikal'),
-            kimya: () => renderSpecialCalc('kimya')
+            kimya: () => renderSpecialCalc('kimya'),
+            cevre: () => renderSpecialCalc('cevre'),
+            deniz: () => renderSpecialCalc('deniz'),
+            havacilik: () => renderSpecialCalc('havacilik'),
+            metalurji: () => renderSpecialCalc('metalurji'),
+            gida: () => renderSpecialCalc('gida'),
+            tekstil: () => renderSpecialCalc('tekstil'),
+            tip: () => renderSpecialCalc('tip'),
+            veteriner: () => renderSpecialCalc('veteriner'),
+            orman: () => renderSpecialCalc('orman')
         };
         const fn = map[key];
         if (fn) host.innerHTML = fn();
@@ -4286,6 +4485,13 @@ Not: Sözleşme fiyat farkı formülü ve teminat kesintileri ayrıca uygulanmal
         if (deliller) { report += `${bolumNo}. İNCELENEN DELİL / BELGE / KAYITLAR:\n${deliller}\n\n`; bolumNo++; }
         if (yontem) { report += `${bolumNo}. İNCELEME YÖNTEMİ VE KULLANILAN STANDARTLAR:\n${yontem}\n\n`; bolumNo++; }
         if (branchSpecial) { report += `${bolumNo}. BRANŞA ÖZEL TEKNİK BİLGİLER:\n${branchSpecial}\n\n`; bolumNo++; }
+        const technicalData = collectTechnicalData(selectedKey);
+        if (technicalData.length) {
+            report += `${bolumNo}. YAPILANDIRILMIŞ TEKNİK VERİ / ÖLÇÜM KAYDI:\n`;
+            technicalData.forEach(x => { report += `${x.label}: ${capitalizeSentences(x.value)}\n`; });
+            report += `\n`;
+            bolumNo++;
+        }
 
         report += `${bolumNo}. TEKNİK İNCELEME VE BULGULAR:\n\n`;
         bolumNo++;
@@ -4304,6 +4510,13 @@ Not: Sözleşme fiyat farkı formülü ve teminat kesintileri ayrıca uygulanmal
         if (activeCount === 0) {
             alert("En az bir teknik inceleme/tespit alanını doldurmanız gerekir.");
             return null;
+        }
+
+        const autoCalcBox = document.getElementById('calcResultBox');
+        const autoCalcText = autoCalcBox ? autoCalcBox.textContent.trim() : '';
+        if (autoCalcText && !/^Bu branş için hesaplama tanımı bulunamadı\.?$/.test(autoCalcText)) {
+            report += `${bolumNo}. HESAPLAMA / TEKNİK ÇALIŞMA SONUCU:\n${autoCalcText}\n\n`
+            bolumNo++;
         }
 
         if (qaItems.length > 0) {
